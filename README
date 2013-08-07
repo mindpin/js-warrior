@@ -1,0 +1,2 @@
+# 编译 coffee 2 js (需要npm install -g coffee-script 安装编译工具)
+coffee --join js/all.js --compile js/*.coffee
