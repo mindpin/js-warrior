@@ -1,4 +1,6 @@
 class Game
+  constructor: (level_data) ->
+    @level = new Level level_data
+
   start: ->
-    level = Level.build(1)
-    level.start
+    @level.start
