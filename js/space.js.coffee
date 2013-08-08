@@ -21,6 +21,8 @@
 # 石头（投掷物）FlyingAxe    F0
 
 class Space
+  jQuery.extend this::, UnitContainer
+
   constructor: (space_data,x,y) ->
     @x = x
     @y = y
