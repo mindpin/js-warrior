@@ -13,6 +13,12 @@ class Level
       for space in floor
         fun.call space
 
+  get_space: (x, y) ->
+    try
+      return @space_profile[x][y]
+    catch error
+      return undefined
+
   _build_profile: (level_data) ->
     result = []
 
