@@ -20,7 +20,7 @@ class UnitContainer
       when "flying_axes" then @flying_axes = []
 
   relative: (x, y)->
-    get_space(@x + x, @y + y)
+    @level.get_space(@x + x, @y + y)
 
   receive: (action)->
     switch action.constructor
