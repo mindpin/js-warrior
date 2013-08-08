@@ -2,14 +2,16 @@ class Level
   constructor: (level_data) ->
     @space_profile = @_build_profile level_data
     @characters = @_build_characters @space_profile
+    @warrior = @_build_warrior @space_profile
 
   start: ->
     for i in [1..1000]
       turn_run
         
 
-  # 按顺序让每一个格子的所有 unit 都做一个动作
+  # 让每一个 生物 都行动一次
   turn_run: ->
+    @warrior.reset_played
     for character in @characters
       character.reset_played
 
@@ -33,19 +35,19 @@ class Level
 
   _build_characters: (space_profile) ->
     result = []
-    warrior = null
     for floor in @space_profile
       for space in floor
         character = space.character
-        continue if character == null
-
-        if character.constructor == Warrior
-          warrior = character
-          continue
-        
+        continue if character == null || character.constructor == Warrior
         result.push character
 
-    result.unshift warrior
     return result
+
+  _build_warrior: (space_profile) ->
+    for floor in @space_profile
+      for space in floor
+        character = space.character
+        if character != null && character.constructor == Warrior
+          return character
 
 window.Level = Level
