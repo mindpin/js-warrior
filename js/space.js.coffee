@@ -40,5 +40,4 @@ class Space
       when '6' then 'creeper'
     return unit
 
-
-    
+window.Space = Space

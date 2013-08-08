@@ -24,3 +24,6 @@ class Level
       result.push arr
 
     return result
+
+
+window.Level = Level

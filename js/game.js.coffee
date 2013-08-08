@@ -4,3 +4,5 @@ class Game
 
   start: ->
     @level.start
+
+window.Game = Game

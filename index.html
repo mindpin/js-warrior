@@ -6,16 +6,21 @@
 </head>
 <body>
   blal
-  <script type='text/javascript' src='js/all.js' ></script>
-  <script type="text/javascript">
-    var level_data = [
-      ['','','','',''],
-      ['','','','3',''],
-      ['','','','4',''],
-      ['','0','','',''],
-      ['','','','','']
-    ]
-    new Game(level_data).start();
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script type="text/javascript" src="coffee-script.js"></script>
+  <script type="text/coffeescript" src="js/game.js.coffee"></script>
+  <script type="text/coffeescript" src="js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="js/space.js.coffee"></script>
+  <script type="text/coffeescript">
+    jQuery ->
+      level_data = [
+        ['','','','',''],
+        ['','','','3',''],
+        ['','','','4',''],
+        ['','0','','',''],
+        ['','','','','']
+      ]
+      new Game(level_data).start();
   </script>
 </body>
 </html>
