@@ -26,10 +26,6 @@ class Space
     @y = y
     @_build space_data
 
-  perform_turn: ->
-    for unit in @units
-      unit.perform_turn
-
   _build: (space_data) ->
     @character   = null
     @item        = null
