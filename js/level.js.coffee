@@ -17,15 +17,15 @@ class Level
     try
       return @space_profile[x][y]
     catch error
-      return undefined
+      return null
 
   _build_profile: (level_data) ->
     result = []
 
-    for floor in level_data
+    for floor,x in level_data
       arr = []
-      for space_data in floor
-        space = new Space space_data
+      for space_data,y in floor
+        space = new Space space_data, x, y
         arr.push space
       result.push arr
 

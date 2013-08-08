@@ -1,43 +1,78 @@
 # unit_data 的编号
-# warrior        -> 0
-# key            -> 1
-# intrigue       -> 2
-# door           -> 3
-# small_monster  -> 4
-# big_monster    -> 5
-# creeper        -> 6
+# 有AI的生物
+# =======
+# 勇士 Warrior               C0
+# 小怪 SmallMonster          C1
+# 大怪 BigMonster            C2
+# JJ怪 Creeper               C3
+# 弓箭手 Archer              C4
+# 魔法师 Wizard              C5
+
+# 物品
+# =========
+# 钥匙 Key                   I0
+# 机关 Intrigue              I1
+# 门 Door                    I2
+# 宝石 Diamond               I3
+# 墙   Wall                  I4
+
+# 飞行道具
+# ========
+# 石头（投掷物）FlyingAxe    F0
 
 class Space
-  constructor: (space_data) ->
-    @units = @_build space_data
+  constructor: (space_data,x,y) ->
+    @x = x
+    @y = y
+    @_build space_data
 
   perform_turn: ->
     for unit in @units
       unit.perform_turn
 
   _build: (space_data) ->
-    unit_datas = space_data.split ''
-    return [] if unit_datas.length == 0
-    return @_build_units unit_datas
+    @character   = null
+    @item        = null
+    @flying_axes = []
 
-  _build_units: (unit_datas) ->
-    result = []
+    unit_datas = space_data.split ','
     for unit_data in unit_datas
-      unit = @_build_unit unit_data
-      result.push unit
-
-    return result
+      @_build_unit unit_data
 
   _build_unit: (unit_data) ->
-    # TODO 需要把 unit 替换成 class
-    unit = switch unit_data
-      when '0' then 'warrior'
-      when '1' then 'key'
-      when '2' then 'intrigue'
-      when '3' then 'door'
-      when '4' then 'small_monster'
-      when '5' then 'big_monster'
-      when '6' then 'creeper'
-    return unit
+    type_code = unit_data[0]
+    switch type_code
+      when 'C'
+        @_build_character unit_data
+      when 'I'
+        @_build_item unit_data
+      when 'F'
+        @_build_flying_item unit_data
+
+  _build_character: (unit_data) ->
+    throw '一个格子不能有两个生物' if @character != null
+    @character = switch unit_data
+      when 'C0' then new Warrior this
+      when 'C1' then new SmallMonster this
+      when 'C2' then new BigMonster this
+      when 'C3' then new Creeper this
+      when 'C4' then new Archer this
+      when 'C5' then new Wizard this
+
+  _build_item: (unit_data) ->
+    throw '一个格子不能有两个 item' if @item != null
+    @item = switch unit_data
+      when 'I0' then new Key this
+      when 'I1' then new Intrigue this
+      when 'I2' then new Door this
+      when 'I3' then new Diamond this
+      when 'I4' then new Wall this
+
+  _build_flying_item: (unit_data) ->
+    flying_item = switch unit_data
+      when 'F0' then new FlyingAxe this
+
+    @flying_axes.push flying_item
+
 
 window.Space = Space
