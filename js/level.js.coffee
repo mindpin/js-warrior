@@ -6,6 +6,8 @@ class Level
     @door    = @_build_door @units
 
     @max_diamond_count = @diamonds_in_floor.length
+    @height = @space_profile.length
+    @width = @space_profile[0].length
 
   characters: ->
     result = []
@@ -58,7 +60,7 @@ class Level
 
   start: ->
     for i in [1..1000]
-      @_destroy_removed_unit
+      @destroy_removed_unit
       @turn_run
         
   passed: ->

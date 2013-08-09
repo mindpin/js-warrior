@@ -73,6 +73,39 @@ class Space
 
     @flying_axes.push flying_item
 
+  shurikens: ->
+    @flying_axes
+
+  is_empty: ->
+    @character == null && @item == null && @shurikens.length == 0
+
+  link: (unit) ->
+    unit.space = this
+    if unit.constructor == FlyingAxe
+      @flying_axes.push unit
+      return
+    if unit.is_character && @character == null
+      @character = unit
+      return
+    if !unit.is_character && @item == null
+      @item = unit
+      return
+
+  unlink: (unit) ->
+    if unit.space == this
+      unit.space = null
+    if unit.constructor == FlyingAxe
+      index = @flying_axes.indexOf(unit)
+      return if index == -1
+      @flying_axes.splice(index,1)
+      return
+    if @character == unit
+      @character = null
+      return
+    if @item == unit
+      @item = null
+      return
+
   destroy_removed_unit: ->
     if @character != null && @character.is_remove
       @character.space = null
