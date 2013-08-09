@@ -58,7 +58,7 @@ class Level
 
   start: ->
     for i in [1..1000]
-      @_destroy_removed_unit
+      @destroy_removed_unit
       @turn_run
         
   passed: ->
