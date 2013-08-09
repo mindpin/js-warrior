@@ -24,20 +24,17 @@ class Fixed extends Item
 
 class Door extends Fixed
 class Wall extends Fixed
-class Intrigue extends Fixed
+class Lock extends Fixed
   is_open: false
 
   transit: (interact)->
     interact.warrior.consume(Key)
     @is_open = true
 
-  class_name: ->
-    "lock"
-
 class Diamond extends Pickable
 class Key extends Pickable
 
-class FlyingAxe extends Pickable
+class Shuriken extends Pickable
   max_num = 0
 
   @max_num: ->
@@ -46,18 +43,14 @@ class FlyingAxe extends Pickable
   picked: true
 
   outof_inventory: (warrior)->
-    index = warrior.flying_axes.indexOf @
-    warrior.flying_axes.splice(index, 1)
+    index = warrior.shurikens.indexOf @
+    warrior.shurikens.splice(index, 1)
     @picked = false
-
-  class_name: ->
-    "hand-sword"
 
 jQuery.extend window,
   Door: Door
-  Intrigue: Intrigue
+  Lock: Lock
   Wall: Wall
   Key: Key
   Diamond: Diamond
-  FlyingAxe: FlyingAxe
-  
+  Shuriken: Shuriken

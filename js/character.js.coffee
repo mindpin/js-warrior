@@ -42,8 +42,15 @@ class Character extends Unit
 class Enemy extends Character
   range: 0
 
+  warrior: ->
+    @space.level.warrior
+
+  warrior_in_range: ->
+    @attack_area.indexOf(@warrior().space) != -1
+
+
 class Warrior extends Character
-  flying_axes: []
+  shurikens: []
   items: []
   direction: "down"
 
