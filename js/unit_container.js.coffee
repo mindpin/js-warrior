@@ -29,7 +29,7 @@ class UnitContainer
       when Interact
         @item.take_interact(action) if @item
         if @flying_axes.length > 0
-          fa.get_interact(action) for fa in @flying_axes
+          fa.take_interact(action) for fa in @flying_axes
 
 jQuery.extend window,
   UnitContainer: UnitContainer
