@@ -9,7 +9,6 @@ class Character extends Unit
     super(@space)
     @addEventListener "defeated", (e)->
       @space.level.destroy(@)
-      @space = null
       @defeated: true
 
   inrange_spaces: (direction)->
@@ -63,9 +62,8 @@ class Warrior extends Character
       target = @target_space(direction, 1)
       return if target.character
   
-      @space.clear("character")
-      @space = target
-      @space.set_character(@)
+      @space.unlink(@)
+      target.link(@)
 
   consume: (type)->
     index = @items.indexOf first(type)

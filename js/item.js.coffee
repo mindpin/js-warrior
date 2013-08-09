@@ -1,6 +1,4 @@
 class Item extends Unit
-  interacted = new Event("interacted")
-
   constructor: (@space)->
     
 class Pickable extends Item
@@ -8,26 +6,21 @@ class Pickable extends Item
 
   constructor: (@space)->
     super(@space)
-    @addEventListener "interacted", (e)->
-      @space.clear("item")
-      @space = null
 
   take_interact: (interact)->
-    interact.warrior.items.push @
+    @into_inventory(interact.warrior)
+    @space.unlink(@)
+
+  into_inventory: (warrior)->
+    warrior.items.push @
     @picked = true
-    @dispatchEvent(interacted)
 
 class Fixed extends Item
   constructor: (@space)->
-    @addEventListener "interacted", (e)->
-      @space.clear("item")
-      @space = null
-
     super(@space)
 
   take_interact: (interact)->
     @transit(interact) if @transit
-    @dispatchEvent(interacted)
 
 class Door extends Fixed
 class Intrigue extends Fixed
@@ -46,5 +39,17 @@ class FlyingAxe extends Pickable
   @max_num: ->
     max_num
 
+  picked: true
+
+  outof_inventory: (warrior)->
+    index = warrior.flying_axes.indexOf @
+    warrior.flying_axes.splice(index, 1)
+    @picked = false
+
 jQuery.extend window,
   Door: Door
+  Intrigue: Intrigue
+  Key: Key
+  Diamond: Diamond
+  FlyingAxe: FlyingAxe
+  
