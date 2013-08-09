@@ -73,6 +73,12 @@ class Space
 
     @flying_axes.push flying_item
 
+  shurikens: ->
+    @flying_axes
+
+  is_empty: ->
+    @character == null && @item == null && @shurikens.length == 0
+
   link: (unit) ->
     unit.space = this
     if unit.constructor == FlyingAxe
