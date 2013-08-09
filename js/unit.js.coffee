@@ -1,4 +1,6 @@
 class Unit
+  remove_flag: false
+
   constructor: (@space)->
 
   property: (prop, desc)->
@@ -6,6 +8,9 @@ class Unit
 
   getter: (prop, func)->
     @property prop, get: func
+
+  remove: ->
+    @remove_flag = true
 
 jQuery.extend window,
   Unit: Unit

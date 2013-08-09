@@ -99,7 +99,7 @@ class Level
 
     return result
 
-  __build_units: (space_profile) ->
+  _build_units: (space_profile) ->
     result = []
     for floor in @space_profile
       for space in floor
