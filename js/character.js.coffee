@@ -20,7 +20,7 @@ class Character extends Unit
   get_attack: (atk)->
     @health = @health - atk.damage
     if @health <= 0
-      @space.level.destroy(@)
+      @remove()
       @defeated = true
 
   target_space: (direction, distance)->
@@ -45,6 +45,7 @@ class Enemy extends Character
 class Warrior extends Character
   flying_axes: []
   items: []
+  direction: "down"
 
   constructor: (@space)->
     super(@space)
@@ -56,6 +57,7 @@ class Warrior extends Character
       @space.receive(new Interact(@))
 
   move: (direction)->
+    @direction = direction
     @ensure_not_played =>
       target = @target_space(direction, 1)
       return if target.character
@@ -93,13 +95,24 @@ class RangedEnemy extends Enemy
   range: 3
 
 class SmallMonster extends MeleeEnemy
+  class_name: ->
+    "slime"
+
 class BigMonster extends MeleeEnemy
+  class_name: ->
+    "tauren"
 
 class Wizard extends RangedEnemy
 class Archer extends RangedEnemy
+
+class Creeper extends RangedEnemy
+  excited: false
 
 jQuery.extend window,
   Character: Character
   SmallMonster: SmallMonster
   BigMonster: BigMonster
+  Creeper: Creeper
+  Wizard: Wizard
+  Archer: Archer
   Warrior: Warrior

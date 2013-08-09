@@ -12,5 +12,8 @@ class Unit
   remove: ->
     @remove_flag = true
 
+  class_name: ->
+    @constructor.name.toLowerCase()
+
 jQuery.extend window,
   Unit: Unit
