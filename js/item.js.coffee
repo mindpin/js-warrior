@@ -4,6 +4,8 @@ class Item extends Unit
   constructor: (@space)->
     
 class Pickable extends Item
+  picked: false
+
   constructor: (@space)->
     super(@space)
     addEventListener "interacted", (e)->
@@ -11,7 +13,8 @@ class Pickable extends Item
       @space = null
 
   take_interact: (interact)->
-    interact.warrior.items.push interact
+    interact.warrior.items.push @
+    @picked = true
     dispatchEvent(interacted)
 
 class Fixed extends Item
@@ -22,12 +25,17 @@ class Fixed extends Item
 
     super(@space)
 
-  get_interact: (interact)->
-    # do sth.
+  take_interact: (interact)->
+    transit(interact) if @transit
     dispatchEvent(interacted)
 
 class Door extends Fixed
 class Intrigue extends Fixed
+  is_open: false
+
+  transit: (interact)->
+    interact.warrior.consume(Key)
+    @is_open = true
 
 class Diamond extends Pickable
 class Key extends Pickable

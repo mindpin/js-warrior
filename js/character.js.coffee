@@ -2,19 +2,23 @@ class Character extends Unit
   defeated = new Event("defeated")
 
   is_character: true
-  range: 1
   health: 0
-  played: false
 
   constructor: (@space)->
     super(@space)
     addEventListener "defeated", (e)->
-      @space.clear("character")
+      @space.level.destroy(@)
       @space = null
 
-  inflict: (direction, range, damage)->
+  inrange_spaces: (direction)->
+    target_space(direction, i) for i in [1..range]
+
+  blocked: (direction)->
+    inrange_spaces(direction)
+
+  inflict: (direction, distance, damage)->
     ensure_not_played =>
-      target_space(direction, range).receive(new Attack(damage))
+      target_space(direction, distance).receive(new Attack(damage))
 
   get_attack: (atk)->
     @health = @health - atk.damage
@@ -29,7 +33,7 @@ class Character extends Unit
       else throw new Error("Invalid direction!")
 
   ensure_not_played: (action)->
-    throw new Error("一回合不能行动两次") if played
+    throw new Error("一回合不能行动两次") if @played
     action()
     @played = true
 
@@ -37,14 +41,61 @@ class Character extends Unit
     @played = false
 
 class Enemy extends Character
+  range: 0
+
 class Warrior extends Character
+  flying_axes: []
+  items: []
+
   move: (direction)->
     ensure_not_played =>
-      @space.character = null
-      @space = target_space(direction, 1)
+      target = target_space(direction, 1)
+      return if target.character
+  
+      @space.clear("character")
+      @space = target
+      @space.set_character(@)
 
-class SmallMonster extends Enemy
-class BigMonster extends Enemy
+  consume: (type)->
+    index = items.indexOf first(type)
+    return if index == -1
+    items.splice(index, 1)
+
+  first: (type)->
+    select_items(type)[0]
+
+  diamonds: ->
+    select_items Diamond
+
+  keys: ->
+    select_items Key
+
+  select_items: (type)->
+    items.filter (i)->
+      i.constructor == type
+
+  left: ->
+    move("left")
+
+  right: ->
+    move("right")
+
+  up: ->
+    move("up")
+
+  down: ->
+    move("down")
+
+class MeleeEnemy extends Enemy
+  range: 1
+class RangedEnemy extends Enemy
+  range: 3
+
+class SmallMonster extends MeleeEnemy
+class BigMonster extends MeleeEnemy
+
+class Wizard extends RangedEnemy
+class Archer extends RangedEnemy
 
 jQuery.extend window,
   Character: Character
