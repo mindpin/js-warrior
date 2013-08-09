@@ -8,26 +8,26 @@ class Pickable extends Item
 
   constructor: (@space)->
     super(@space)
-    addEventListener "interacted", (e)->
+    @addEventListener "interacted", (e)->
       @space.clear("item")
       @space = null
 
   take_interact: (interact)->
     interact.warrior.items.push @
     @picked = true
-    dispatchEvent(interacted)
+    @dispatchEvent(interacted)
 
 class Fixed extends Item
   constructor: (@space)->
-    addEventListener "interacted", (e)->
+    @addEventListener "interacted", (e)->
       @space.clear("item")
       @space = null
 
     super(@space)
 
   take_interact: (interact)->
-    transit(interact) if @transit
-    dispatchEvent(interacted)
+    @transit(interact) if @transit
+    @dispatchEvent(interacted)
 
 class Door extends Fixed
 class Intrigue extends Fixed

@@ -2,27 +2,29 @@ class Character extends Unit
   defeated = new Event("defeated")
 
   is_character: true
+  defeated: false
   health: 0
 
   constructor: (@space)->
     super(@space)
-    addEventListener "defeated", (e)->
+    @addEventListener "defeated", (e)->
       @space.level.destroy(@)
       @space = null
+      @defeated: true
 
   inrange_spaces: (direction)->
-    target_space(direction, i) for i in [1..range]
+    @target_space(direction, i) for i in [1..range]
 
   blocked: (direction)->
-    inrange_spaces(direction)
+    @inrange_spaces(direction)
 
   inflict: (direction, distance, damage)->
-    ensure_not_played =>
-      target_space(direction, distance).receive(new Attack(damage))
+    @ensure_not_played =>
+      @target_space(direction, distance).receive(new Attack(damage))
 
   get_attack: (atk)->
     @health = @health - atk.damage
-    dispatchEvent(defeated) if @health <= 0
+    @dispatchEvent(defeated) if @health <= 0
 
   target_space: (direction, distance)->
     switch direction
@@ -47,9 +49,18 @@ class Warrior extends Character
   flying_axes: []
   items: []
 
+  constructor: (@space)->
+    super(@space)
+    @getter "keys",     -> @select_items Key
+    @getter "diamonds", -> @select_items Diamonds
+
+  interact: ->
+    @ensure_not_payed ->
+      @space.receive(new Interact(@))
+
   move: (direction)->
-    ensure_not_played =>
-      target = target_space(direction, 1)
+    @ensure_not_played =>
+      target = @target_space(direction, 1)
       return if target.character
   
       @space.clear("character")
@@ -57,34 +68,28 @@ class Warrior extends Character
       @space.set_character(@)
 
   consume: (type)->
-    index = items.indexOf first(type)
+    index = @items.indexOf first(type)
     return if index == -1
-    items.splice(index, 1)
+    @items.splice(index, 1)
 
   first: (type)->
-    select_items(type)[0]
-
-  diamonds: ->
-    select_items Diamond
-
-  keys: ->
-    select_items Key
+    @select_items(type)[0]
 
   select_items: (type)->
-    items.filter (i)->
+    @items.filter (i)->
       i.constructor == type
 
   left: ->
-    move("left")
+    @move("left")
 
   right: ->
-    move("right")
+    @move("right")
 
   up: ->
-    move("up")
+    @move("up")
 
   down: ->
-    move("down")
+    @move("down")
 
 class MeleeEnemy extends Enemy
   range: 1
