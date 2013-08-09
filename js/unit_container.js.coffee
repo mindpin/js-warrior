@@ -8,8 +8,8 @@ class UnitContainer
         @character.take_attack(action) if @character
       when Interact
         @item.take_interact(action) if @item
-        if @flying_axes.length > 0
-          fa.take_interact(action) for fa in @flying_axes
+        if @shurikens.length > 0
+          fa.take_interact(action) for fa in @shurikens
 
 jQuery.extend window,
   UnitContainer: UnitContainer
