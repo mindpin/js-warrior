@@ -1,21 +1,17 @@
 class Character extends Unit
-  defeated = new Event("defeated")
-
   is_character: true
   defeated: false
   health: 0
 
   constructor: (@space)->
     super(@space)
-    @addEventListener "defeated", (e)->
-      @space.level.destroy(@)
-      @defeated: true
+    @get_attack_area()
 
-  inrange_spaces: (direction)->
-    @target_space(direction, i) for i in [1..range]
+  get_attack_area: ->
+    @attack_area = []
 
   blocked: (direction)->
-    @inrange_spaces(direction)
+    @inrange_spaces
 
   inflict: (direction, distance, damage)->
     @ensure_not_played =>
@@ -23,14 +19,16 @@ class Character extends Unit
 
   get_attack: (atk)->
     @health = @health - atk.damage
-    @dispatchEvent(defeated) if @health <= 0
+    if @health <= 0
+      @space.level.destroy(@)
+      @defeated = true
 
   target_space: (direction, distance)->
     switch direction
-      when "up"    then @space.relative(0, distance)
-      when "down"  then @space.relative(0, -distance)
-      when "left"  then @space.relative(-distance, 0)
-      when "right" then @space.relative(distance, 0)
+      when "up"    then @space.relative(0, -distance)
+      when "down"  then @space.relative(0, distance)
+      when "left"  then @space.relative(distance, 0)
+      when "right" then @space.relative(-distance, 0)
       else throw new Error("Invalid direction!")
 
   ensure_not_played: (action)->
