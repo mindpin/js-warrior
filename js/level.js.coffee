@@ -33,14 +33,14 @@ class Level
   open_intrigues: ->
     result = []
     for unit in @units
-      if unit.constructor == Intrigue && unit.is_open
+      if unit.constructor == Lock && unit.is_open
         result.push(unit)
     return result
 
   close_intrigues: ->
     result = []
     for unit in @units
-      if unit.constructor == Intrigue && !unit.is_open
+      if unit.constructor == Lock && !unit.is_open
         result.push(unit)
     return result
 
@@ -105,10 +105,10 @@ class Level
       for space in floor
         character = space.character
         item = space.item
-        flying_axes = space.flying_axes
+        shurikens = space.shurikens
         result.push(character) if character != null
         result.push(item)      if item      != null
-        result.concat(flying_axes) if flying_axes.length != 0
+        result.concat(shurikens) if shurikens.length != 0
 
     return result
 
