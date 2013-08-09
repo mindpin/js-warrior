@@ -73,5 +73,21 @@ class Space
 
     @flying_axes.push flying_item
 
+  destroy_removed_unit: ->
+    if @character != null && @character.is_remove
+      @character.space = null
+      @character = null
+
+    if @item != null && @item.is_remove
+      @item.space = null
+      @item = null 
+
+    new_flying_axes = []
+    for flying_axe in @flying_axes
+      if flying_axe.is_remove
+        flying_axe.space = null
+        continue
+      new_flying_axes.push flying_axe
+    @flying_axes = new_flying_axes
 
 window.Space = Space
