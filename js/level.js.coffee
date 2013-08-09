@@ -90,9 +90,9 @@ class Level
   _build_profile: (level_data) ->
     result = []
 
-    for floor,x in level_data
+    for floor,y in level_data
       arr = []
-      for space_data,y in floor
+      for space_data,x in floor
         space = new Space(this, space_data, x, y)
         arr.push(space)
       result.push(arr)
