@@ -2,7 +2,8 @@ body {
   background-color: #333;
   padding: 0;
   margin: 0;
-  font-size: 14px; }
+  font-size: 14px;
+  padding: 20px; }
 
 @keyframes creeper {
   0% {
@@ -75,12 +76,15 @@ body {
     -o-transform: rotate(360deg); } }
 
 .page-js-warrior-game {
-  padding: 20px; }
+  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  background: url(../img/ground.png);
+  border: solid 5px #222; }
   .page-js-warrior-game .item {
     width: 60px;
     height: 60px;
-    background: url(../img/item.png);
-    float: left; }
+    background: url(../img/item.png) no-repeat;
+    position: absolute; }
     .page-js-warrior-game .item.lock.close {
       background-position: 0px 0px; }
     .page-js-warrior-game .item.lock.open {
@@ -101,8 +105,8 @@ body {
   .page-js-warrior-game .character {
     width: 60px;
     height: 60px;
-    background: url(../img/living.png);
-    float: left; }
+    background: url(../img/living.png) no-repeat;
+    position: absolute; }
     .page-js-warrior-game .character.warrior.left {
       background-position: 0px 0px; }
       .page-js-warrior-game .character.warrior.left.f0 {
