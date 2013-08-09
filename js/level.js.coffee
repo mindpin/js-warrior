@@ -17,7 +17,7 @@ class Level
 
   get_space: (x, y) ->
     try
-      return @space_profile[x][y]
+      return @space_profile[y][x]
     catch error
       return null
 
@@ -27,7 +27,7 @@ class Level
     for floor,x in level_data
       arr = []
       for space_data,y in floor
-        space = new Space space_data, x, y
+        space = new Space this, space_data, x, y
         arr.push space
       result.push arr
 

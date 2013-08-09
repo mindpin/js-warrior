@@ -23,7 +23,8 @@
 class Space
   jQuery.extend this::, UnitContainer::
 
-  constructor: (space_data,x,y) ->
+  constructor: (level, space_data, x, y) ->
+    @level = level
     @x = x
     @y = y
     @_build space_data
