@@ -14,6 +14,9 @@ class GameUi
     for y in [0...@level.height]
       for x in [0...@level.width]
         space = @level.get_space(x, y)
+        if x == 9 && y == 0
+          console.log space
+
         if !space.is_empty()
           @_draw_unit space
 
@@ -33,7 +36,10 @@ class GameUi
     
     if space.character
       $unit = jQuery('<div></div>')
-        .addClass('character').addClass('warrior').addClass('down')
+        .addClass('character').addClass(space.character.class_name()).addClass('down')
+        .attr
+          'data-x': space.x
+          'data-y': space.y
         .css
           left: pos_x
           top: pos_y
@@ -41,15 +47,21 @@ class GameUi
 
     if space.item
       $unit = jQuery('<div></div>')
-        .addClass('item').addClass('key')
+        .addClass('item').addClass(space.item.class_name())
+        .attr
+          'data-x': space.x
+          'data-y': space.y
         .css
           left: pos_x
           top: pos_y
         .appendTo(@$game)
 
-    if space.shurikens().length > 0
+    if space.shurikens.length > 0
       $unit = jQuery('<div></div>')
         .addClass('item').addClass('shuriken')
+        .attr
+          'data-x': space.x
+          'data-y': space.y
         .css
           left: pos_x
           top: pos_y
@@ -83,7 +95,7 @@ class GameUi
     , 1
 
   render: ->
-    console.log @now
+    # console.log @now
     if @frame_count % 30 == 0
       jQuery('.character').toggleClass('f0')
 
