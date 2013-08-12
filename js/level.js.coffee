@@ -71,27 +71,39 @@ class Level
   start: ->
     @init()
     @current_round = 0
+    @pausing = false
+    jQuery(document).on 'js-warrior:pause', ->
+      @pausing = true
+    jQuery(document).on 'js-warrior:resume', ->
+      @pausing = false
+      @_character_run(@current_index+1)
     jQuery(document).on 'js-warrior:start', ->
       @turn_run()
 
   # 让每一个 生物 都行动一次
   turn_run: ->
     @current_round += 1
-    @character_run(0)
+    @current_index = 0
+    @_character_run(0)
 
-  character_run: (index)->
+  _character_run: (index)->
+    @current_index = index
     cs = @warrior_and_characters()
+    if index == cs.length
+      @destroy_removed_unit()
+      @turn_run()
+      return
+
     character = cs[index]
     if character.constructor == Warrior
       character.play(@game.player.play_turn)
     else
       character.play()
-    jQuery(document).one 'js-warrior:render-success', ->
-      if index+1 == cs.length
-        @destroy_removed_unit()
-        @turn_run()
-      else
-        @character_run(index+1)
+
+    jQuery(document).one 'js-warrior:render-ui-success', ->
+      return if @pausing
+      @_character_run(index+1)
+
     jQuery(document).trigger('js-warrior:render-ui', character)
 
   warrior_and_characters: ->
