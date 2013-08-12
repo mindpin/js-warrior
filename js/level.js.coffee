@@ -58,23 +58,28 @@ class Level
   all_diamond_is_picked: ->
     return @max_diamond_count == @warrior.diamonds.length
 
-  start: ->
-    for i in [1..1000]
-      @destroy_removed_unit()
-      @turn_run()
-        
   passed: ->
     @warrior.space == @door.space && @all_diamond_is_picked() && @all_intrigue_open()
 
   failed: ->
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
+  start: ->
+    for i in [1..1000]
+      @turn_run()
+
   # 让每一个 生物 都行动一次
   turn_run: ->
-    @warrior.reset_played()
-    for character in @characters
+    for character in @warrior_and_characters()
       character.reset_played()
+    @destroy_removed_unit()
 
+  warrior_and_characters: ->
+    result = []
+    result.push(@warrior)
+    result.concat(@characters)
+    return result
+    
   get_space: (x, y) ->
     try
       return @space_profile[y][x]
