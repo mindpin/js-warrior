@@ -3,7 +3,7 @@ class Character extends Unit
   destroyable: true
   defeated: false
   attack_method: Attack
-  damage: 0
+  damage: 3
   health: 0
 
   constructor: (space)->
@@ -16,12 +16,14 @@ class Character extends Unit
 
   blocked: (space)->
     @space.range(space).some (s)->
-      s.item && s.item.constructor == Wall
+      s.item &&
+      s.item.constructor == Wall ||
+      s.character
 
   attack: (space)->
-    return if !@in_range(space)
-    return if @blocked(space)
     @ensure_not_played =>
+      return if !@in_range(space)
+      return if @blocked(space)
       space.receive(new attack_method(@damage))
 
   get_attack: (atk)->
@@ -59,7 +61,6 @@ class Character extends Unit
       @space.relative(i...)
 
 class Warrior extends Character
-  shurikens: []
   items: []
   direction: "down"
   health: 20
@@ -67,12 +68,43 @@ class Warrior extends Character
 
   constructor: (@space)->
     super(@space)
+    @shurikens = [new Shuriken for i in [1..Shuriken.max_num]]
+    @shuriken_range = @get_shuriken_range()
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamonds
 
   interact: ->
     @ensure_not_payed ->
       @space.receive(new Interact(@))
+
+  get_shuriken_range: ->
+    [
+      [0, 1], [0, 2], [0, 3],
+      [0, -1], [0, -2], [0, -3],
+      [1, 0], [2, 0], [3, 0],
+      [-1, 0], [-2, 0], [-3, 0]
+    ].map (i)=>
+      @space.relative(i...)
+
+  in_shuriken_range: (space)->
+    @shuriken_range.some (s)-> s == space
+
+  shuriken_blocked: (space)->
+    @shuriken_range.some (s)->
+      s.item &&
+      s.item.constructor == Wall ||
+      s.character
+    
+  shuriken: (space)->
+    @ensure_not_played =>
+      return if !@in_shuriken_range(space)
+      return if @shuriken_blocked(space)
+      space.receive(new ShurikenAttack(@damage))
+
+  draw_a_shuriken: ->
+    shuriken = @shurikens[0]
+    shuriken.outof_inventory(@)
+    shuriken
 
   move: (direction)->
     @direction = direction
@@ -112,6 +144,7 @@ class Warrior extends Character
 
 class Enemy extends Character
   health: 12
+  damage: 3
   attack_method: MeleeAttack
 
   warrior_in_range: ->
@@ -169,7 +202,6 @@ class Creeper extends Enemy
   set_excited: ->
     @ensure_not_played =>
       @excited = true
-      @played = true
 
   explode: ->
     @attack_area.each (s)->

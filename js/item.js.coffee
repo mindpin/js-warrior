@@ -40,6 +40,8 @@ class Key extends Pickable
 class Shuriken extends Pickable
   max_num = 0
 
+  constructor: ->
+
   @max_num: ->
     max_num
 

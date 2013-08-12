@@ -9,6 +9,10 @@ class UnitContainer
           u.remove() if u.destroyable
       when MeleeAttack, RangedAttack, MagicAttack
         @character.take_attack(action) if @character
+      when ShurikenAttack
+        shuriken = @level.warrior.draw_a_shuriken()
+        @character.take_attack(action) if @character
+        @space.link(shuriken)
       when Interact
         @item.take_interact(action) if @item
         if @shurikens.length > 0
