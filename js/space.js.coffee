@@ -28,6 +28,7 @@ class Space
     @x = x
     @y = y
     @_build(space_data)
+    @units = @_build_units
 
   _build: (space_data) ->
     @character   = null
@@ -72,6 +73,13 @@ class Space
       when 'F0' then new Shuriken(this)
 
     @shurikens.push(flying_item)
+
+  _build_units: ->
+    result = []
+    result.push(@character) if @character != null
+    result.push(@item) if @item != null
+    result.concat(@shurikens)
+    return result
 
   range: (another_space) ->
     if this.x == another_space.x
