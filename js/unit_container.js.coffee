@@ -7,7 +7,7 @@ class UnitContainer
       when Explode
         @units.each (u)->
           u.remove() if u.destroyable
-      when Attack
+      when MeleeAttack, RangedAttack, MagicAttack
         @character.take_attack(action) if @character
       when Interact
         @item.take_interact(action) if @item

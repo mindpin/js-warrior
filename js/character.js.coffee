@@ -2,6 +2,7 @@ class Character extends Unit
   is_character: true
   destroyable: true
   defeated: false
+  attack_method: Attack
   damage: 0
   health: 0
 
@@ -21,7 +22,7 @@ class Character extends Unit
     return if !@in_range(space)
     return if @blocked(space)
     @ensure_not_played =>
-      space.receive(new Attack(@damage))
+      space.receive(new attack_method(@damage))
 
   get_attack: (atk)->
     @health = @health - atk.damage
@@ -31,10 +32,14 @@ class Character extends Unit
 
   target_space: (direction, distance)->
     switch direction
-      when "up"    then @space.relative(0, -distance)
-      when "down"  then @space.relative(0, distance)
-      when "left"  then @space.relative(distance, 0)
-      when "right" then @space.relative(-distance, 0)
+      when "left-up"    then @space.relative(distance, -distance)
+      when "left-down"  then @space.relative(distance, distance)
+      when "right-up"   then @space.relative(-distance, -distance)
+      when "right-down" then @space.relative(-distance, distance)
+      when "up"         then @space.relative(0, -distance)
+      when "down"       then @space.relative(0, distance)
+      when "left"       then @space.relative(distance, 0)
+      when "right"      then @space.relative(-distance, 0)
       else throw new Error("Invalid direction!")
 
   ensure_not_played: (action)->
@@ -58,6 +63,7 @@ class Warrior extends Character
   items: []
   direction: "down"
   health: 20
+  attack_method: MeleeAttack
 
   constructor: (@space)->
     super(@space)
@@ -106,6 +112,7 @@ class Warrior extends Character
 
 class Enemy extends Character
   health: 12
+  attack_method: MeleeAttack
 
   warrior_in_range: ->
     @in_range(@warrior.space)
@@ -119,6 +126,8 @@ class Slime extends Enemy
 class Tauren extends Enemy
 
 class Wizard extends Enemy
+  attack_method: MagicAttack
+
   get_attack_area: ->
     [
       [-1, 1], [0, 1], [1, 1],
@@ -129,6 +138,8 @@ class Wizard extends Enemy
       @space.relative(i...)
 
 class Archer extends Enemy
+  attack_method: RangedAttack
+
   get_attack_area: ->
     [
       [0, 1], [0, 2], [0, 3],
