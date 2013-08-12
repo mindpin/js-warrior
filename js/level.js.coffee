@@ -1,5 +1,6 @@
 class Level
-  constructor: (level_data) ->
+  constructor: (game, level_data) ->
+    @game = game
     @space_profile = @_build_profile(level_data)
     @units   = @_build_units(@space_profile)
     @warrior = @_build_warrior(@units)
@@ -64,11 +65,14 @@ class Level
   failed: ->
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
-  start: ->
-    @current_round = 0
-    jQuery(document).one 'js-warrior:init-success', ->
-      @turn_run()
+  init: ->
     jQuery(document).trigger('js-warrior:init', this)
+
+  start: ->
+    @init()
+    @current_round = 0
+    jQuery(document).on 'js-warrior:start', ->
+      @turn_run()
 
   # 让每一个 生物 都行动一次
   turn_run: ->
@@ -78,7 +82,10 @@ class Level
   character_run: (index)->
     cs = @warrior_and_characters()
     character = cs[index]
-    character.reset_played()
+    if character.constructor == Warrior
+      character.play(@game.player.play_turn)
+    else
+      character.play()
     jQuery(document).one 'js-warrior:render-success', ->
       if index+1 == cs.length
         @destroy_removed_unit()
