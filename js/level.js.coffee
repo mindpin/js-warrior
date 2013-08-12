@@ -65,14 +65,27 @@ class Level
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
   start: ->
-    for i in [1..1000]
+    @current_round = 0
+    jQuery(document).one 'js-warrior:init-success', ->
       @turn_run()
+    jQuery(document).trigger('js-warrior:init', this)
 
   # 让每一个 生物 都行动一次
   turn_run: ->
-    for character in @warrior_and_characters()
-      character.reset_played()
-    @destroy_removed_unit()
+    @current_round += 1
+    @character_run(0)
+
+  character_run: (index)->
+    cs = @warrior_and_characters()
+    character = cs[index]
+    character.reset_played()
+    jQuery(document).one 'js-warrior:render-success', ->
+      if index+1 == cs.length
+        @destroy_removed_unit()
+        @turn_run()
+      else
+        @character_run(index+1)
+    jQuery(document).trigger('js-warrior:render-ui', character)
 
   warrior_and_characters: ->
     result = []
