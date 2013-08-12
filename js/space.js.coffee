@@ -2,8 +2,8 @@
 # 有AI的生物
 # =======
 # 勇士 Warrior               C0
-# 小怪 SmallMonster          C1
-# 大怪 BigMonster            C2
+# 小怪 Slime                 C1
+# 大怪 Tauren                C2
 # JJ怪 Creeper               C3
 # 弓箭手 Archer              C4
 # 魔法师 Wizard              C5
@@ -53,8 +53,8 @@ class Space
     throw '一个格子不能有两个生物' if @character != null
     @character = switch unit_data
       when 'C0' then new Warrior(this) 
-      when 'C1' then new SmallMonster(this)
-      when 'C2' then new BigMonster(this)
+      when 'C1' then new Slime(this)
+      when 'C2' then new Tauren(this)
       when 'C3' then new Creeper(this)
       when 'C4' then new Archer(this)
       when 'C5' then new Wizard(this)
