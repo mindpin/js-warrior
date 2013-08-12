@@ -1,5 +1,6 @@
 class Item extends Unit
   constructor: (@space)->
+    super(@space)
     
 class Pickable extends Item
   picked: false
@@ -48,6 +49,9 @@ class Shuriken extends Pickable
     @picked = false
 
 jQuery.extend window,
+  Item: Item
+  Pickable: Pickable
+  Fixed: Fixed
   Door: Door
   Lock: Lock
   Wall: Wall
