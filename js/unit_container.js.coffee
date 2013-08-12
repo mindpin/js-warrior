@@ -4,6 +4,9 @@ class UnitContainer
 
   receive: (action)->
     switch action.constructor
+      when Explode
+        @units.each (u)->
+          u.remove() if u.destroyable
       when Attack
         @character.take_attack(action) if @character
       when Interact

@@ -1,5 +1,6 @@
 class Character extends Unit
   is_character: true
+  destroyable: true
   defeated: false
   damage: 0
   health: 0
@@ -56,6 +57,7 @@ class Warrior extends Character
   shurikens: []
   items: []
   direction: "down"
+  health: 20
 
   constructor: (@space)->
     super(@space)
@@ -103,6 +105,8 @@ class Warrior extends Character
     strategy && strategy(@)
 
 class Enemy extends Character
+  health: 12
+
   warrior_in_range: ->
     @in_range(@warrior.space)
 
@@ -136,6 +140,36 @@ class Archer extends Enemy
 
 class Creeper extends Enemy
   excited: false
+
+  get_excited_area: ->
+    [
+      [-1, 0], [0, 1], [1, 0], [0, -1]
+    ].map (i)=>
+      @space.relative(i...)
+
+  warrior_in_excited_area: ->
+    @excited_area.some (s)->
+      @warrior.space == s
+
+  constructor: (space)->
+    super(space)
+    @excited_area = @get_excited_area()
+
+  set_excited: ->
+    @ensure_not_played =>
+      @excited = true
+      @played = true
+
+  explode: ->
+    @attack_area.each (s)->
+      s.receive new Explode
+
+  play: (strategy)->
+    strategy && strategy()
+    if @warrior_in_excited_area()
+      return @set_excited() if !@excited
+      @explode()
+
 
 jQuery.extend window,
   Character: Character

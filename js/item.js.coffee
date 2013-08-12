@@ -3,6 +3,7 @@ class Item extends Unit
     super(@space)
     
 class Pickable extends Item
+  destroyable: true
   picked: false
 
   constructor: (@space)->
@@ -25,6 +26,7 @@ class Fixed extends Item
 
 class Door extends Fixed
 class Wall extends Fixed
+  destroyable: true
 class Lock extends Fixed
   is_open: false
 

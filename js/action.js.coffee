@@ -3,3 +3,5 @@ class Attack
 
 class Interact
   constructor: (@warrior)->
+
+class Explode
