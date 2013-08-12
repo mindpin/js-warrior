@@ -1,6 +1,7 @@
 class Character extends Unit
   is_character: true
   defeated: false
+  damage: 0
   health: 0
 
   constructor: (@space)->
@@ -10,12 +11,19 @@ class Character extends Unit
   get_attack_area: ->
     @attack_area = []
 
-  blocked: (direction)->
-    @inrange_spaces
+  in_range: (space)->
+    @attack_area.some (s)->
+      space == s
 
-  inflict: (direction, distance, damage)->
+  blocked: (space)->
+    @space.range(space).some (s)->
+      s.item && s.item.constructor == Wall
+
+  attack: (space)->
+    return if !@in_range(space)
+    return if @blocked(space)
     @ensure_not_played =>
-      @target_space(direction, distance).receive(new Attack(damage))
+      space.receive(new Attack(@damage))
 
   get_attack: (atk)->
     @health = @health - atk.damage
