@@ -15,11 +15,8 @@ class Unit
     @remove_flag = true
 
   type: ->
-    switch @constructor
-      when Warrior, Wizard, Archer, Creeper, BigMonster, SmallMonster
-        "character"
-      when Shuriken, Door, Wall, Lock, Diamond, Key
-        "item"
+    return "item" if @ instanceof Item
+    "character" if @ instanceof Character
 
   class_name: ->
     @constructor.name.toLowerCase()

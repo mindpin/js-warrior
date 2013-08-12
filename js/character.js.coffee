@@ -4,12 +4,9 @@ class Character extends Unit
   damage: 0
   health: 0
 
-  constructor: (@space)->
-    super(@space)
-    @get_attack_area()
-
-  get_attack_area: ->
-    @attack_area = []
+  constructor: (space)->
+    super(space)
+    @attack_area = @get_attack_area()
 
   in_range: (space)->
     @attack_area.some (s)->
@@ -47,15 +44,13 @@ class Character extends Unit
   reset_played: ->
     @played = false
 
-class Enemy extends Character
-  range: 0
-
-  warrior: ->
-    @space.level.warrior
-
-  warrior_in_range: ->
-    @attack_area.indexOf(@warrior().space) != -1
-
+  get_attack_area: ->
+    [
+      [-1, 1], [0, 1], [1, 1],
+      [-1, 0], [1, 0],
+      [-1, -1], [0, -1], [1, -1]
+    ].map (i)=>
+      @space.relative(i...)
 
 class Warrior extends Character
   shurikens: []
@@ -104,29 +99,49 @@ class Warrior extends Character
   down: ->
     @move("down")
 
-class MeleeEnemy extends Enemy
-  range: 1
-class RangedEnemy extends Enemy
-  range: 3
+  play: (strategy)->
+    strategy && strategy(@)
 
-class SmallMonster extends MeleeEnemy
-  class_name: ->
-    "slime"
+class Enemy extends Character
+  warrior_in_range: ->
+    @in_range(@warrior.space)
 
-class BigMonster extends MeleeEnemy
-  class_name: ->
-    "tauren"
+  play: (strategy)->
+    strategy && strategy(@)
+    if @warrior_in_range()
+      @attack(@warrior.space)
 
-class Wizard extends RangedEnemy
-class Archer extends RangedEnemy
+class Slime extends Enemy
+class Tauren extends Enemy
 
-class Creeper extends RangedEnemy
+class Wizard extends Enemy
+  get_attack_area: ->
+    [
+      [-1, 1], [0, 1], [1, 1],
+      [-1, 0], [1, 0],
+      [-1, -1], [0, -1], [1, -1],
+      [-2, 0], [0, 2], [2, 0], [0, -2]  
+    ].map (i)=>
+      @space.relative(i...)
+
+class Archer extends Enemy
+  get_attack_area: ->
+    [
+      [0, 1], [0, 2], [0, 3],
+      [0, -1], [0, -2], [0, -3],
+      [1, 0], [2, 0], [3, 0],
+      [-1, 0], [-2, 0], [-3, 0]
+    ].map (i)=>
+      @space.relative(i...)
+
+class Creeper extends Enemy
   excited: false
 
 jQuery.extend window,
   Character: Character
-  SmallMonster: SmallMonster
-  BigMonster: BigMonster
+  Enemy: Enemy
+  Slime: Slime
+  Tauren: Tauren
   Creeper: Creeper
   Wizard: Wizard
   Archer: Archer
