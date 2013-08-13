@@ -13,6 +13,7 @@
   <script type="text/coffeescript" src="js/action.js.coffee"></script>
   <script type="text/coffeescript" src="js/unit_container.js.coffee"></script>
   <script type="text/coffeescript" src="js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="js/player.js.coffee"></script>
   <script type="text/coffeescript" src="js/unit.js.coffee"></script>
   <script type="text/coffeescript" src="js/character.js.coffee"></script>
   <script type="text/coffeescript" src="js/item.js.coffee"></script>
@@ -25,7 +26,9 @@
         ['','C0','','',''],
         ['','','','','']
       ]
-      new Game(level_data).start();
+      game = new Game(level_data);
+      window.game = game;
+      game.start();
   </script>
 </body>
 </html>
