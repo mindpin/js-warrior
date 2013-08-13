@@ -90,6 +90,25 @@ body {
   }
 }
 
+.page-control-panel {
+  position:fixed;
+  top:20px;
+  right:20px;
+  textarea {
+    background-color:#222;
+    color:white;
+    border:solid 1px #666;
+    padding:5px;
+    font-size:14px;
+  }
+  .btns {
+    a {color:#ADC5EC;}
+  }
+  .tips {
+    color:#ddd;
+  }
+}
+
 .page-js-warrior-game {
   background-color:rgba(white, 0.1);
   position:relative;
@@ -98,7 +117,7 @@ body {
 
   .item {
     width:60px;height:60px;
-    background:url(../img/item.png) no-repeat;
+    background:url(../img/item.png?d) no-repeat;
     position:absolute;
 
     &.lock {
@@ -128,6 +147,20 @@ body {
         -webkit-animation: flying .5s infinite linear;
       }
     }
+
+    &.fireball {
+      z-index:4;
+      background-position:-420px 0px;
+      animation: flying .25s infinite linear;
+      -webkit-animation: flying .25s infinite linear;
+    }
+
+    &.spark {
+      z-index:4;
+      background-position:-480px 0px;
+      animation: flying .25s infinite linear;
+      -webkit-animation: flying .25s infinite linear;
+    }
   }
 
   .character {
@@ -136,57 +169,43 @@ body {
     position:absolute;
 
     &.warrior {
-      &.left {
-        background-position:0px 0px;
-        &.f0 { background-position:-60px 0px; }
-      }
-      &.right {
-        background-position:-120px -60px;
-        &.f0 { background-position:-180px -60px; }
-      }
-      &.up {
-        background-position:0px -60px;
-        &.f0 { background-position:-60px -60px; }
-      }
-      &.down {
-        background-position:-120px 0px;
-        &.f0 { background-position:-180px 0px; }
-      }
+      z-index:3;
+      background-position:-120px 0px;
+      &.down  { background-position: -180px 0px;   }
+      &.left  { background-position:    0px 0px;   }
+      &.right { background-position: -120px -60px; }
+      &.up    { background-position:    0px -60px; }
     }
 
-    &.slime {
-      background-position:-240px 0px;
-      &.f0 { background-position:-240px -60px; }
-    }
-
-    &.tauren {
-      background-position:-300px 0px;
-      &.f0 { background-position:-300px -60px; }
-    }
-
+    &.slime { background-position:-240px 0px; }
+    &.tauren { background-position:-300px 0px; }
     &.creeper {
       background-position:-480px 0px;
-      &.f0 { background-position:-480px -60px; }
-
       &.excited {
         animation: creeper .125s infinite linear;
         -webkit-animation: creeper .125s infinite linear;
       }
     }
+    &.wizard { background-position:-360px 0px; }
+    &.archer { background-position:-420px 0px; }
+    &.archer { background-position:-420px 0px; }
+  }
 
-    &.wizard {
-      background-position:-360px 0px;
-      &.f0 { background-position:-360px -60px; }
+  &.f0 .character {
+    &.warrior {
+      background-position:-180px 0px;
+
+      &.down  { background-position: -180px 0px;   }
+      &.left  { background-position:  -60px 0px;   }
+      &.right { background-position: -180px -60px; }
+      &.up    { background-position:  -60px -60px; }
     }
 
-    &.archer {
-      background-position:-420px 0px;
-      &.f0 { background-position:-420px -60px; }
-    }
-
-    &.archer {
-      background-position:-420px 0px;
-      &.f0 { background-position:-420px -60px; }
-    }
+    &.slime { background-position:-240px -60px; }
+    &.tauren { background-position:-300px -60px; }
+    &.creeper { background-position:-480px -60px; }
+    &.wizard { background-position:-360px -60px; }
+    &.archer { background-position:-420px -60px; }
+    &.archer { background-position:-420px -60px; }
   }
 }
