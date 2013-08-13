@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>CoffeeScript</title>
+</head>
+<body>
+  blal
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script type="text/javascript" src="coffee-script.js"></script>
+  <script type="text/coffeescript" src="js/game.js.coffee"></script>
+  <script type="text/coffeescript" src="js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="js/action.js.coffee"></script>
+  <script type="text/coffeescript" src="js/unit_container.js.coffee"></script>
+  <script type="text/coffeescript" src="js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="js/player.js.coffee"></script>
+  <script type="text/coffeescript" src="js/unit.js.coffee"></script>
+  <script type="text/coffeescript" src="js/character.js.coffee"></script>
+  <script type="text/coffeescript" src="js/item.js.coffee"></script>
+  <script type="text/coffeescript">
+    jQuery ->
+      level_data = [
+        ['','','','',''],
+        ['','','','C1',''],
+        ['','','','I2',''],
+        ['','C0','','',''],
+        ['','','','','']
+      ]
+      game = new Game(level_data);
+      window.game = game;
+      game.init();
+  </script>
+</body>
+</html>

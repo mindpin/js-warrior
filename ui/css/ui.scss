@@ -1,0 +1,224 @@
+body {
+  background-color:#333;
+  padding:0;
+  margin:0;
+  font-size:14px;
+  padding:20px;
+}
+
+@keyframes creeper {
+  0% {
+    -webkit-transform : scale(0.9);
+    -moz-transform    : scale(0.9);
+    -ms-transform     : scale(0.9);
+    -o-transform      : scale(0.9);
+    opacity:1;
+  }
+
+  50% {
+    -webkit-transform : scale(1.1);
+    -moz-transform    : scale(1.1);
+    -ms-transform     : scale(1.1);
+    -o-transform      : scale(1.1);
+    opacity:0.7;
+  }
+
+  100% {
+    -webkit-transform : scale(0.9);
+    -moz-transform    : scale(0.9);
+    -ms-transform     : scale(0.9);
+    -o-transform      : scale(0.9);
+    opacity:1;
+  }
+}
+
+@-webkit-keyframes creeper {
+  0% {
+    -webkit-transform : scale(0.9);
+    -moz-transform    : scale(0.9);
+    -ms-transform     : scale(0.9);
+    -o-transform      : scale(0.9);
+    opacity:1;
+  }
+
+  50% {
+    -webkit-transform : scale(1.1);
+    -moz-transform    : scale(1.1);
+    -ms-transform     : scale(1.1);
+    -o-transform      : scale(1.1);
+    opacity:0.7;
+  }
+
+  100% {
+    -webkit-transform : scale(0.9);
+    -moz-transform    : scale(0.9);
+    -ms-transform     : scale(0.9);
+    -o-transform      : scale(0.9);
+    opacity:1;
+  }
+}
+
+@keyframes flying {
+  0% {
+    -webkit-transform : rotate(0deg);
+    -moz-transform    : rotate(0deg);
+    -ms-transform     : rotate(0deg);
+    -o-transform      : rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform : rotate(360deg);
+    -moz-transform    : rotate(360deg);
+    -ms-transform     : rotate(360deg);
+    -o-transform      : rotate(360deg);
+  }
+}
+
+@-webkit-keyframes flying {
+  0% {
+    -webkit-transform : rotate(0deg);
+    -moz-transform    : rotate(0deg);
+    -ms-transform     : rotate(0deg);
+    -o-transform      : rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform : rotate(360deg);
+    -moz-transform    : rotate(360deg);
+    -ms-transform     : rotate(360deg);
+    -o-transform      : rotate(360deg);
+  }
+}
+
+.page-control-panel {
+  position:fixed;
+  top:20px;
+  right:20px;
+  textarea {
+    background-color:#222;
+    color:white;
+    border:solid 1px #666;
+    padding:5px;
+    font-size:14px;
+  }
+  .btns {
+    a {color:#ADC5EC;}
+  }
+  .tips {
+    color:#ddd;
+  }
+}
+
+.page-js-warrior-game {
+  background-color:rgba(white, 0.1);
+  position:relative;
+  background:url(../img/ground.png);
+  border:solid 10px #222;
+
+  .item {
+    width:60px;height:60px;
+    background:url(../img/item.png?d) no-repeat;
+    position:absolute;
+
+    &.lock {
+      &.close {
+        background-position:0px 0px;
+      }
+      &.open {
+        background-position:-60px 0px;
+      }
+    }
+    &.door {
+      background-position:-120px 0px;
+    }
+    &.wall {
+      background-position:-180px 0px;
+    }
+    &.key {
+      background-position:-240px 0px;
+    }
+    &.diamond {
+      background-position:-300px 0px;
+    }
+    &.shuriken {
+      background-position:-360px 0px;
+      &.flying {
+        animation: flying .5s infinite linear;
+        -webkit-animation: flying .5s infinite linear;
+      }
+    }
+
+    &.fireball {
+      z-index:4;
+      background-position:-420px 0px;
+      animation: flying .25s infinite linear;
+      -webkit-animation: flying .25s infinite linear;
+    }
+
+    &.spark {
+      z-index:4;
+      background-position:-480px 0px;
+      animation: flying .25s infinite linear;
+      -webkit-animation: flying .25s infinite linear;
+    }
+  }
+
+  .character {
+    width:60px;height:60px;
+    background:url(../img/living.png) no-repeat;
+    position:absolute;
+
+    &.warrior {
+      z-index:3;
+      background-position:-120px 0px;
+      &.down  { background-position: -180px 0px;   }
+      &.left  { background-position:    0px 0px;   }
+      &.right { background-position: -120px -60px; }
+      &.up    { background-position:    0px -60px; }
+    }
+
+    &.slime { background-position:-240px 0px; }
+    &.tauren { background-position:-300px 0px; }
+    &.creeper {
+      background-position:-480px 0px;
+      &.excited {
+        animation: creeper .125s infinite linear;
+        -webkit-animation: creeper .125s infinite linear;
+      }
+    }
+    &.wizard { background-position:-360px 0px; }
+    &.archer { background-position:-420px 0px; }
+    &.archer { background-position:-420px 0px; }
+  }
+
+  &.f0 .character {
+    &.warrior {
+      background-position:-180px 0px;
+
+      &.down  { background-position: -180px 0px;   }
+      &.left  { background-position:  -60px 0px;   }
+      &.right { background-position: -180px -60px; }
+      &.up    { background-position:  -60px -60px; }
+    }
+
+    &.slime { background-position:-240px -60px; }
+    &.tauren { background-position:-300px -60px; }
+    &.creeper { background-position:-480px -60px; }
+    &.wizard { background-position:-360px -60px; }
+    &.archer { background-position:-420px -60px; }
+    &.archer { background-position:-420px -60px; }
+  }
+
+  .damage-num {
+    width:60px;
+    height:60px;line-height:60px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    color:#ff3333;
+    text-shadow:1px 1px 2px rgba(black, 1);
+    position:absolute;
+    z-index:20;
+    font-family: arial;
+  }
+}
