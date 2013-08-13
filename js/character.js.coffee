@@ -1,7 +1,9 @@
 class Character extends Unit
   is_character: true
+  destroyable: true
   defeated: false
-  damage: 0
+  attack_method: Attack
+  damage: 3
   health: 0
 
   constructor: (space)->
@@ -14,13 +16,15 @@ class Character extends Unit
 
   blocked: (space)->
     @space.range(space).some (s)->
-      s.item && s.item.constructor == Wall
+      s.item &&
+      s.item.constructor == Wall ||
+      s.character
 
   attack: (space)->
-    return if !@in_range(space)
-    return if @blocked(space)
     @ensure_not_played =>
-      space.receive(new Attack(@damage))
+      return if !@in_range(space)
+      return if @blocked(space)
+      space.receive(new attack_method(@damage))
 
   get_attack: (atk)->
     @health = @health - atk.damage
@@ -30,10 +34,14 @@ class Character extends Unit
 
   target_space: (direction, distance)->
     switch direction
-      when "up"    then @space.relative(0, -distance)
-      when "down"  then @space.relative(0, distance)
-      when "left"  then @space.relative(distance, 0)
-      when "right" then @space.relative(-distance, 0)
+      when "left-up"    then @space.relative(distance, -distance)
+      when "left-down"  then @space.relative(distance, distance)
+      when "right-up"   then @space.relative(-distance, -distance)
+      when "right-down" then @space.relative(-distance, distance)
+      when "up"         then @space.relative(0, -distance)
+      when "down"       then @space.relative(0, distance)
+      when "left"       then @space.relative(distance, 0)
+      when "right"      then @space.relative(-distance, 0)
       else throw new Error("Invalid direction!")
 
   ensure_not_played: (action)->
@@ -53,18 +61,50 @@ class Character extends Unit
       @space.relative(i...)
 
 class Warrior extends Character
-  shurikens: []
   items: []
   direction: "down"
+  health: 20
+  attack_method: MeleeAttack
 
   constructor: (@space)->
     super(@space)
+    @shurikens = [new Shuriken for i in [1..Shuriken.max_num]]
+    @shuriken_range = @get_shuriken_range()
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamonds
 
   interact: ->
     @ensure_not_payed ->
       @space.receive(new Interact(@))
+
+  get_shuriken_range: ->
+    [
+      [0, 1], [0, 2], [0, 3],
+      [0, -1], [0, -2], [0, -3],
+      [1, 0], [2, 0], [3, 0],
+      [-1, 0], [-2, 0], [-3, 0]
+    ].map (i)=>
+      @space.relative(i...)
+
+  in_shuriken_range: (space)->
+    @shuriken_range.some (s)-> s == space
+
+  shuriken_blocked: (space)->
+    @shuriken_range.some (s)->
+      s.item &&
+      s.item.constructor == Wall ||
+      s.character
+    
+  shuriken: (space)->
+    @ensure_not_played =>
+      return if !@in_shuriken_range(space)
+      return if @shuriken_blocked(space)
+      space.receive(new ShurikenAttack(@damage))
+
+  draw_a_shuriken: ->
+    shuriken = @shurikens[0]
+    shuriken.outof_inventory(@)
+    shuriken
 
   move: (direction)->
     @direction = direction
@@ -103,6 +143,10 @@ class Warrior extends Character
     strategy && strategy(@)
 
 class Enemy extends Character
+  health: 12
+  damage: 3
+  attack_method: MeleeAttack
+
   warrior_in_range: ->
     @in_range(@warrior.space)
 
@@ -115,6 +159,8 @@ class Slime extends Enemy
 class Tauren extends Enemy
 
 class Wizard extends Enemy
+  attack_method: MagicAttack
+
   get_attack_area: ->
     [
       [-1, 1], [0, 1], [1, 1],
@@ -125,6 +171,8 @@ class Wizard extends Enemy
       @space.relative(i...)
 
 class Archer extends Enemy
+  attack_method: RangedAttack
+
   get_attack_area: ->
     [
       [0, 1], [0, 2], [0, 3],
@@ -136,6 +184,35 @@ class Archer extends Enemy
 
 class Creeper extends Enemy
   excited: false
+
+  get_excited_area: ->
+    [
+      [-1, 0], [0, 1], [1, 0], [0, -1]
+    ].map (i)=>
+      @space.relative(i...)
+
+  warrior_in_excited_area: ->
+    @excited_area.some (s)->
+      @warrior.space == s
+
+  constructor: (space)->
+    super(space)
+    @excited_area = @get_excited_area()
+
+  set_excited: ->
+    @ensure_not_played =>
+      @excited = true
+
+  explode: ->
+    @attack_area.each (s)->
+      s.receive new Explode
+
+  play: (strategy)->
+    strategy && strategy()
+    if @warrior_in_excited_area()
+      return @set_excited() if !@excited
+      @explode()
+
 
 jQuery.extend window,
   Character: Character
