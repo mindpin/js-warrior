@@ -1,5 +1,5 @@
 class ActionInfo
-  constructor: (@type, @target, @damage, @landing_point)
+  constructor: (@type, @target, @damage, @landing_point)->
 
 class Attack
   constructor: (@damage)->
