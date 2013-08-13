@@ -1,3 +1,73 @@
+class CharacterAni
+  constructor: (@game_ui, @character)->
+    @CONST_W = @game_ui.CONST_W
+    @$el = @character.ui_el
+
+  _xydelta: (dir)->
+    hash = 
+      'right': [ 1,  0]
+      'left' : [-1,  0]
+      'up'   : [ 0, -1]
+      'down' : [ 0,  1]
+
+    arr = hash[dir]
+
+    return {
+      dx: arr[0]
+      dy: arr[1]
+    }
+
+  _change_face_dir: (dir)->
+    @$el
+      .removeClass('up')
+      .removeClass('down')
+      .removeClass('left')
+      .removeClass('right')
+      .addClass(dir)
+
+  _rendered: ->
+    jQuery(document).trigger 'js-warrior:render-ui-success'
+
+  attack: (dir)->
+    x = @$el.data('x')
+    y = @$el.data('y')
+
+    delta = @_xydelta(dir)
+    @_change_face_dir(dir)
+
+    @$el
+      .animate
+        left: (x + delta.dx) * @CONST_W
+        top:  (y + delta.dy) * @CONST_W
+        , 150
+      .animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , 150
+            
+    return @
+
+  walk: (dir)->
+    x = @$el.data('x')
+    y = @$el.data('y')
+
+    delta = @_xydelta(dir)
+    @_change_face_dir(dir)
+
+    @$el
+      .data
+        x: (x + delta.dx)
+        y: (y + delta.dy)
+
+    @$el
+      .animate
+        left: (x + delta.dx) * @CONST_W
+        top:  (y + delta.dy) * @CONST_W
+        => @_rendered()
+
+    return @
+
+
 class GameUi
   constructor: ->
     @CONST_W = 60
@@ -5,6 +75,10 @@ class GameUi
     @init_events()
 
   init_events: ->
+    jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
+      code = jQuery('.page-control-panel textarea.code').val()
+      jQuery(document).trigger 'js-warrior:start', code
+
     jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
       @level = level
       @init()
@@ -12,11 +86,7 @@ class GameUi
     jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
       info = character.action_info
       if 'walk' == info.type
-        @ani_warrior_walk(info.direction)
-
-    jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
-      code = jQuery('.page-control-panel textarea.code').val()
-      jQuery(document).trigger 'js-warrior:start', code
+        character.ani.walk(info.direction)
 
   init: ->
     @init_map()
@@ -70,6 +140,7 @@ class GameUi
         .appendTo(@$game)
 
       unit.ui_el = $ui_el
+      unit.ani = new CharacterAni(@, unit)
 
   init_render: ->
     @fps = 120
@@ -98,98 +169,8 @@ class GameUi
     , 1
 
   render: ->
-    # console.log @now
     if @frame_count % 30 == 0
       jQuery('.page-js-warrior-game').toggleClass('f0')
-
-  ani_warrior_walk: (dir)->
-    $el = @warrior.ui_el
-    x = $el.data('x')
-    y = $el.data('y')
-
-    ani_flag = false
-    if dir == 'right' && x < @max_x
-      x1 = x + 1
-      y1 = y
-      ani_flag = true
-
-    if dir == 'left' && x > 0
-      x1 = x - 1
-      y1 = y
-      ani_flag = true
-
-    if dir == 'up' && y > 0
-      x1 = x
-      y1 = y - 1
-      ani_flag = true
-    
-    if dir == 'down' && y < @max_y
-      x1 = x
-      y1 = y + 1
-      ani_flag = true
-
-
-    if ani_flag
-      $el
-        .data
-          x: x1
-          y: y1
-        .removeClass('up').removeClass('down').removeClass('left').removeClass('right')
-        .addClass(dir)
-
-      $el.animate
-        left: x1 * @CONST_W
-        top:  y1 * @CONST_W
-        =>
-          jQuery(document).trigger 'js-warrior:render-ui-success'
-
-    return @warrior
-
-  ani_warrior_attack: (dir)->
-    $el = @warrior.ui_el
-    x = $el.data('x')
-    y = $el.data('y')
-
-    ani_flag = false
-    if dir == 'right' && x < @max_x
-      x1 = x + 1
-      y1 = y
-      ani_flag = true
-
-    if dir == 'left' && x > 0
-      x1 = x - 1
-      y1 = y
-      ani_flag = true
-
-    if dir == 'up' && y > 0
-      x1 = x
-      y1 = y - 1
-      ani_flag = true
-    
-    if dir == 'down' && y < @max_y
-      x1 = x
-      y1 = y + 1
-      ani_flag = true
-
-
-    if ani_flag
-      $el
-        .removeClass('up').removeClass('down').removeClass('left').removeClass('right')
-        .addClass(dir)
-
-      $el
-        .animate
-          left: x1 * @CONST_W
-          top:  y1 * @CONST_W
-        , 150
-
-      $el
-        .animate
-          left: x * @CONST_W
-          top:  y * @CONST_W
-        , 150
-            
-    return @warrior
 
   ani_fireball: (dir)->
     $el = @warrior.ui_el
