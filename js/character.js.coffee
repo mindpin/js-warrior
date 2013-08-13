@@ -98,8 +98,16 @@ class Warrior extends Character
   shuriken: (space)->
     @ensure_not_played =>
       return if !@in_shuriken_range(space)
-      return if @shuriken_blocked(space)
-      space.receive(new ShurikenAttack(@damage))
+      shuriken_attack = new ShurikenAttack(@damage)
+      if @shuriken_blocked(space)
+        enemy_space = @shuriken_range.filter((s)=> s.character && s.character != @)[0]
+        return enemy_space.receive(shuriken_attack) if enemy_space
+
+        wall_space = @shuriken_range.filter((s)=> s.constructor == Wall)[0]
+        range = @space.range(wall_space)
+        drop_space = range[rang.length - 2]
+        return drop_space.receive(shuriken_attack) if drop_space
+      space.receive(shuriken_attack)
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
