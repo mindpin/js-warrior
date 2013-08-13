@@ -4,6 +4,9 @@ class ActionInfo
 class Attack
   constructor: (@damage)->
 
+  class_name: ->
+    @constructor.name.toLowerCase()
+
 class MeleeAttack extends Attack
 class RangedAttack extends Attack
 class MagicAttack extends Attack

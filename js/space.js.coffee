@@ -78,30 +78,32 @@ class Space
     result = []
     result.push(@character) if @character != null
     result.push(@item) if @item != null
-    result.concat(@shurikens)
+    result = result.concat(@shurikens)
     return result
 
   range: (another_space) ->
     if this.x == another_space.x
       y_points = @_range_index_arr(this.y, another_space.y)
-      return jQuery.map y_points, (y)->
+      return jQuery.map y_points, (y) =>
         this.level.get_space(this.x, y)
 
     if this.y == another_space.y
       x_points = @_range_index_arr(this.x, another_space.x)
-      return jQuery.map x_points, (x)->
+      return jQuery.map x_points, (x) =>
         this.level.get_space(x, this.y)
 
     if this.x - another_space.x == this.y -another_space.y
       x_points = @_range_index_arr(this.x, another_space.x)
       y_points = @_range_index_arr(this.y, another_space.y)
-      return jQuery.map x_points, (x, index)->
+      return jQuery.map x_points, (x, index) =>
         this.level.get_space(x, y_points[index])
 
     return []
 
   _range_index_arr: (start_index, end_index) ->
-    return [start_index..end_index]
+    result = [start_index...end_index]
+    result.shift()
+    return result
 
   is_empty: ->
     @character == null && @item == null && @shurikens.length == 0

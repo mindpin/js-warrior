@@ -7,29 +7,27 @@ class Character extends Unit
   damage: 3
   health: 0
 
-  constructor: (space)->
-    super(space)
-    @attack_area = @get_attack_area()
+  constructor: (@space)->
+    super(@space)
 
   in_range: (space)->
-    @attack_area.some (s)->
+    @get_attack_area().some (s)->
       space == s
 
   blocked: (space)->
     @space.range(space).some (s)->
-      s.item &&
-      s.item.constructor == Wall ||
-      s.character
+      (s.item && s.item.constructor == Wall) || s.character
 
   attack: (space)->
     @ensure_not_played =>
+      @action_info = "idle"
       return if !@in_range(space)
       return if @blocked(space)
-      attack = new attack_method(@damage)
+      attack = new @attack_method(@damage)
       space.receive(attack)
-      @action_info = new ActionInfo(attack.class_name, space.character, @damage)
+      @action_info = new ActionInfo(attack.class_name(), space.character, @damage)
 
-  get_attack: (atk)->
+  take_attack: (atk)->
     @health = @health - atk.damage
     if @health <= 0
       @remove()
@@ -49,6 +47,7 @@ class Character extends Unit
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
+    @action_info = "idle"
     action()
     @played = true
 
@@ -60,13 +59,12 @@ class Character extends Unit
       [-1, 1], [0, 1], [1, 1],
       [-1, 0], [1, 0],
       [-1, -1], [0, -1], [1, -1]
-    ].map (i)=>
-      @space.relative(i...)
+    ].map((i)=> @space.relative(i...)).filter((s)=> s != null)
 
 class Warrior extends Character
   items: []
   direction: "down"
-  health: 20
+  health: 16
   attack_method: MeleeAttack
 
   constructor: (@space)->
@@ -167,12 +165,15 @@ class Enemy extends Character
   attack_method: MeleeAttack
 
   warrior_in_range: ->
-    @in_range(@warrior.space)
+    @in_range(@level.warrior.space)
 
-  play: (strategy)->
-    strategy && strategy(@)
+  per_turn_strategy: ->
     if @warrior_in_range()
-      @attack(@warrior.space)
+      @attack(@level.warrior.space)
+
+  play: ->
+    @per_turn_strategy()
+    @reset_played()
 
 class Slime extends Enemy
 class Tauren extends Enemy
@@ -230,8 +231,7 @@ class Creeper extends Enemy
       characters = @attack_area.filter((s)=> s.character).map((s)=> s.character)
       @action_info = new ActionInfo(explode.class_name(), characters)
 
-  play: (strategy)->
-    strategy && strategy()
+  per_turn_strategy: ->
     if @warrior_in_excited_area()
       return @set_excited() if !@excited
       @explode()
