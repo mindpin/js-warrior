@@ -87,6 +87,8 @@ body {
     font-size: 14px; }
   .page-control-panel .btns a {
     color: #ADC5EC; }
+  .page-control-panel .tips {
+    color: #ddd; }
 
 .page-js-warrior-game {
   background-color: rgba(255, 255, 255, 0.1);

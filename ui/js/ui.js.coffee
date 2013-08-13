@@ -1,8 +1,18 @@
 class GameUi
-  constructor: (@level)->
+  constructor: ->
     @CONST_W = 60
-
     @$game = jQuery('.page-js-warrior-game')
+    @init_events()
+
+  init_events: ->
+    jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
+      @level = level
+
+      @init()
+
+    jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
+      code = jQuery('.page-control-panel textarea.code').val()
+      jQuery(document).trigger 'js-warrior:start', code
 
   init: ->
     @init_map()

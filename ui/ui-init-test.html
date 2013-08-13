@@ -8,6 +8,9 @@
 <body>
   <div class='page-js-warrior-game' style='display:none;'></div>
   <div class='page-control-panel'>
+    <div class='tips'>
+      <p>warrior.walk()</p>
+    </div>
     <div>
       <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
@@ -25,8 +28,10 @@ game.player.play_turn = function(warrior){
 
   <script type="text/coffeescript" src="../js/game.js.coffee"></script>
   <script type="text/coffeescript" src="../js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/action.js.coffee"></script>
   <script type="text/coffeescript" src="../js/unit_container.js.coffee"></script>
   <script type="text/coffeescript" src="../js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/player.js.coffee"></script>
   <script type="text/coffeescript" src="../js/unit.js.coffee"></script>
   <script type="text/coffeescript" src="../js/character.js.coffee"></script>
   <script type="text/coffeescript" src="../js/item.js.coffee"></script>
@@ -36,10 +41,12 @@ game.player.play_turn = function(warrior){
     level_data = [
       ['C0','','','','','','','','','I2']
     ]
+    
+    window.game_ui = new GameUi()
 
-    level = new Level(level_data)
+    window.game = new Game(level_data)
+    window.game.init()
 
-    window.ui = new GameUi(level).init()
   </script>
 </body>
 </html>
