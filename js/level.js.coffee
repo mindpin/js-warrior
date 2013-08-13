@@ -66,12 +66,12 @@ class Level
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
   init: ->
-    jQuery(document).on 'js-warrior:pause', ->
+    jQuery(document).on 'js-warrior:pause', =>
       @pausing = true
-    jQuery(document).on 'js-warrior:resume', ->
+    jQuery(document).on 'js-warrior:resume', =>
       @pausing = false
       @_character_run(@current_index+1)
-    jQuery(document).on 'js-warrior:start', (user_input)->
+    jQuery(document).on 'js-warrior:start', (user_input)=>
       @current_round = 0
       @pausing = false
       eval(user_input)
@@ -98,7 +98,7 @@ class Level
     else
       character.play()
 
-    jQuery(document).one 'js-warrior:render-ui-success', ->
+    jQuery(document).one 'js-warrior:render-ui-success', =>
       return if @pausing
       @_character_run(index+1)
 
