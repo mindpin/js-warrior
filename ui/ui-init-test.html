@@ -14,6 +14,10 @@
     <div>
       <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
+  if(warrior.feel('right').has_enemy()) {
+    warrior.attack('right')
+    return
+  }
   warrior.right()
 }</textarea>
     </div>

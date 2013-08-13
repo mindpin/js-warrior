@@ -152,4 +152,38 @@ class Space
       new_shurikens.push(shuriken)
     @shurikens = new_shurikens
 
+  get_direction: (another_space) ->
+    if another_space.x < @x && another_space.y == @y
+      return 'left'
+    if another_space.x > @x && another_space.y == @y
+      return 'right'
+    if another_space.x == @x && another_space.y < @y
+      return 'up'
+    if another_space.x == @x && another_space.y > @y
+      return 'down'
+    if another_space.x < @x && another_space.y < @y
+      return 'left-up'
+    if another_space.x < @x && another_space.y > @y
+      return 'left-down'
+    if another_space.x > @x && another_space.y < @y
+      return 'right-up'
+    if another_space.x > @x && another_space.y > @y
+      return 'right-down'
+    return null
+
+  get_relative_space: (dir, distance) ->
+    switch dir
+      when "left-up"    then @relative(-distance, -distance)
+      when "left-down"  then @relative(-distance, distance)
+      when "right-up"   then @relative(distance, -distance)
+      when "right-down" then @relative(distance, distance)
+      when "up"         then @relative(0, -distance)
+      when "down"       then @relative(0, distance)
+      when "left"       then @relative(-distance, 0)
+      when "right"      then @relative(distance, 0)
+      else throw new Error("Invalid dir!")
+
+  has_enemy: ->
+    return @character && @character.constructor != Warrior
+
 window.Space = Space

@@ -2,6 +2,12 @@ class CharacterAni
   constructor: (@game_ui, @character)->
     @CONST_W = @game_ui.CONST_W
     @$el = @character.ui_el
+    @$game = @game_ui.$game
+
+  posx: ->
+    @$el.data('x') * @CONST_W
+  posy: ->
+    @$el.data('y') * @CONST_W
 
   _xydelta: (dir)->
     hash = 
@@ -26,7 +32,39 @@ class CharacterAni
       .addClass(dir)
 
   _rendered: ->
-    jQuery(document).trigger 'js-warrior:render-ui-success'
+    jQuery(document).trigger 'js-warrior:render-ui-success', @character
+
+  be_attack: (damage)->
+    x = @$el.data('x')
+    y = @$el.data('y')
+
+    @$el
+      .delay(150)
+      .animate
+        top: y * @CONST_W - 10
+        , 75
+      .animate
+        top: y * @CONST_W
+        , 75
+
+    if damage
+      $damage_el = 
+        jQuery('<div class="damage-num"></div>')
+          .html("-#{damage}")
+          .appendTo(@$game)
+
+      $damage_el
+        .css
+          left: @posx()
+          top: @posy() + @CONST_W / 2
+        .animate
+          left: @posx()
+          top: @posy()
+          => $damage_el.fadeOut()
+
+      if @character.remove_tag
+        @$el.fadeOut()
+
 
   attack: (dir)->
     x = @$el.data('x')
@@ -36,6 +74,8 @@ class CharacterAni
     @_change_face_dir(dir)
 
     @$el
+      .css
+        'z-index': 10
       .animate
         left: (x + delta.dx) * @CONST_W
         top:  (y + delta.dy) * @CONST_W
@@ -43,7 +83,10 @@ class CharacterAni
       .animate
         left: x * @CONST_W
         top:  y * @CONST_W
-        , 150
+        , 150, => 
+          @$el.css
+            'z-index': ''
+          @_rendered()
             
     return @
 
@@ -67,6 +110,8 @@ class CharacterAni
 
     return @
 
+  idle: ->
+    @_rendered()
 
 class GameUi
   constructor: ->
@@ -85,8 +130,17 @@ class GameUi
 
     jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
       info = character.action_info
+
+      if 'idle' == info.type
+        character.ani.idle()
+
       if 'walk' == info.type
         character.ani.walk(info.direction)
+
+      if 'attack' == info.type
+        character.ani.attack(info.direction)
+        if info.target
+          info.target.ani.be_attack(info.damage)
 
   init: ->
     @init_map()

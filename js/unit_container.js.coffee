@@ -7,7 +7,7 @@ class UnitContainer
       when Explode
         @units.each (u)->
           u.remove() if u.destroyable
-      when MeleeAttack, RangedAttack, MagicAttack
+      when Attack
         @character.take_attack(action) if @character
       when ShurikenAttack
         shuriken = @level.warrior.draw_a_shuriken()

@@ -180,3 +180,12 @@ body {
     background-position: -420px -60px; }
   .page-js-warrior-game.f0 .character.archer {
     background-position: -420px -60px; }
+  .page-js-warrior-game .damage-num {
+    color: #ff6666;
+    text-shadow: 0 0 2px black;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    position: absolute;
+    z-index: 20;
+    font-family: arial; }

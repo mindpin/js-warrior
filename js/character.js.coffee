@@ -1,9 +1,9 @@
 class Character extends Unit
   is_character: true
   destroyable: true
-  defeated: false
-  attack_method: Attack
-  action_info: "idle"
+  remove_tag: false
+  action_info: new ActionInfo("idle")
+  direction: "down"
   damage: 3
   health: 0
 
@@ -11,45 +11,36 @@ class Character extends Unit
     super(@space)
 
   in_range: (space)->
-    @get_attack_area().some (s)->
+    result = @get_attack_area().some (s)->
       space == s
 
   blocked: (space)->
     @space.range(space).some (s)->
       (s.item && s.item.constructor == Wall) || s.character
 
-  attack: (space)->
+  attack: (direction, distance)->
     @ensure_not_played =>
-      @action_info = "idle"
-      return if !@in_range(space)
-      return if @blocked(space)
-      attack = new @attack_method(@damage)
-      space.receive(attack)
-      @action_info = new ActionInfo(attack.class_name(), space.character, @damage)
+      !distance && distance = 1
+      attack = new Attack(@damage)
+      @direction = direction
+      target = @space.get_relative_space(direction, distance)
+      target.receive(attack)
+      @action_info = new ActionInfo(attack.class_name(), target.character, @damage, undefined, @direction)
 
   take_attack: (atk)->
     @health = @health - atk.damage
     if @health <= 0
       @remove()
-      @defeated = true
-
-  target_space: (direction, distance)->
-    switch direction
-      when "left-up"    then @space.relative(-distance, -distance)
-      when "left-down"  then @space.relative(-distance, distance)
-      when "right-up"   then @space.relative(distance, -distance)
-      when "right-down" then @space.relative(distance, distance)
-      when "up"         then @space.relative(0, -distance)
-      when "down"       then @space.relative(0, distance)
-      when "left"       then @space.relative(-distance, 0)
-      when "right"      then @space.relative(distance, 0)
-      else throw new Error("Invalid direction!")
+      @remove_tag = true
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
-    @action_info = "idle"
+    throw new Error("行动没有重置") if @action_info.type != "idle"
     action()
     @played = true
+
+  reset_action: ->
+    @action_info = new ActionInfo("idle")
 
   reset_played: ->
     @played = false
@@ -61,9 +52,18 @@ class Character extends Unit
       [-1, -1], [0, -1], [1, -1]
     ].map((i)=> @space.relative(i...)).filter((s)=> s != null)
 
+  per_turn_strategy: ->
+
+  play: (strategy)->
+    return if @remove_tag
+    strategy && strategy(@)
+    @per_turn_strategy()
+    @reset_played()
+  is_warrior: ->
+    @class_name() == 'warrior'
+
 class Warrior extends Character
   items: []
-  direction: "down"
   health: 16
   attack_method: MeleeAttack
 
@@ -101,7 +101,7 @@ class Warrior extends Character
       return if !@in_shuriken_range(space)
       shuriken_attack = new ShurikenAttack(@damage)
       if @shuriken_blocked(space)
-        enemy_space = @shuriken_range.filter((s)=> s.character && s.character != @)[0]
+        enemy_space = @shuriken_range.filter((s)=> s.character)[0]
         if enemy_space
           @action_info = new ActinInfo(shuriken_attack.class_name(), enemy_space.character, @damage, enemy_space)
 
@@ -123,7 +123,7 @@ class Warrior extends Character
   move: (direction)->
     @direction = direction
     @ensure_not_played =>
-      target = @target_space(direction, 1)
+      target = @space.get_relative_space(direction, 1)
       return if target.character
   
       @action_info = new ActionInfo("walk")
@@ -155,27 +155,27 @@ class Warrior extends Character
   down: ->
     @move("down")
 
-  play: (strategy)->
-    strategy && strategy(@)
-    @reset_played()
+  feel: (direction)->
+    @space.get_relative_space(direction, 1)
 
 class Enemy extends Character
   health: 12
   damage: 3
+  range: 1
   attack_method: MeleeAttack
 
   warrior_in_range: ->
     @in_range(@level.warrior.space)
 
   per_turn_strategy: ->
-    if @warrior_in_range()
-      @attack(@level.warrior.space)
-
-  play: ->
-    @per_turn_strategy()
-    @reset_played()
+    direction = @space.get_direction(@level.warrior.space)
+    target = @space.get_relative_space(direction, @range)
+    if @warrior_in_range() && !@blocked(target)
+      @direction = direction
+      @attack(@direction)
 
 class Slime extends Enemy
+  health: 10
 class Tauren extends Enemy
 
 class Wizard extends Enemy

@@ -10,7 +10,7 @@ class Level
     @height = @space_profile.length
     @width = @space_profile[0].length
 
-  characters: ->
+  enemies: ->
     result = []
     for unit in @units
       if unit.is_character && unit.constructor != Warrior
@@ -84,19 +84,21 @@ class Level
     @current_index = 0
     @_character_run(0)
 
+  is_turn_end: ->
+    return @current_index == @characters().length
+
   _character_run: (index)->
-    if index == 1 && @passed()
-      return alert("过关")
-    if index == 1 && @failed()
-      return alert("失败")
+    character = @get_character_by_index(index)
+
+    if character && character.is_warrior()
+      return alert("过关") if @passed()
+      return alert("失败") if @failed()
 
     @current_index = index
-    cs = @warrior_and_characters()
-    if index == cs.length
+    if @is_turn_end()
       @destroy_removed_unit()
       @turn_run()
       return
-    character = cs[index]
     # console.log('logic new action')
     # console.log(cs)
     # console.log(character)
@@ -105,17 +107,21 @@ class Level
     else
       character.play()
 
-    jQuery(document).one 'js-warrior:render-ui-success', =>
+    jQuery(document).one 'js-warrior:render-ui-success', (event, character)=>
+      character.reset_action()
       return if @pausing
       @_character_run(index+1)
 
     jQuery(document).trigger('js-warrior:render-ui', character)
 
-  warrior_and_characters: ->
+  characters: ->
     result = []
     result.push(@warrior)
-    result = result.concat(@characters())
+    result = result.concat(@enemies())
     return result
+
+  get_character_by_index: (index)->
+    return @characters()[index]
     
   get_space: (x, y) ->
     try
