@@ -2,7 +2,7 @@ class Level
   constructor: (game, level_data) ->
     @game = game
     @space_profile = @_build_profile(level_data)
-    @units   = @_build_units(@space_profile)
+    @units   = @_refresh_units()
     @warrior = @_build_warrior(@units)
     @door    = @_build_door(@units)
 
@@ -71,7 +71,7 @@ class Level
     jQuery(document).on 'js-warrior:resume', =>
       @pausing = false
       @_character_run(@current_index+1)
-    jQuery(document).on 'js-warrior:start', (user_input)=>
+    jQuery(document).on 'js-warrior:start', (event, user_input)=>
       @current_round = 0
       @pausing = false
       eval(user_input)
@@ -85,13 +85,17 @@ class Level
     @_character_run(0)
 
   _character_run: (index)->
+    if index == 1 && @passed()
+      return alert("过关")
+    if index == 1 && @failed()
+      return alert("失败")
+
     @current_index = index
     cs = @warrior_and_characters()
     if index == cs.length
       @destroy_removed_unit()
       @turn_run()
       return
-
     character = cs[index]
     if character.constructor == Warrior
       character.play(@game.player.play_turn)
@@ -120,7 +124,7 @@ class Level
     for floor in @space_profile
       for space in floor
         space.destroy_removed_unit()
-    @units = @_build_units(@space_profile)
+    @units = @_refresh_units()
 
   _build_profile: (level_data) ->
     result = []
@@ -134,7 +138,7 @@ class Level
 
     return result
 
-  _build_units: (space_profile) ->
+  _refresh_units: () ->
     result = []
     for floor in @space_profile
       for space in floor

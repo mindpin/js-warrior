@@ -108,7 +108,7 @@ class Space
 
   link: (unit) ->
     unit.space = this
-    if unit.constructor == FlyingAxe
+    if unit.constructor == Shuriken
       @shurikens.push(unit)
       return
     if unit.is_character && @character == null
@@ -121,7 +121,7 @@ class Space
   unlink: (unit) ->
     if unit.space == this
       unit.space = null
-    if unit.constructor == FlyingAxe
+    if unit.constructor == Shuriken
       index = @shurikens.indexOf(unit)
       return if index == -1
       @shurikens.splice(index,1)

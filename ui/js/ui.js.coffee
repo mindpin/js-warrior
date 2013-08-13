@@ -10,7 +10,9 @@ class GameUi
       @init()
 
     jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
-      console.log character.action_info
+      info = character.action_info
+      if 'walk' == info.type
+        @ani_warrior_walk(info.direction)
 
     jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
       code = jQuery('.page-control-panel textarea.code').val()
@@ -138,6 +140,8 @@ class GameUi
       $el.animate
         left: x1 * @CONST_W
         top:  y1 * @CONST_W
+        =>
+          jQuery(document).trigger 'js-warrior:render-ui-success'
 
     return @warrior
 

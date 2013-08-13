@@ -37,14 +37,14 @@ class Character extends Unit
 
   target_space: (direction, distance)->
     switch direction
-      when "left-up"    then @space.relative(distance, -distance)
-      when "left-down"  then @space.relative(distance, distance)
-      when "right-up"   then @space.relative(-distance, -distance)
-      when "right-down" then @space.relative(-distance, distance)
+      when "left-up"    then @space.relative(-distance, -distance)
+      when "left-down"  then @space.relative(-distance, distance)
+      when "right-up"   then @space.relative(distance, -distance)
+      when "right-down" then @space.relative(distance, distance)
       when "up"         then @space.relative(0, -distance)
       when "down"       then @space.relative(0, distance)
-      when "left"       then @space.relative(distance, 0)
-      when "right"      then @space.relative(-distance, 0)
+      when "left"       then @space.relative(-distance, 0)
+      when "right"      then @space.relative(distance, 0)
       else throw new Error("Invalid direction!")
 
   ensure_not_played: (action)->
@@ -74,7 +74,7 @@ class Warrior extends Character
     @shurikens = [new Shuriken for i in [1..Shuriken.max_num]]
     @shuriken_range = @get_shuriken_range()
     @getter "keys",     -> @select_items Key
-    @getter "diamonds", -> @select_items Diamonds
+    @getter "diamonds", -> @select_items Diamond
 
   interact: ->
     @ensure_not_payed ->
@@ -129,6 +129,7 @@ class Warrior extends Character
       return if target.character
   
       @action_info = new ActionInfo("walk")
+      @action_info.direction = direction
       @space.unlink(@)
       target.link(@)
 
@@ -158,6 +159,7 @@ class Warrior extends Character
 
   play: (strategy)->
     strategy && strategy(@)
+    @reset_played()
 
 class Enemy extends Character
   health: 12
