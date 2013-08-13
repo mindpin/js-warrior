@@ -1,5 +1,6 @@
 class Level
-  constructor: (level_data) ->
+  constructor: (game, level_data) ->
+    @game = game
     @space_profile = @_build_profile(level_data)
     @units   = @_build_units(@space_profile)
     @warrior = @_build_warrior(@units)
@@ -58,23 +59,56 @@ class Level
   all_diamond_is_picked: ->
     return @max_diamond_count == @warrior.diamonds.length
 
-  start: ->
-    for i in [1..1000]
-      @destroy_removed_unit()
-      @turn_run()
-        
   passed: ->
     @warrior.space == @door.space && @all_diamond_is_picked() && @all_intrigue_open()
 
   failed: ->
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
+  init: ->
+    @current_round = 0
+    @pausing = false
+    jQuery(document).on 'js-warrior:pause', ->
+      @pausing = true
+    jQuery(document).on 'js-warrior:resume', ->
+      @pausing = false
+      @_character_run(@current_index+1)
+    jQuery(document).on 'js-warrior:start', ->
+      @turn_run()
+    jQuery(document).trigger('js-warrior:init-ui', this)
+
   # 让每一个 生物 都行动一次
   turn_run: ->
-    @warrior.reset_played()
-    for character in @characters
-      character.reset_played()
+    @current_round += 1
+    @current_index = 0
+    @_character_run(0)
 
+  _character_run: (index)->
+    @current_index = index
+    cs = @warrior_and_characters()
+    if index == cs.length
+      @destroy_removed_unit()
+      @turn_run()
+      return
+
+    character = cs[index]
+    if character.constructor == Warrior
+      character.play(@game.player.play_turn)
+    else
+      character.play()
+
+    jQuery(document).one 'js-warrior:render-ui-success', ->
+      return if @pausing
+      @_character_run(index+1)
+
+    jQuery(document).trigger('js-warrior:render-ui', character)
+
+  warrior_and_characters: ->
+    result = []
+    result.push(@warrior)
+    result.concat(@characters)
+    return result
+    
   get_space: (x, y) ->
     try
       return @space_profile[y][x]
