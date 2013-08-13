@@ -3,6 +3,7 @@ class Character extends Unit
   destroyable: true
   defeated: false
   attack_method: Attack
+  action_info: "idle"
   damage: 3
   health: 0
 
@@ -24,7 +25,9 @@ class Character extends Unit
     @ensure_not_played =>
       return if !@in_range(space)
       return if @blocked(space)
-      space.receive(new attack_method(@damage))
+      attack = new attack_method(@damage)
+      space.receive(attack)
+      @action_info = new ActionInfo(attack.class_name, space.character, @damage)
 
   get_attack: (atk)->
     @health = @health - atk.damage
@@ -98,8 +101,21 @@ class Warrior extends Character
   shuriken: (space)->
     @ensure_not_played =>
       return if !@in_shuriken_range(space)
-      return if @shuriken_blocked(space)
-      space.receive(new ShurikenAttack(@damage))
+      shuriken_attack = new ShurikenAttack(@damage)
+      if @shuriken_blocked(space)
+        enemy_space = @shuriken_range.filter((s)=> s.character && s.character != @)[0]
+        if enemy_space
+          @action_info = new ActinInfo(shuriken_attack.class_name(), enemy_space.character, @damage, enemy_space)
+
+          return enemy_space.receive(shuriken_attack)
+
+        wall_space = @shuriken_range.filter((s)=> s.constructor == Wall)[0]
+        range = @space.range(wall_space)
+        drop_space = range[rang.length - 2]
+        if drop_space
+          @action_info = new ActinInfo(shuriken_attack.class_name(), undefined, undefined, drop_space)
+          return drop_space.receive(shuriken_attack)
+      space.receive(shuriken_attack)
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
@@ -112,6 +128,7 @@ class Warrior extends Character
       target = @target_space(direction, 1)
       return if target.character
   
+      @action_info = new ActionInfo("walk")
       @space.unlink(@)
       target.link(@)
 
@@ -202,10 +219,14 @@ class Creeper extends Enemy
   set_excited: ->
     @ensure_not_played =>
       @excited = true
+      @action_info = new ActionInfo("excited")
 
   explode: ->
     @attack_area.each (s)->
-      s.receive new Explode
+      explode = new Explode
+      s.receive explode
+      characters = @attack_area.filter((s)=> s.character).map((s)=> s.character)
+      @action_info = new ActionInfo(explode.class_name(), characters)
 
   play: (strategy)->
     strategy && strategy()
