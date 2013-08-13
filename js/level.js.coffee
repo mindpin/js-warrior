@@ -91,8 +91,8 @@ class Level
     character = @get_character_by_index(index)
 
     if character && character.is_warrior()
-      return alert("过关") if @passed()
-      return alert("失败") if @failed()
+      return jQuery(document).trigger('js-warrior:win') if @passed()
+      return jQuery(document).trigger('js-warrior:lose') if @failed()
 
     @current_index = index
     if @is_turn_end()

@@ -41,7 +41,7 @@ class CharacterAni
     @$el
       .delay(150)
       .animate
-        top: y * @CONST_W - 10
+        top: y * @CONST_W - @CONST_W / 6
         , 75
       .animate
         top: y * @CONST_W
@@ -56,10 +56,11 @@ class CharacterAni
       $damage_el
         .css
           left: @posx()
-          top: @posy() + @CONST_W / 2
+          top: @posy()
         .animate
           left: @posx()
-          top: @posy()
+          top: @posy() - @CONST_W / 2
+          'font-size':40
           => $damage_el.fadeOut()
 
       if @character.remove_tag
@@ -73,6 +74,7 @@ class CharacterAni
     delta = @_xydelta(dir)
     @_change_face_dir(dir)
 
+    new Audio("js/attack.mp3").play()
     @$el
       .css
         'z-index': 10
@@ -84,9 +86,11 @@ class CharacterAni
         left: x * @CONST_W
         top:  y * @CONST_W
         , 150, => 
-          @$el.css
-            'z-index': ''
-          @_rendered()
+          setTimeout =>
+            @$el.css
+              'z-index': ''
+            @_rendered()
+          , 0
             
     return @
 
@@ -97,6 +101,7 @@ class CharacterAni
     delta = @_xydelta(dir)
     @_change_face_dir(dir)
 
+    new Audio("js/step1.mp3?a").play()
     @$el
       .data
         x: (x + delta.dx)
