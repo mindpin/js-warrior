@@ -66,10 +66,6 @@ class Level
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
   init: ->
-    jQuery(document).trigger('js-warrior:init', this)
-
-  start: ->
-    @init()
     @current_round = 0
     @pausing = false
     jQuery(document).on 'js-warrior:pause', ->
@@ -79,6 +75,7 @@ class Level
       @_character_run(@current_index+1)
     jQuery(document).on 'js-warrior:start', ->
       @turn_run()
+    jQuery(document).trigger('js-warrior:init-ui', this)
 
   # 让每一个 生物 都行动一次
   turn_run: ->
