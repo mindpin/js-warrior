@@ -66,14 +66,15 @@ class Level
     @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
 
   init: ->
-    @current_round = 0
-    @pausing = false
     jQuery(document).on 'js-warrior:pause', ->
       @pausing = true
     jQuery(document).on 'js-warrior:resume', ->
       @pausing = false
       @_character_run(@current_index+1)
-    jQuery(document).on 'js-warrior:start', ->
+    jQuery(document).on 'js-warrior:start', (user_input)->
+      @current_round = 0
+      @pausing = false
+      eval(user_input)
       @turn_run()
     jQuery(document).trigger('js-warrior:init-ui', this)
 
