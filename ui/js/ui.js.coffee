@@ -7,8 +7,10 @@ class GameUi
   init_events: ->
     jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
       @level = level
-
       @init()
+
+    jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
+      console.log character.action_info
 
     jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
       code = jQuery('.page-control-panel textarea.code').val()

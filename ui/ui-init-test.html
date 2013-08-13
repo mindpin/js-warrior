@@ -14,7 +14,7 @@
     <div>
       <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  // code here
+  warrior.right()
 }</textarea>
     </div>
     <div class='btns'>
@@ -41,7 +41,7 @@ game.player.play_turn = function(warrior){
     level_data = [
       ['C0','','','','','','','','','I2']
     ]
-    
+
     window.game_ui = new GameUi()
 
     window.game = new Game(level_data)
