@@ -7,6 +7,18 @@
 </head>
 <body>
   <div class='page-js-warrior-game' style='display:none;'></div>
+  <div class='page-control-panel'>
+    <div>
+      <textarea class='code' style='width:500px;height:300px;'>
+game.player.play_turn = function(warrior){
+  // code here
+}</textarea>
+    </div>
+    <div class='btns'>
+      <a class='start' href='javascript:;'>运行</a>
+      <a class='pause' href='javascript:;'>暂停</a>
+    </div>
+  </div>
 
   <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
   <script type="text/javascript" src="../coffee-script.js"></script>
@@ -22,29 +34,12 @@
   <script type="text/coffeescript" src='js/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['','','','',''],
-      ['','','','C1',''],
-      ['','','','I2',''],
-      ['','C0','','',''],
-      ['','','','','']
-    ]
-
-    level_data = [
-      ['','','','','','','','','','I2'],
-      ['','','I4','I4','I4','I4','','','',''],
-      ['','','','','I1','','','','F0',''],
-      ['I0','','','','','','I1','','',''],
-      ['','','','','F0','F0','','','',''],
-      ['','','I0','C2','','','','','',''],
-      ['','','','','','','','','',''],
-      ['','','C1','C3','C4','C5','','','I3',''],
-      ['','','I3','','','','','','',''],
-      ['C0','','','','','','','','','I3'],
+      ['C0','','','','','','','','','I2']
     ]
 
     level = new Level(level_data)
 
-    new GameUi(level).init()
+    window.ui = new GameUi(level).init()
   </script>
 </body>
 </html>

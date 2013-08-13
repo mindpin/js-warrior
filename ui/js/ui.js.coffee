@@ -8,21 +8,23 @@ class GameUi
     @init_map()
     @init_render()
 
+    return this
+
   init_map: ->
     @_draw_ground()
 
     for y in [0...@level.height]
       for x in [0...@level.width]
         space = @level.get_space(x, y)
-        if x == 9 && y == 0
-          console.log space
-
         if !space.is_empty()
-          @_draw_unit space
+          @_draw_units space
 
     @$game.fadeIn(300)
 
   _draw_ground: ->
+    @max_x = @level.width - 1
+    @max_y = @level.height - 1
+
     css_width = @level.width * @CONST_W
     css_height = @level.height * @CONST_W
 
@@ -30,43 +32,30 @@ class GameUi
       width: css_width
       height: css_height
 
-  _draw_unit: (space)->
-    pos_x = space.x * @CONST_W
-    pos_y = space.y * @CONST_W
+  _draw_units: (space)->
     
-    if space.character
-      $unit = jQuery('<div></div>')
-        .addClass('character').addClass(space.character.class_name()).addClass('down')
-        .attr
-          'data-x': space.x
-          'data-y': space.y
+    for unit in space.units()
+      class_name = unit.class_name()
+      type = unit.type()
+
+      if class_name == 'warrior'
+        @warrior = unit 
+
+      $ui_el = jQuery('<div></div>')
+        .addClass(type)
+        .addClass(class_name)
+        
+        .data
+          x: space.x
+          y: space.y
+        
         .css
-          left: pos_x
-          top: pos_y
+          left: space.x * @CONST_W
+          top:  space.y * @CONST_W
+
         .appendTo(@$game)
 
-    if space.item
-      $unit = jQuery('<div></div>')
-        .addClass('item').addClass(space.item.class_name())
-        .attr
-          'data-x': space.x
-          'data-y': space.y
-        .css
-          left: pos_x
-          top: pos_y
-        .appendTo(@$game)
-
-    if space.shurikens.length > 0
-      $unit = jQuery('<div></div>')
-        .addClass('item').addClass('shuriken')
-        .attr
-          'data-x': space.x
-          'data-y': space.y
-        .css
-          left: pos_x
-          top: pos_y
-        .appendTo(@$game)
-
+      unit.ui_el = $ui_el
 
   init_render: ->
     @fps = 120
@@ -97,6 +86,155 @@ class GameUi
   render: ->
     # console.log @now
     if @frame_count % 30 == 0
-      jQuery('.character').toggleClass('f0')
+      jQuery('.page-js-warrior-game').toggleClass('f0')
+
+  ani_warrior_walk: (dir)->
+    $el = @warrior.ui_el
+    x = $el.data('x')
+    y = $el.data('y')
+
+    ani_flag = false
+    if dir == 'right' && x < @max_x
+      x1 = x + 1
+      y1 = y
+      ani_flag = true
+
+    if dir == 'left' && x > 0
+      x1 = x - 1
+      y1 = y
+      ani_flag = true
+
+    if dir == 'up' && y > 0
+      x1 = x
+      y1 = y - 1
+      ani_flag = true
+    
+    if dir == 'down' && y < @max_y
+      x1 = x
+      y1 = y + 1
+      ani_flag = true
+
+
+    if ani_flag
+      $el
+        .data
+          x: x1
+          y: y1
+        .removeClass('up').removeClass('down').removeClass('left').removeClass('right')
+        .addClass(dir)
+
+      $el.animate
+        left: x1 * @CONST_W
+        top:  y1 * @CONST_W
+
+    return @warrior
+
+  ani_warrior_attack: (dir)->
+    $el = @warrior.ui_el
+    x = $el.data('x')
+    y = $el.data('y')
+
+    ani_flag = false
+    if dir == 'right' && x < @max_x
+      x1 = x + 1
+      y1 = y
+      ani_flag = true
+
+    if dir == 'left' && x > 0
+      x1 = x - 1
+      y1 = y
+      ani_flag = true
+
+    if dir == 'up' && y > 0
+      x1 = x
+      y1 = y - 1
+      ani_flag = true
+    
+    if dir == 'down' && y < @max_y
+      x1 = x
+      y1 = y + 1
+      ani_flag = true
+
+
+    if ani_flag
+      $el
+        .removeClass('up').removeClass('down').removeClass('left').removeClass('right')
+        .addClass(dir)
+
+      $el
+        .animate
+          left: x1 * @CONST_W
+          top:  y1 * @CONST_W
+        , 150
+
+      $el
+        .animate
+          left: x * @CONST_W
+          top:  y * @CONST_W
+        , 150
+            
+    return @warrior
+
+  ani_fireball: (dir)->
+    $el = @warrior.ui_el
+    x = $el.data('x')
+    y = $el.data('y')
+
+    if dir == 'right'
+      # 蓄力动画
+      $spark1 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x - 0.5) * @CONST_W
+          top:  (y - 0.5) * @CONST_W
+      $spark2 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x + 0.5) * @CONST_W
+          top:  (y - 0.5) * @CONST_W
+      $spark3 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x + 0.5) * @CONST_W
+          top:  (y + 0.5) * @CONST_W
+      $spark4 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x - 0.5) * @CONST_W
+          top:  (y + 0.5) * @CONST_W
+
+      $spark1.appendTo(@$game).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , => $spark1.remove()
+
+
+      $spark2.appendTo(@$game).delay(50).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , => $spark2.remove()
+
+      $spark3.appendTo(@$game).delay(100).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , => $spark3.remove()
+
+      $spark4.appendTo(@$game).delay(150).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , =>
+          $spark4.remove()
+
+          $fireball = jQuery('<div></div>')
+            .addClass('item').addClass('fireball')
+            .css
+              left: x * @CONST_W
+              top:  y * @CONST_W
+            .appendTo(@$game)
+            .animate
+              left: (x + 3) * @CONST_W
+              top:  y * @CONST_W
+              , =>
+                $fireball.delay(300).hide 1, => $fireball.remove()
 
 window.GameUi = GameUi
