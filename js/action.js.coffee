@@ -1,3 +1,6 @@
+class ActionInfo
+  constructor: (@type, @target, @damage, @landing_point)
+
 class Attack
   constructor: (@damage)->
 
@@ -12,6 +15,7 @@ class Interact
 class Explode
 
 jQuery.extend window,
+  ActionInfo: ActionInfo
   Attack: Attack
   MeleeAttack: MeleeAttack
   RangedAttack: RangedAttack
