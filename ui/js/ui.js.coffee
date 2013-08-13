@@ -13,6 +13,11 @@ class GameUi
       info = character.action_info
       if 'walk' == info.type
         @ani_warrior_walk(info.direction)
+      if 'melee_attack' == info.type
+        console.log info
+
+      if 'idle' == info
+        @ani_rendered()
 
     jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
       code = jQuery('.page-control-panel textarea.code').val()
@@ -140,8 +145,7 @@ class GameUi
       $el.animate
         left: x1 * @CONST_W
         top:  y1 * @CONST_W
-        =>
-          jQuery(document).trigger 'js-warrior:render-ui-success'
+        => @ani_rendered()
 
     return @warrior
 
@@ -253,4 +257,6 @@ class GameUi
               , =>
                 $fireball.delay(300).hide 1, => $fireball.remove()
 
+  ani_rendered: ->
+    jQuery(document).trigger 'js-warrior:render-ui-success'
 window.GameUi = GameUi

@@ -97,6 +97,9 @@ class Level
       @turn_run()
       return
     character = cs[index]
+    # console.log('logic new action')
+    # console.log(cs)
+    # console.log(character)
     if character.constructor == Warrior
       character.play(@game.player.play_turn)
     else
@@ -111,7 +114,7 @@ class Level
   warrior_and_characters: ->
     result = []
     result.push(@warrior)
-    result.concat(@characters)
+    result = result.concat(@characters())
     return result
     
   get_space: (x, y) ->
@@ -147,7 +150,7 @@ class Level
         shurikens = space.shurikens
         result.push(character) if character != null
         result.push(item)      if item      != null
-        result.concat(shurikens) if shurikens.length != 0
+        result = result.concat(shurikens) if shurikens.length != 0
 
     return result
 
