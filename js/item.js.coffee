@@ -11,7 +11,7 @@ class Pickable extends Item
 
   take_interact: (interact)->
     @into_inventory(interact.warrior)
-    @space.unlink(@)
+    @update_link()
 
   into_inventory: (warrior)->
     warrior.items.push @

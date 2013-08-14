@@ -146,9 +146,7 @@ class Warrior extends Character
   
       walk = (new Walk).set('direction', direction)
       @action_info = new ActionInfo(walk)
-      @action_info.direction = direction
-      @space.unlink(@)
-      target.link(@)
+      @update_link(target)
 
   consume: (type)->
     index = @items.indexOf first(type)
@@ -194,7 +192,6 @@ class Enemy extends Character
       @attack(@direction)
 
 class Slime extends Enemy
-  health: 12
 class Tauren extends Enemy
 
 class Wizard extends Enemy

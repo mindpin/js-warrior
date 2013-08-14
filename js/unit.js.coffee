@@ -18,6 +18,10 @@ class Unit
     return "item" if @ instanceof Item
     "character" if @ instanceof Character
 
+  update_link: (target)->
+    @space.unlink(@)
+    target && target.link(@)
+
   class_name: ->
     @constructor.name.toLowerCase()
 
