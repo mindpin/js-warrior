@@ -6,7 +6,7 @@ class ActionInfo extends Base
     @target_space = @action.target_space
     @landing_point = @action.landing_point
     @direction = @action.direction
-    @damage = @action.damage
+    @hp_change = @action.hp_change
 
 class Action extends Base
   perform: ->
@@ -23,10 +23,11 @@ class Walk extends Action
     @actor.action_info = new ActionInfo(@)
 
 class Rest extends Action
+  constructor: (@actor, @hp_change)->
 class Attack extends Action
   constructor: (@actor, @direction, @target_space)->
-    @damage = @actor.damage
-    @target = @target_space.character
+    @hp_change = -@actor.damage
+    @target_space && @target = @target_space.character
   
   perform: ->
     @actor.direction = @direction
@@ -46,6 +47,7 @@ class ShurikenAttack extends Attack
 
 
 jQuery.extend window,
+  Rest: Rest
   Idle: Idle
   Walk: Walk
   Interact: Interact
