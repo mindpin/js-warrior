@@ -21,8 +21,6 @@
 # 石头（投掷物）Shuriken    F0
 
 class Space
-  jQuery.extend this::, UnitContainer::
-
   constructor: (level, space_data, x, y) ->
     @level = level
     @x = x
@@ -182,6 +180,25 @@ class Space
       when "left"       then @relative(-distance, 0)
       when "right"      then @relative(distance, 0)
       else throw new Error("Invalid dir!")
+
+  relative: (x, y)->
+    @level.get_space(@x + x, @y + y)
+
+  receive: (action)->
+    switch action.constructor
+      when Explode
+        @units.each (u)->
+          u.remove() if u.destroyable
+      when Attack
+        @character.take_attack(action) if @character
+      when ShurikenAttack
+        shuriken = @level.warrior.draw_a_shuriken()
+        @character.take_attack(action) if @character
+        @space.link(shuriken)
+      when Interact
+        @item.take_interact(action) if @item
+        if @shurikens.length > 0
+          fa.take_interact(action) for fa in @shurikens
 
   has_enemy: ->
     return @character && @character.constructor != Warrior
