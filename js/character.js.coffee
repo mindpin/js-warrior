@@ -2,13 +2,14 @@ class Character extends Unit
   is_character: true
   destroyable: true
   remove_tag: false
-  action_info: new ActionInfo("idle")
+  action_info: new ActionInfo
   direction: "down"
   damage: 3
   health: 0
 
   constructor: (@space)->
     super(@space)
+    @max_health = @health
 
   in_range: (space)->
     result = @get_attack_area().some (s)->
@@ -21,17 +22,18 @@ class Character extends Unit
   attack: (direction, distance)->
     @ensure_not_played =>
       !distance && distance = 1
-      attack = new Attack(@damage)
-      @direction = direction
-      target = @space.get_relative_space(direction, distance)
-      target.receive(attack)
-      @action_info = new ActionInfo(attack.class_name(), target.character, @damage, undefined, @direction)
+      target_space = @space.get_relative_space(@direction, distance)
+      attack = new Attack(@, direction, target_space)
+      target_space.receive(attack)
+
+  health_delta: (delta)->
+    result   = @health + delta
+    exceeded = result > @max_health
+    @health  = if exceeded then @max_health else result 
 
   take_attack: (atk)->
-    @health = @health - atk.damage
-    if @health <= 0
-      @remove()
-      @remove_tag = true
+    @health_delta(-atk.damage)
+    @remove() if @health <= 0
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
@@ -40,7 +42,7 @@ class Character extends Unit
     @played = true
 
   reset_action: ->
-    @action_info = new ActionInfo("idle")
+    @action_info = new ActionInfo
 
   reset_played: ->
     @played = false
@@ -64,13 +66,12 @@ class Character extends Unit
 
 class Warrior extends Character
   items: []
-  health: 16
+  health: 20
   attack_method: MeleeAttack
 
   constructor: (@space)->
     super(@space)
     @shurikens = [new Shuriken for i in [1..Shuriken.max_num]]
-    @shuriken_range = @get_shuriken_range()
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
 
@@ -85,51 +86,56 @@ class Warrior extends Character
       [1, 0], [2, 0], [3, 0],
       [-1, 0], [-2, 0], [-3, 0]
     ].map (i)=>
-      @space.relative(i...)
+      @space.relative(i...).filter((s)=> s != null)
 
   in_shuriken_range: (space)->
-    @shuriken_range.some (s)-> s == space
+    @get_shuriken_range().some (s)-> s == space
 
-  shuriken_blocked: (space)->
-    @shuriken_range.some (s)->
-      s.item &&
-      s.item.constructor == Wall ||
-      s.character
-    
-  shuriken: (space)->
+  shoot: (direction, distance)->
     @ensure_not_played =>
-      return if !@in_shuriken_range(space)
-      shuriken_attack = new ShurikenAttack(@damage)
-      if @shuriken_blocked(space)
-        enemy_space = @shuriken_range.filter((s)=> s.character)[0]
-        if enemy_space
-          @action_info = new ActinInfo(shuriken_attack.class_name(), enemy_space.character, @damage, enemy_space)
+      target = @space.get_relative_space(direction, distance)
 
+      return if !@in_shuriken_range(target)
+      range = @space.range(target)
+      @direction = direction
+      shuriken_attack = (new ShurikenAttack(@damage)).set('direction', direction)
+
+      if @blocked(target) #如果被阻挡
+        enemy_space = range.filter((s)=> s.character)[0]
+        if enemy_space #如果被怪阻挡
+          shuriken_attack
+            .set('target', enemy_space.character)
+            .set('landing_space', enemy_space)
+          @action_info = new ActinInfo(shuriken_attack)
           return enemy_space.receive(shuriken_attack)
 
-        wall_space = @shuriken_range.filter((s)=> s.constructor == Wall)[0]
-        range = @space.range(wall_space)
-        drop_space = range[rang.length - 2]
-        if drop_space
-          @action_info = new ActinInfo(shuriken_attack.class_name(), undefined, undefined, drop_space)
+        wall_space = range.filter((s)=> s.constructor == Wall)[0]
+        drop_space = @space.range(wall_space)[rang.length - 1]
+        if drop_space #如果被墙阻挡
+          shuriken_attack.set('landing_space', drop_space)
+          @action_info = new ActinInfo(shuriken_attack)
           return drop_space.receive(shuriken_attack)
+
+      shuriken_attack
+        .set('target', target.character)
+        .set('landing_space', target)
+
       space.receive(shuriken_attack)
+
+  rest: ->
+    @ensure_not_played =>
+      @health_delta(3)
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
     shuriken.outof_inventory(@)
     shuriken
 
-  move: (direction)->
-    @direction = direction
+  walk: (direction)->
     @ensure_not_played =>
       target = @space.get_relative_space(direction, 1)
-      return if target.character
-  
-      @action_info = new ActionInfo("walk")
-      @action_info.direction = direction
-      @space.unlink(@)
-      target.link(@)
+      walk   = new Walk(@, direction, target)
+      target.receive(walk)
 
   consume: (type)->
     index = @items.indexOf first(type)
@@ -144,16 +150,16 @@ class Warrior extends Character
       i.constructor == type
 
   left: ->
-    @move("left")
+    @walk("left")
 
   right: ->
-    @move("right")
+    @walk("right")
 
   up: ->
-    @move("up")
+    @walk("up")
 
   down: ->
-    @move("down")
+    @walk("down")
 
   feel: (direction)->
     @space.get_relative_space(direction, 1)
@@ -175,7 +181,6 @@ class Enemy extends Character
       @attack(@direction)
 
 class Slime extends Enemy
-  health: 10
 class Tauren extends Enemy
 
 class Wizard extends Enemy

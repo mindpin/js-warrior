@@ -21,8 +21,6 @@
 # 石头（投掷物）Shuriken    F0
 
 class Space
-  jQuery.extend this::, UnitContainer::
-
   constructor: (level, space_data, x, y) ->
     @level = level
     @x = x
@@ -105,9 +103,6 @@ class Space
     result.shift()
     return result
 
-  is_empty: ->
-    @character == null && @item == null && @shurikens.length == 0
-
   link: (unit) ->
     unit.space = this
     if unit.constructor == Shuriken
@@ -183,7 +178,49 @@ class Space
       when "right"      then @relative(distance, 0)
       else throw new Error("Invalid dir!")
 
+  relative: (x, y)->
+    @level.get_space(@x + x, @y + y)
+
+  receive: (action)->
+    switch action.constructor
+      when Walk, Attack
+        action.perform()
+      when Explode
+        @units.each (u)->
+          u.remove() if u.destroyable
+      when ShurikenAttack
+        shuriken = @level.warrior.draw_a_shuriken()
+        @character.take_attack(action) if @character
+        @space.link(shuriken)
+      when Interact
+        @item.take_interact(action) if @item
+        if @shurikens.length > 0
+          fa.take_interact(action) for fa in @shurikens
+
+  # API
   has_enemy: ->
     return @character && @character.constructor != Warrior
+
+  has_door: ->
+    return @item && @item.constructor == Door
+
+  has_key: ->
+    return @item && @item.constructor == Key
+
+  has_lock: ->
+    return @item && @item.constructor == Lock
+
+  has_diamond: ->
+    return @item && @item.constructor == Diamond
+
+  has_wall: ->
+    return @item && @item.constructor == Wall
+
+  has_shuriken: ->
+    return @shurikens.length != 0
+
+  is_empty: ->
+    @character == null && @item == null && @shurikens.length == 0
+
 
 window.Space = Space
