@@ -1,4 +1,4 @@
-class ActionInfo
+class ActionInfo extends Base
   constructor: (@action)->
     @action = new Idle if !@action
     @type = @action.class_name()  
@@ -7,13 +7,10 @@ class ActionInfo
     @direction = @action.direction
     @damage = @action.damage
 
-class BaseAction
+class BaseAction extends Base
   set: (field, value)->
     @[field] = value
     @
-
-  class_name: ->
-    @constructor.name.toLowerCase()
 
 class Idle extends BaseAction
 class Walk extends BaseAction
