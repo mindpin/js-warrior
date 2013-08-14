@@ -38,7 +38,7 @@ class Diamond extends Pickable
 class Key extends Pickable
 
 class Shuriken extends Pickable
-  max_num = 0
+  max_num = 3
 
   constructor: ->
 
