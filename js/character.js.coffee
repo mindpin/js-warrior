@@ -12,11 +12,11 @@ class Character extends Unit
     @max_health = @health
 
   in_range: (space)->
-    result = @get_attack_area().some (s)->
+    @get_attack_area().some (s)=>
       space == s
 
   blocked: (space)->
-    @space.range(space).some (s)->
+    @space.range(space).some (s)=>
       (s.item && s.item.constructor == Wall) || s.character
 
   attack: (direction, distance)->
@@ -32,7 +32,7 @@ class Character extends Unit
     @health  = if exceeded then @max_health else result 
 
   take_attack: (atk)->
-    @health_delta(-atk.damage)
+    @health_delta(atk.hp_change)
     @remove() if @health <= 0
 
   ensure_not_played: (action)->
@@ -52,7 +52,7 @@ class Character extends Unit
       [-1, 1], [0, 1], [1, 1],
       [-1, 0], [1, 0],
       [-1, -1], [0, -1], [1, -1]
-    ].map((i)=> @space.relative(i...)).filter((s)=> !s)
+    ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
   per_turn_strategy: ->
 
@@ -61,6 +61,7 @@ class Character extends Unit
     strategy && strategy(@)
     @per_turn_strategy()
     @reset_played()
+
   is_warrior: ->
     @class_name() == 'warrior'
 
@@ -71,7 +72,7 @@ class Warrior extends Character
 
   constructor: (@space)->
     super(@space)
-    @shurikens = [new Shuriken for i in [1..Shuriken.max_num()]]
+    @shurikens = (new Shuriken for i in [1..Shuriken.max_num()])
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
 
@@ -102,7 +103,6 @@ class Warrior extends Character
       if @blocked(target_space) #如果被阻挡
         enemy_space = range.filter((s)=> s.character)[0]
         if enemy_space #如果被怪阻挡
-          console.log("被怪阻挡")
           shuriken_attack
             .set('target', enemy_space.character)
             .set('landing_space', enemy_space)
@@ -112,7 +112,6 @@ class Warrior extends Character
         wall_space = range.filter((s)=> s.constructor == Wall)[0]
         drop_space = @space.range(wall_space)[rang.length - 1]
         if drop_space #如果被墙阻挡
-          console.log("被墙阻挡")
           shuriken_attack.set('landing_space', drop_space)
           @action_info = new ActinInfo(shuriken_attack)
           return drop_space.receive(shuriken_attack)
@@ -129,6 +128,8 @@ class Warrior extends Character
   rest: ->
     @ensure_not_played =>
       @health_delta(3)
+      heal = new Rest(@, 3)
+      @action_info = new ActionInfo(heal)
 
   look: (direction)->
     target_space = @space.get_relative_space(direction, 4)
@@ -212,8 +213,19 @@ class Archer extends Enemy
       [0, -1], [0, -2], [0, -3],
       [1, 0], [2, 0], [3, 0],
       [-1, 0], [-2, 0], [-3, 0]
-    ].map (i)=>
-      @space.relative(i...)
+    ].map((i)=> @space.relative(i...)).filter((s)=> s)
+
+  per_turn_strategy: ->
+    direction = @space.get_direction(@level.warrior.space)
+    distance = @space.range(@level.warrior.space).length + 1
+    if @space.x == 5 && @space.y == 0
+      console.log("我被挡住了么？", @blocked(@level.warrior.space))
+      console.log("方向: ", direction, " 距离: ", distance)
+    return if @blocked(@level.warrior.space)
+    if @warrior_in_range()
+      console.log("射击！", "距离", distance)
+      @direction = direction
+      @attack(@direction, distance)
 
 class Creeper extends Enemy
   excited: false

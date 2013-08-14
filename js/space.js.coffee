@@ -191,7 +191,7 @@ class Space
       when ShurikenAttack
         shuriken = @level.warrior.draw_a_shuriken()
         @character.take_attack(action) if @character
-        @space.link(shuriken)
+        @link(shuriken)
       when Interact
         @item.take_interact(action) if @item
         if @shurikens.length > 0
@@ -200,6 +200,21 @@ class Space
   # API
   has_enemy: ->
     return @character && @character.constructor != Warrior
+
+  has_slime: ->
+    return @character && @character.constructor == Slime
+
+  has_tauren: ->
+    return @character && @character.constructor == Tauren
+
+  has_creeper: ->
+    return @character && @character.constructor == Creeper
+
+  has_archer: ->
+    return @character && @character.constructor == Archer
+
+  has_wizard: ->
+    return @character && @character.constructor == Wizard
 
   has_door: ->
     return @item && @item.constructor == Door

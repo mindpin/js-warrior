@@ -2,7 +2,17 @@ class CharacterAni
   constructor: (@game_ui, @character)->
     @CONST_W = @game_ui.CONST_W
     @$el = @character.ui_el
+    @_refresh_hp_dom()
+
     @$game = @game_ui.$game
+
+  _refresh_hp_dom: ->
+    if @character.type() == 'character'
+      if !@$hp
+        @$hp = jQuery("<div class='hp'></div>")
+          .appendTo(@$el)
+
+      @$hp.html(@character.health)
 
   posx: ->
     @$el.data('x') * @CONST_W
@@ -34,7 +44,30 @@ class CharacterAni
   _rendered: ->
     jQuery(document).trigger 'js-warrior:render-ui-success', @character
 
-  be_attack: (damage)->
+  rest: (hp_change)->
+    x = @$el.data('x')
+    y = @$el.data('y')  
+
+    $hp_change_el = 
+      jQuery('<div class="hp-change heal"></div>')
+        .html("+#{hp_change}")
+        .appendTo(@$game)
+
+    new Audio("js/heal.mp3?a").play()
+    $hp_change_el
+      .css
+        left: @posx()
+        top: @posy()
+      .animate
+        left: @posx()
+        top: @posy() - @CONST_W / 2
+        'font-size':40
+        => 
+          $hp_change_el.fadeOut => $hp_change_el.remove()
+          @_refresh_hp_dom()
+          @_rendered()
+
+  be_attack: (hp_change)->
     x = @$el.data('x')
     y = @$el.data('y')
 
@@ -47,10 +80,10 @@ class CharacterAni
         top: y * @CONST_W
         , 75
 
-    if damage
+    if hp_change
       $damage_el = 
-        jQuery('<div class="damage-num"></div>')
-          .html("-#{damage}")
+        jQuery('<div class="hp-change damage"></div>')
+          .html(hp_change)
           .appendTo(@$game)
 
       $damage_el
@@ -61,11 +94,12 @@ class CharacterAni
           left: @posx()
           top: @posy() - @CONST_W / 2
           'font-size':40
-          => $damage_el.fadeOut()
+          => 
+            $damage_el.fadeOut => $damage_el.remove()
+            @_refresh_hp_dom()
 
       if @character.remove_tag
-        @$el.fadeOut()
-
+        @$el.fadeOut => @$el.remove()
 
   attack: (dir)->
     x = @$el.data('x')
@@ -74,7 +108,7 @@ class CharacterAni
     delta = @_xydelta(dir)
     @_change_face_dir(dir)
 
-    new Audio("js/attack.mp3").play()
+    new Audio("js/attack.mp3?a").play()
     @$el
       .css
         'z-index': 10
@@ -101,7 +135,7 @@ class CharacterAni
     delta = @_xydelta(dir)
     @_change_face_dir(dir)
 
-    new Audio("js/step1.mp3?a").play()
+    new Audio("js/step1.mp3?ab").play()
     @$el
       .data
         x: (x + delta.dx)
@@ -114,6 +148,7 @@ class CharacterAni
         => @_rendered()
 
     return @
+
 
   idle: ->
     @_rendered()
@@ -136,6 +171,7 @@ class GameUi
     jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
       info = character.action_info
 
+      console.log(character.class_name(), info)
       if 'idle' == info.type
         character.ani.idle()
 
@@ -145,7 +181,10 @@ class GameUi
       if 'attack' == info.type
         character.ani.attack(info.direction)
         if info.target
-          info.target.ani.be_attack(info.damage)
+          info.target.ani.be_attack(info.hp_change)
+
+      if 'rest' == info.type
+        character.ani.rest(info.hp_change)
 
   init: ->
     @init_map()
@@ -184,6 +223,7 @@ class GameUi
       if class_name == 'warrior'
         @warrior = unit 
 
+      # 图标
       $ui_el = jQuery('<div></div>')
         .addClass(type)
         .addClass(class_name)
