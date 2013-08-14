@@ -14,7 +14,14 @@
       <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
   var has_enemy = function(direction) {return warrior.feel(direction).has_enemy()}
+  var spot_enemy = function(direction) {
+    spaces = warrior.look(direction)
+    return spaces.some(function(s) {
+      return s.character
+    })
+  }
 
+  //if (warrior.has_shuriken() && spot_enemy('right')) return warrior.shoot('right', 3)
   if (warrior.health < 20 && !has_enemy('right')) return warrior.rest();
   if (warrior.health < 10 && has_enemy('right')) return warrior.walk('left');
   if (has_enemy('right')) return warrior.attack('right')
