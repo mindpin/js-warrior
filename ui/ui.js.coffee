@@ -1,12 +1,12 @@
 class AniSound
   @walk: ->
-    new Audio("/sound/step1.mp3").play()
+    new Audio("sound/step1.mp3").play()
   @attack: ->
-    new Audio("/sound/attack.mp3").play()
+    new Audio("sound/attack.mp3").play()
   @rest: ->
-    new Audio("/sound/heal.mp3").play()
+    new Audio("sound/heal.mp3").play()
   @shot: ->
-    new Audio("/sound/arrow.mp3").play()
+    new Audio("sound/arrow.mp3").play()
 
 
 class UnitAni
