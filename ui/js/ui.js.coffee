@@ -19,7 +19,9 @@ class CharacterAni
   posy: ->
     @$el.data('y') * @CONST_W
 
-  _xydelta: (dir)->
+  _xydelta: (dir, distance)->
+    d = distance || 1
+
     hash = 
       'right': [ 1,  0]
       'left' : [-1,  0]
@@ -29,8 +31,8 @@ class CharacterAni
     arr = hash[dir]
 
     return {
-      dx: arr[0]
-      dy: arr[1]
+      dx: arr[0] * d
+      dy: arr[1] * d
     }
 
   _change_face_dir: (dir)->
@@ -43,6 +45,96 @@ class CharacterAni
 
   _rendered: ->
     jQuery(document).trigger 'js-warrior:render-ui-success', @character
+
+  fireball: (dir)->
+    x = @$el.data('x')
+    y = @$el.data('y')
+
+    if dir == 'right'
+      # 蓄力动画
+      $spark1 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x - 0.5) * @CONST_W
+          top:  (y - 0.5) * @CONST_W
+      $spark2 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x + 0.5) * @CONST_W
+          top:  (y - 0.5) * @CONST_W
+      $spark3 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x + 0.5) * @CONST_W
+          top:  (y + 0.5) * @CONST_W
+      $spark4 = jQuery('<div></div>')
+        .addClass('item').addClass('spark')
+        .css
+          left: (x - 0.5) * @CONST_W
+          top:  (y + 0.5) * @CONST_W
+
+      $spark1.appendTo(@$game).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , => $spark1.remove()
+
+
+      $spark2.appendTo(@$game).delay(50).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , => $spark2.remove()
+
+      $spark3.appendTo(@$game).delay(100).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , => $spark3.remove()
+
+      $spark4.appendTo(@$game).delay(150).animate
+        left: x * @CONST_W
+        top:  y * @CONST_W
+        , =>
+          $spark4.remove()
+
+          new Audio("js/fireball.mp3?a").play()
+
+          $fireball = jQuery('<div></div>')
+            .addClass('item').addClass('fireball')
+            .css
+              left: x * @CONST_W
+              top:  y * @CONST_W
+            .appendTo(@$game)
+            .animate
+              left: (x + 3) * @CONST_W
+              top:  y * @CONST_W
+              , 250, =>
+                $fireball.delay(300).hide 1, => $fireball.remove()
+
+  shot: (dir, distance)->
+    x = @$el.data('x')
+    y = @$el.data('y')
+
+    delta = @_xydelta(dir, distance)
+
+    new Audio("js/arrow.mp3?a").play()
+
+
+    $arrow = jQuery('<div></div>')
+      .addClass('item').addClass('arrow').addClass(dir)
+      .appendTo(@$game)
+
+    $arrow
+      .css
+        left: @posx()
+        top: @posy()
+      .delay(50)
+      .animate
+        left: (x + delta.dx) * @CONST_W
+        top:  (y + delta.dy) * @CONST_W
+        easing: 'easeout'
+        , 250, =>
+          setTimeout =>
+            $arrow.fadeOut => $arrow.remove()
+          , 100
 
   rest: (hp_change)->
     x = @$el.data('x')
@@ -270,67 +362,5 @@ class GameUi
   render: ->
     if @frame_count % 30 == 0
       jQuery('.page-js-warrior-game').toggleClass('f0')
-
-  ani_fireball: (dir)->
-    $el = @warrior.ui_el
-    x = $el.data('x')
-    y = $el.data('y')
-
-    if dir == 'right'
-      # 蓄力动画
-      $spark1 = jQuery('<div></div>')
-        .addClass('item').addClass('spark')
-        .css
-          left: (x - 0.5) * @CONST_W
-          top:  (y - 0.5) * @CONST_W
-      $spark2 = jQuery('<div></div>')
-        .addClass('item').addClass('spark')
-        .css
-          left: (x + 0.5) * @CONST_W
-          top:  (y - 0.5) * @CONST_W
-      $spark3 = jQuery('<div></div>')
-        .addClass('item').addClass('spark')
-        .css
-          left: (x + 0.5) * @CONST_W
-          top:  (y + 0.5) * @CONST_W
-      $spark4 = jQuery('<div></div>')
-        .addClass('item').addClass('spark')
-        .css
-          left: (x - 0.5) * @CONST_W
-          top:  (y + 0.5) * @CONST_W
-
-      $spark1.appendTo(@$game).animate
-        left: x * @CONST_W
-        top:  y * @CONST_W
-        , => $spark1.remove()
-
-
-      $spark2.appendTo(@$game).delay(50).animate
-        left: x * @CONST_W
-        top:  y * @CONST_W
-        , => $spark2.remove()
-
-      $spark3.appendTo(@$game).delay(100).animate
-        left: x * @CONST_W
-        top:  y * @CONST_W
-        , => $spark3.remove()
-
-      $spark4.appendTo(@$game).delay(150).animate
-        left: x * @CONST_W
-        top:  y * @CONST_W
-        , =>
-          $spark4.remove()
-
-          $fireball = jQuery('<div></div>')
-            .addClass('item').addClass('fireball')
-            .css
-              left: x * @CONST_W
-              top:  y * @CONST_W
-            .appendTo(@$game)
-            .animate
-              left: (x + 3) * @CONST_W
-              top:  y * @CONST_W
-              , =>
-                $fireball.delay(300).hide 1, => $fireball.remove()
 
 window.GameUi = GameUi
