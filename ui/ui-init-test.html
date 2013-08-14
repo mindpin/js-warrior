@@ -13,20 +13,38 @@
     <div>
       <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  var has_enemy = function(direction) {return warrior.feel(direction).has_enemy()}
+  var has_enemy = function(direction) {
+    return warrior.feel(direction).has_enemy()
+  }
   var spot_enemy = function(direction) {
     spaces = warrior.look(direction)
     return spaces.some(function(s) {
       return s.character
     })
   }
+  var spot_archer = function(direction) {
+    spaces = warrior.look(direction)
+    return spaces.some(function(s) {
+      return s.has_archer()
+    })
+  }
 
-  //if (warrior.has_shuriken() && spot_enemy('right')) return warrior.shoot('right', 3)
-  if (warrior.health < 20 && !has_enemy('right')) return warrior.rest();
-  if (warrior.health < 10 && has_enemy('right')) return warrior.walk('left');
+
+  if( spot_archer('right') && !has_enemy('right') && warrior.health < 12 ){
+    warrior.left()
+    return
+  }
+
+  if( !has_enemy('right') && !spot_archer('right') && warrior.health < 20 ){
+    warrior.rest()
+    return
+  }
+
   if (has_enemy('right')) return warrior.attack('right')
 
-  return warrior.right()
+  warrior.right()
+  this.prev_turn_hp = warrior.health
+  return 
 }</textarea>
     </div>
     <div class='btns'>
@@ -67,7 +85,7 @@ game.player.play_turn = function(warrior){
 
     # 弓箭手
     level_data = [
-      ['C0','','','C4','C1','C4','C1','C2','','I2']
+      ['C0','','','C2','','C4','C1','C2','','I2']
     ]
 
     window.game_ui = new GameUi()

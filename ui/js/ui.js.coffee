@@ -109,13 +109,14 @@ class CharacterAni
               , 250, =>
                 $fireball.delay(300).hide 1, => $fireball.remove()
 
-  shot: (dir, distance)->
+  shot: (dir, target)->
     x = @$el.data('x')
     y = @$el.data('y')
 
-    delta = @_xydelta(dir, distance)
+    tx = target.ani.posx()
+    ty = target.ani.posy()
 
-    new Audio("js/arrow.mp3?a").play()
+    new Audio("js/arrow.mp3?ab").play()
 
 
     $arrow = jQuery('<div></div>')
@@ -128,12 +129,13 @@ class CharacterAni
         top: @posy()
       .delay(50)
       .animate
-        left: (x + delta.dx) * @CONST_W
-        top:  (y + delta.dy) * @CONST_W
+        left: tx
+        top:  ty
         easing: 'easeout'
         , 250, =>
           setTimeout =>
             $arrow.fadeOut => $arrow.remove()
+            @_rendered()
           , 100
 
   rest: (hp_change)->
@@ -190,7 +192,7 @@ class CharacterAni
             $damage_el.fadeOut => $damage_el.remove()
             @_refresh_hp_dom()
 
-      if @character.remove_tag
+      if @character.remove_flag
         @$el.fadeOut => @$el.remove()
 
   attack: (dir)->
@@ -277,6 +279,11 @@ class GameUi
 
       if 'rest' == info.type
         character.ani.rest(info.hp_change)
+
+      if 'shot' == info.type
+        if info.target
+          character.ani.shot(info.direction, info.target)
+          info.target.ani.be_attack(info.hp_change)
 
   init: ->
     @init_map()

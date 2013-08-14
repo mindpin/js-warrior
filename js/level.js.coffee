@@ -63,7 +63,7 @@ class Level
     @warrior.space == @door.space && @all_diamond_is_picked() && @all_intrigue_open()
 
   failed: ->
-    @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag 
+    @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag
 
   init: ->
     jQuery(document).on 'js-warrior:pause', =>

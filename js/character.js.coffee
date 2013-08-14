@@ -1,7 +1,8 @@
 class Character extends Unit
   is_character: true
   destroyable: true
-  remove_tag: false
+  remove_flag: false
+  attack_action: Attack
   action_info: new ActionInfo
   direction: "down"
   damage: 3
@@ -23,7 +24,7 @@ class Character extends Unit
     @ensure_not_played =>
       !distance && distance = 1
       target_space = @space.get_relative_space(@direction, distance)
-      attack = new Attack(@, direction, target_space)
+      attack = new @attack_action(@, direction, target_space)
       target_space.receive(attack)
 
   health_delta: (delta)->
@@ -33,7 +34,8 @@ class Character extends Unit
 
   take_attack: (atk)->
     @health_delta(atk.hp_change)
-    @remove() if @health <= 0
+    if @health <= 0
+      @remove() 
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
@@ -57,7 +59,7 @@ class Character extends Unit
   per_turn_strategy: ->
 
   play: (strategy)->
-    return if @remove_tag
+    return if @remove_flag
     strategy && strategy(@)
     @per_turn_strategy()
     @reset_played()
@@ -67,8 +69,8 @@ class Character extends Unit
 
 class Warrior extends Character
   items: []
+  damage: 5
   health: 20
-  attack_method: MeleeAttack
 
   constructor: (@space)->
     super(@space)
@@ -132,7 +134,7 @@ class Warrior extends Character
       @action_info = new ActionInfo(heal)
 
   look: (direction)->
-    target_space = @space.get_relative_space(direction, 4)
+    target_space = @space.get_relative_space_in_map(direction, 4)
     @space.range(target_space)
 
   draw_a_shuriken: ->
@@ -177,20 +179,24 @@ class Enemy extends Character
   health: 12
   damage: 3
   range: 1
-  attack_method: MeleeAttack
 
-  warrior_in_range: ->
-    @in_range(@level.warrior.space)
+  can_attack_warrior: ->
+    space = @level.warrior.space
+    @in_range(space) && !@blocked(space)
 
   per_turn_strategy: ->
+    return if !@can_attack_warrior()
     direction = @space.get_direction(@level.warrior.space)
     target = @space.get_relative_space(direction, @range)
-    if @warrior_in_range() && !@blocked(target)
-      @direction = direction
-      @attack(@direction)
+    @direction = direction
+    @attack(@direction)
 
 class Slime extends Enemy
+  damage: 3
+  health: 15
 class Tauren extends Enemy
+  damage: 3
+  health: 20
 
 class Wizard extends Enemy
   attack_method: MagicAttack
@@ -205,7 +211,9 @@ class Wizard extends Enemy
       @space.relative(i...)
 
 class Archer extends Enemy
-  attack_method: RangedAttack
+  attack_action: Shot
+  health: 10
+  damage: 3
 
   get_attack_area: ->
     [
@@ -216,16 +224,11 @@ class Archer extends Enemy
     ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
   per_turn_strategy: ->
+    return if !@can_attack_warrior()
     direction = @space.get_direction(@level.warrior.space)
-    distance = @space.range(@level.warrior.space).length + 1
-    if @space.x == 5 && @space.y == 0
-      console.log("我被挡住了么？", @blocked(@level.warrior.space))
-      console.log("方向: ", direction, " 距离: ", distance)
-    return if @blocked(@level.warrior.space)
-    if @warrior_in_range()
-      console.log("射击！", "距离", distance)
-      @direction = direction
-      @attack(@direction, distance)
+    distance = @space.get_distance(@level.warrior.space)
+    @direction = direction
+    @attack(@direction, distance)
 
 class Creeper extends Enemy
   excited: false

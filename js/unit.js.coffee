@@ -23,7 +23,7 @@ class Unit extends Base
     @level = @space.level
 
   remove: ->
-    @remove_tag = true
+    @remove_flag = true
 
   type: ->
     return "item" if @ instanceof Item

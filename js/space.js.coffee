@@ -90,7 +90,7 @@ class Space
       return jQuery.map x_points, (x) =>
         this.level.get_space(x, this.y)
 
-    if this.x - another_space.x == this.y -another_space.y
+    if Math.abs(this.x - another_space.x) == Math.abs(this.y - another_space.y)
       x_points = @_range_index_arr(this.x, another_space.x)
       y_points = @_range_index_arr(this.y, another_space.y)
       return jQuery.map x_points, (x, index) =>
@@ -131,17 +131,17 @@ class Space
       return
 
   destroy_removed_unit: ->
-    if @character != null && @character.remove_tag
+    if @character != null && @character.remove_flag
       @character.space = null
       @character = null
 
-    if @item != null && @item.remove_tag
+    if @item != null && @item.remove_flag
       @item.space = null
       @item = null 
 
     new_shurikens = []
     for shuriken in @shurikens
-      if shuriken.remove_tag
+      if shuriken.remove_flag
         shuriken.space = null
         continue
       new_shurikens.push(shuriken)
@@ -181,9 +181,32 @@ class Space
   relative: (x, y)->
     @level.get_space(@x + x, @y + y)
 
+  get_relative_space_in_map: (dir, distance) ->
+    switch dir
+      when "left-up"    then @relative_in_map(-distance, -distance)
+      when "left-down"  then @relative_in_map(-distance, distance)
+      when "right-up"   then @relative_in_map(distance, -distance)
+      when "right-down" then @relative_in_map(distance, distance)
+      when "up"         then @relative_in_map(0, -distance)
+      when "down"       then @relative_in_map(0, distance)
+      when "left"       then @relative_in_map(-distance, 0)
+      when "right"      then @relative_in_map(distance, 0)
+      else throw new Error("Invalid dir!")
+
+  relative_in_map: (x, y)->
+    px = @x + x
+    px = Math.max(px, 0)
+    px = Math.min(px, @level.width - 1)
+
+    py = @y + y
+    py = Math.max(py, 0)
+    py = Math.min(py, @level.height - 1)
+
+    @level.get_space(px, py)
+
   receive: (action)->
     switch action.constructor
-      when Walk, Attack
+      when Walk, Attack, Shot
         action.perform()
       when Explode
         @units.each (u)->
@@ -196,6 +219,15 @@ class Space
         @item.take_interact(action) if @item
         if @shurikens.length > 0
           fa.take_interact(action) for fa in @shurikens
+
+  get_distance: (another_space) ->
+    if another_space.x == @x
+      return Math.abs(another_space.y - @y)
+    if another_space.y == @y
+      return Math.abs(another_space.x - @x)
+    if Math.abs(@x - another_space.x) == Math.abs(@y - another_space.y)
+      return Math.abs(@x - another_space.x)
+    return null
 
   # API
   has_enemy: ->
