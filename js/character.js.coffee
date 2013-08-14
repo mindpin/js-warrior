@@ -9,6 +9,7 @@ class Character extends Unit
 
   constructor: (@space)->
     super(@space)
+    @max_health = @health
 
   in_range: (space)->
     result = @get_attack_area().some (s)->
@@ -21,19 +22,21 @@ class Character extends Unit
   attack: (direction, distance)->
     @ensure_not_played =>
       !distance && distance = 1
+      @direction = direction
+
+      target = @space.get_relative_space(@direction, distance)
       attack = (new Attack(@damage))
         .set('direction', direction)
-        .set('target', target)
-      @direction = direction
-      target = @space.get_relative_space(direction, distance)
+        .set('target', target.character)
+
       target.receive(attack)
       @action_info = new ActionInfo(attack)
 
   take_attack: (atk)->
     @health = @health - atk.damage
+
     if @health <= 0
       @remove()
-      @remove_tag = true
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
@@ -66,7 +69,7 @@ class Character extends Unit
 
 class Warrior extends Character
   items: []
-  health: 16
+  health: 20
   attack_method: MeleeAttack
 
   constructor: (@space)->
@@ -98,7 +101,7 @@ class Warrior extends Character
       s.item.constructor == Wall ||
       s.character
     
-  shuriken: (direction, distance)->
+  shoot: (direction, distance)->
     @ensure_not_played =>
       # 目标space
       space = null
@@ -123,12 +126,22 @@ class Warrior extends Character
           return drop_space.receive(shuriken_attack)
       space.receive(shuriken_attack)
 
+  rest: ->
+    @ensure_not_played =>
+      console.log "休息前: #{@health}/#{@max_health}"
+
+      result   = @health + 3
+      exceeded = result > @max_health
+      @health  = if exceeded then @max_health else result 
+
+      console.log "休息后: #{@health}/#{@max_health}\n\n\n\n"
+
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
     shuriken.outof_inventory(@)
     shuriken
 
-  move: (direction)->
+  walk: (direction)->
     @direction = direction
     @ensure_not_played =>
       target = @space.get_relative_space(direction, 1)
@@ -153,16 +166,16 @@ class Warrior extends Character
       i.constructor == type
 
   left: ->
-    @move("left")
+    @walk("left")
 
   right: ->
-    @move("right")
+    @walk("right")
 
   up: ->
-    @move("up")
+    @walk("up")
 
   down: ->
-    @move("down")
+    @walk("down")
 
   feel: (direction)->
     @space.get_relative_space(direction, 1)
@@ -184,7 +197,7 @@ class Enemy extends Character
       @attack(@direction)
 
 class Slime extends Enemy
-  health: 10
+  health: 4
 class Tauren extends Enemy
 
 class Wizard extends Enemy

@@ -1,6 +1,4 @@
 class ActionInfo
-  #constructor: (@type, @target, @damage, @landing_point, @direction)->
-
   constructor: (@action)->
     @action = new Idle if !@action
     @type = @action.class_name()  
@@ -19,6 +17,7 @@ class BaseAction
 
 class Idle extends BaseAction
 class Walk extends BaseAction
+class Rest extends BaseAction
 
 class Attack extends BaseAction
   constructor: (@damage)->
