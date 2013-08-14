@@ -12,7 +12,7 @@ class Unit
     @property prop, get: func
 
   remove: ->
-    @remove_flag = true
+    @remove_tag = true
 
   type: ->
     return "item" if @ instanceof Item

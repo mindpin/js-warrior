@@ -17,16 +17,12 @@ game.player.play_turn = function(warrior){
     return warrior.feel(direction).has_enemy();
   }
 
-  if(warrior.health < 10) {
-   if (!has_enemy('right')) return warrior.rest()
-   return warrior.walk('left');
-  }
+  if (warrior.health < 20 && !has_enemy('right')) return warrior.rest();
+  if (warrior.health < 10 && has_enemy('right')) return warrior.walk('left');
 
-  if(has_enemy('right')) {
-    warrior.attack('right')
-    return
-  }
-  warrior.right()
+  if(has_enemy('right')) return warrior.attack('right')
+
+  return warrior.right()
 }</textarea>
     </div>
     <div class='btns'>

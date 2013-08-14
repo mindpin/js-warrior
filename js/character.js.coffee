@@ -32,11 +32,14 @@ class Character extends Unit
       target.receive(attack)
       @action_info = new ActionInfo(attack)
 
-  take_attack: (atk)->
-    @health = @health - atk.damage
+  health_delta: (delta)->
+    result   = @health + delta
+    exceeded = result > @max_health
+    @health  = if exceeded then @max_health else result 
 
-    if @health <= 0
-      @remove()
+  take_attack: (atk)->
+    @health_delta(-atk.damage)
+    @remove() if @health <= 0
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
@@ -128,13 +131,7 @@ class Warrior extends Character
 
   rest: ->
     @ensure_not_played =>
-      console.log "休息前: #{@health}/#{@max_health}"
-
-      result   = @health + 3
-      exceeded = result > @max_health
-      @health  = if exceeded then @max_health else result 
-
-      console.log "休息后: #{@health}/#{@max_health}\n\n\n\n"
+      @health_delta(3)
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
@@ -197,7 +194,7 @@ class Enemy extends Character
       @attack(@direction)
 
 class Slime extends Enemy
-  health: 4
+  health: 12
 class Tauren extends Enemy
 
 class Wizard extends Enemy
