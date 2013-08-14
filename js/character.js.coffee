@@ -2,7 +2,7 @@ class Character extends Unit
   is_character: true
   destroyable: true
   remove_tag: false
-  action_info: new ActionInfo("idle")
+  action_info: new ActionInfo
   direction: "down"
   damage: 3
   health: 0
@@ -21,11 +21,13 @@ class Character extends Unit
   attack: (direction, distance)->
     @ensure_not_played =>
       !distance && distance = 1
-      attack = new Attack(@damage)
+      attack = (new Attack(@damage))
+        .set('direction', direction)
+        .set('target', target)
       @direction = direction
       target = @space.get_relative_space(direction, distance)
       target.receive(attack)
-      @action_info = new ActionInfo(attack.class_name(), target.character, @damage, undefined, @direction)
+      @action_info = new ActionInfo(attack)
 
   take_attack: (atk)->
     @health = @health - atk.damage
@@ -40,7 +42,7 @@ class Character extends Unit
     @played = true
 
   reset_action: ->
-    @action_info = new ActionInfo("idle")
+    @action_info = new ActionInfo
 
   reset_played: ->
     @played = false
@@ -96,14 +98,20 @@ class Warrior extends Character
       s.item.constructor == Wall ||
       s.character
     
-  shuriken: (space)->
+  shuriken: (direction, distance)->
     @ensure_not_played =>
+      # 目标space
+      space = null
+      # 目标路线中的敌人space
+      enemy_space = @shuriken_range.filter((s)=> s.character)[0]
       return if !@in_shuriken_range(space)
-      shuriken_attack = new ShurikenAttack(@damage)
+      shuriken_attack = (new ShurikenAttack(@damage))
+        .set('target', enemy_space.character)
+        .set('direction', direction)
+
       if @shuriken_blocked(space)
-        enemy_space = @shuriken_range.filter((s)=> s.character)[0]
         if enemy_space
-          @action_info = new ActinInfo(shuriken_attack.class_name(), enemy_space.character, @damage, enemy_space)
+          @action_info = new ActinInfo(shuriken_attack)
 
           return enemy_space.receive(shuriken_attack)
 
@@ -126,7 +134,8 @@ class Warrior extends Character
       target = @space.get_relative_space(direction, 1)
       return if target.character
   
-      @action_info = new ActionInfo("walk")
+      walk = (new Walk).set('direction', direction)
+      @action_info = new ActionInfo(walk)
       @action_info.direction = direction
       @space.unlink(@)
       target.link(@)
