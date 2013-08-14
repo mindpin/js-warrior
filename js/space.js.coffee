@@ -183,11 +183,11 @@ class Space
 
   receive: (action)->
     switch action.constructor
+      when Walk, Attack
+        action.perform()
       when Explode
         @units.each (u)->
           u.remove() if u.destroyable
-      when Attack
-        @character.take_attack(action) if @character
       when ShurikenAttack
         shuriken = @level.warrior.draw_a_shuriken()
         @character.take_attack(action) if @character

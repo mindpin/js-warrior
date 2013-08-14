@@ -1,4 +1,8 @@
 class Base
+  set: (field, value)->
+    @[field] = value
+    @
+
   property: (prop, desc)->
     Object.defineProperty @, prop, desc
 
@@ -17,7 +21,6 @@ class Unit extends Base
 
   constructor: (@space)->
     @level = @space.level
-    @warrior = @level.warrior
 
   remove: ->
     @remove_tag = true
