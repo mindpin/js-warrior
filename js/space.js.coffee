@@ -103,9 +103,6 @@ class Space
     result.shift()
     return result
 
-  is_empty: ->
-    @character == null && @item == null && @shurikens.length == 0
-
   link: (unit) ->
     unit.space = this
     if unit.constructor == Shuriken
@@ -200,7 +197,30 @@ class Space
         if @shurikens.length > 0
           fa.take_interact(action) for fa in @shurikens
 
+  # API
   has_enemy: ->
     return @character && @character.constructor != Warrior
+
+  has_door: ->
+    return @item && @item.constructor == Door
+
+  has_key: ->
+    return @item && @item.constructor == Key
+
+  has_lock: ->
+    return @item && @item.constructor == Lock
+
+  has_diamond: ->
+    return @item && @item.constructor == Diamond
+
+  has_wall: ->
+    return @item && @item.constructor == Wall
+
+  has_shuriken: ->
+    return @shurikens.length != 0
+
+  is_empty: ->
+    @character == null && @item == null && @shurikens.length == 0
+
 
 window.Space = Space
