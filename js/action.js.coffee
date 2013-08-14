@@ -13,25 +13,25 @@ class Action extends Base
 
 class Idle extends Action
 class Walk extends Action
-  constructor: (@warrior, @direction, @target_space)->
+  constructor: (@actor, @direction, @target_space)->
 
   perform: ->
-    @warrior.direction = @direction
-    @target_space || @target_space = @warrior.space.get_relative_space(@direction, 1)
+    @actor.direction = @direction
+    @target_space || @target_space = @actor.space.get_relative_space(@direction, 1)
     return if !@target_space || @target_space.character && @target_space.constructor == Wall # TODO extract this condition to space
-    @warrior.update_link(@target_space)
-    @warrior.action_info = new ActionInfo(@)
+    @actor.update_link(@target_space)
+    @actor.action_info = new ActionInfo(@)
 
 class Rest extends Action
 class Attack extends Action
-  constructor: (@character, @direction, @target_space)->
-    @damage = @character.damage
+  constructor: (@actor, @direction, @target_space)->
+    @damage = @actor.damage
     @target = @target_space.character
   
   perform: ->
-    @character.direction = @direction
+    @actor.direction = @direction
     @target.take_attack(@) if @target
-    @character.action_info = new ActionInfo(@)
+    @actor.action_info = new ActionInfo(@)
 
 class Interact extends Action
   constructor: (@warrior)->

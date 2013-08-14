@@ -52,7 +52,7 @@ class Character extends Unit
       [-1, 1], [0, 1], [1, 1],
       [-1, 0], [1, 0],
       [-1, -1], [0, -1], [1, -1]
-    ].map((i)=> @space.relative(i...)).filter((s)=> s != null)
+    ].map((i)=> @space.relative(i...)).filter((s)=> !s)
 
   per_turn_strategy: ->
 
@@ -71,7 +71,7 @@ class Warrior extends Character
 
   constructor: (@space)->
     super(@space)
-    @shurikens = [new Shuriken for i in [1..Shuriken.max_num]]
+    @shurikens = [new Shuriken for i in [1..Shuriken.max_num()]]
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
 
@@ -85,24 +85,24 @@ class Warrior extends Character
       [0, -1], [0, -2], [0, -3],
       [1, 0], [2, 0], [3, 0],
       [-1, 0], [-2, 0], [-3, 0]
-    ].map (i)=>
-      @space.relative(i...).filter((s)=> s != null)
+    ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
   in_shuriken_range: (space)->
-    @get_shuriken_range().some (s)-> s == space
+    @get_shuriken_range().some (s)=> s == space
 
   shoot: (direction, distance)->
     @ensure_not_played =>
-      target = @space.get_relative_space(direction, distance)
+      target_space = @space.get_relative_space(direction, distance)
 
-      return if !@in_shuriken_range(target)
-      range = @space.range(target)
+      return if !@in_shuriken_range(target_space) #不在射程内
+      range = @space.range(target_space)
       @direction = direction
       shuriken_attack = (new ShurikenAttack(@damage)).set('direction', direction)
 
-      if @blocked(target) #如果被阻挡
+      if @blocked(target_space) #如果被阻挡
         enemy_space = range.filter((s)=> s.character)[0]
         if enemy_space #如果被怪阻挡
+          console.log("被怪阻挡")
           shuriken_attack
             .set('target', enemy_space.character)
             .set('landing_space', enemy_space)
@@ -112,19 +112,27 @@ class Warrior extends Character
         wall_space = range.filter((s)=> s.constructor == Wall)[0]
         drop_space = @space.range(wall_space)[rang.length - 1]
         if drop_space #如果被墙阻挡
+          console.log("被墙阻挡")
           shuriken_attack.set('landing_space', drop_space)
           @action_info = new ActinInfo(shuriken_attack)
           return drop_space.receive(shuriken_attack)
 
       shuriken_attack
-        .set('target', target.character)
-        .set('landing_space', target)
+        .set('target', target_space.character)
+        .set('landing_space', target_space)
 
-      space.receive(shuriken_attack)
+      target_space.receive(shuriken_attack)
+
+  has_shuriken: ->
+    @shurikens.length > 0
 
   rest: ->
     @ensure_not_played =>
       @health_delta(3)
+
+  look: (direction)->
+    target_space = @space.get_relative_space(direction, 4)
+    @space.range(target_space)
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
