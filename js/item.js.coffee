@@ -11,7 +11,7 @@ class Pickable extends Item
 
   take_interact: (interact)->
     @into_inventory(interact.warrior)
-    @space.unlink(@)
+    @update_link()
 
   into_inventory: (warrior)->
     warrior.items.push @
@@ -38,7 +38,7 @@ class Diamond extends Pickable
 class Key extends Pickable
 
 class Shuriken extends Pickable
-  max_num = 0
+  max_num = 3
 
   constructor: ->
 
