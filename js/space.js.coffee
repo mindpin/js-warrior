@@ -201,6 +201,21 @@ class Space
   has_enemy: ->
     return @character && @character.constructor != Warrior
 
+  has_slime: ->
+    return @character && @character.constructor == Slime
+
+  has_tauren: ->
+    return @character && @character.constructor == Tauren
+
+  has_creeper: ->
+    return @character && @character.constructor == Creeper
+
+  has_archer: ->
+    return @character && @character.constructor == Archer
+
+  has_wizard: ->
+    return @character && @character.constructor == Wizard
+
   has_door: ->
     return @item && @item.constructor == Door
 
