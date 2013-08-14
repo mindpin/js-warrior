@@ -18,7 +18,7 @@ class Walk extends Action
   perform: ->
     @actor.direction = @direction
     @target_space || @target_space = @actor.space.get_relative_space(@direction, 1)
-    return if !@target_space || @target_space.character && @target_space.constructor == Wall # TODO extract this condition to space
+    return if !@target_space || @target_space.character || @target_space.constructor == Wall # TODO extract this condition to space
     @actor.update_link(@target_space)
     @actor.action_info = new ActionInfo(@)
 

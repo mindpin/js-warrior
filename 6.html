@@ -10,13 +10,7 @@
 
   <div class='page-control-panel'>
     <div class='tips'>
-      js-warrior 是一个训练编程能力的游戏化教学场景。玩家可以通过对游戏角色的行为编程，来实现控制角色过关的过程。
-    </div>
-    <div class='tips'>
-      每个回合，系统会调用玩家实现的 game.player.play_turn 方法来控制游戏角色的行为，进行行走，攻击，和判断。
-    </div>    
-    <div class='tips'>
-      DEMO1：最简单的情况。反复调用 warrior.walk('right') 方法，让勇者一直向右走，就可以过关了
+      DEMO6：玩家能够调用勇者身上的一些API，例如，攻击，移动，休息。而这些API是有限的。想要过关，就必须通过思考，组合这些API，来实现越来越“智能”的AI，来战胜难关。
     </div>
     <div class='btns'>
       <a class='start' href='javascript:;'>运行</a>
@@ -25,7 +19,38 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  warrior.walk('right')  
+  var has_enemy = function(direction) {
+    return warrior.feel(direction).has_enemy()
+  }
+  var spot_enemy = function(direction) {
+    spaces = warrior.look(direction)
+    return spaces.some(function(s) {
+      return s.character
+    })
+  }
+  var spot_archer = function(direction) {
+    spaces = warrior.look(direction)
+    return spaces.some(function(s) {
+      return s.has_archer()
+    })
+  }
+
+
+  if( spot_archer('right') && !has_enemy('right') && warrior.health < 12 ){
+    warrior.left()
+    return
+  }
+
+  if( !has_enemy('right') && !spot_archer('right') && warrior.health < 20 ){
+    warrior.rest()
+    return
+  }
+
+  if (has_enemy('right')) return warrior.attack('right')
+
+  warrior.right()
+  this.prev_turn_hp = warrior.health
+  return 
 }
 </textarea>
     </div>
@@ -55,7 +80,9 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript" src='/ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['C0','','','','','','','','','I2']
+      ['','','','','','','','','',''],
+      ['C0','','','C2','','C4','C1','C2','','I2'],
+      ['','','','','','','','','',''],
     ]
 
     window.game_ui = new GameUi()

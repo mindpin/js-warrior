@@ -10,13 +10,7 @@
 
   <div class='page-control-panel'>
     <div class='tips'>
-      js-warrior 是一个训练编程能力的游戏化教学场景。玩家可以通过对游戏角色的行为编程，来实现控制角色过关的过程。
-    </div>
-    <div class='tips'>
-      每个回合，系统会调用玩家实现的 game.player.play_turn 方法来控制游戏角色的行为，进行行走，攻击，和判断。
-    </div>    
-    <div class='tips'>
-      DEMO1：最简单的情况。反复调用 warrior.walk('right') 方法，让勇者一直向右走，就可以过关了
+      DEMO4：前面有很多怪物，勇者寡不敌众，很快耗完了自己的生命值。
     </div>
     <div class='btns'>
       <a class='start' href='javascript:;'>运行</a>
@@ -25,6 +19,9 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
+  if (warrior.feel('right').has_enemy()) {
+    return warrior.attack('right')
+  }
   warrior.walk('right')  
 }
 </textarea>
@@ -55,7 +52,7 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript" src='/ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['C0','','','','','','','','','I2']
+      ['C0','','','C1','C1','C1','C2','C2','','I2']
     ]
 
     window.game_ui = new GameUi()

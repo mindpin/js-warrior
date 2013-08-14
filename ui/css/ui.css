@@ -75,20 +75,48 @@ body {
     -ms-transform: rotate(360deg);
     -o-transform: rotate(360deg); } }
 
-.page-control-panel {
+.page-links {
   position: fixed;
   top: 20px;
+  right: 40px; }
+  .page-links a {
+    color: #FEDE66;
+    display: block;
+    margin-bottom: 5px; }
+
+.page-control-panel {
+  position: fixed;
+  bottom: 20px;
   right: 20px; }
   .page-control-panel textarea {
     background-color: #222;
     color: white;
     border: solid 1px #666;
     padding: 5px;
-    font-size: 14px; }
-  .page-control-panel .btns a {
-    color: #ADC5EC; }
+    font-size: 14px;
+    resize: none;
+    overflow-y: scroll;
+    font-family: Consolas, "Liberation Mono", Courier, monospace; }
+  .page-control-panel .btns {
+    margin-bottom: 10px; }
+    .page-control-panel .btns a {
+      color: #ADC5EC; }
+    .page-control-panel .btns a.start {
+      color: white;
+      background-color: #5CA941;
+      width: 60px;
+      height: 32px;
+      line-height: 32px;
+      display: inline-block;
+      text-align: center;
+      border-radius: 3px;
+      text-decoration: none; }
+    .page-control-panel .btns a.pause {
+      display: none; }
   .page-control-panel .tips {
-    color: #ddd; }
+    color: #ddd;
+    width: 500px;
+    margin-bottom: 20px; }
 
 .page-js-warrior-game {
   background-color: rgba(255, 255, 255, 0.1);
@@ -179,9 +207,8 @@ body {
       background-position: -360px 0px; }
     .page-js-warrior-game .character.archer {
       background-position: -420px 0px; }
-    .page-js-warrior-game .character.archer {
-      background-position: -420px 0px; }
     .page-js-warrior-game .character .hp {
+      z-index: 7;
       position: absolute;
       font-size: 12px;
       color: white;
@@ -194,6 +221,22 @@ body {
       font-family: arial;
       font-weight: bold;
       text-shadow: 0 0 2px black; }
+    .page-js-warrior-game .character .hpbar {
+      z-index: 6;
+      position: absolute;
+      height: 5px;
+      line-height: 5px;
+      width: 40px;
+      left: 10px;
+      top: -4px;
+      text-align: center;
+      font-family: arial;
+      font-weight: bold;
+      box-shadow: 0 0 2px black;
+      background: black; }
+      .page-js-warrior-game .character .hpbar .p {
+        height: 100%;
+        background: #FF3300; }
   .page-js-warrior-game.f0 .character.warrior {
     background-position: -180px 0px; }
     .page-js-warrior-game.f0 .character.warrior.down {

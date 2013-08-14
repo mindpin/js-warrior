@@ -90,9 +90,16 @@ body {
   }
 }
 
-.page-control-panel {
+.page-links {
   position:fixed;
   top:20px;
+  right:40px;
+  a {color:#FEDE66; display:block; margin-bottom:5px;}
+}
+
+.page-control-panel {
+  position:fixed;
+  bottom:20px;
   right:20px;
   textarea {
     background-color:#222;
@@ -100,12 +107,31 @@ body {
     border:solid 1px #666;
     padding:5px;
     font-size:14px;
+    resize: none;
+    overflow-y:scroll;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
   }
   .btns {
+    margin-bottom:10px;
     a {color:#ADC5EC;}
+    a.start {
+      color:white;
+      background-color:#5CA941;
+      width:60px;
+      height:32px;line-height:32px;
+      display:inline-block;
+      text-align:center;
+      border-radius:3px;
+      text-decoration:none;
+    }
+    a.pause {
+      display:none;
+    }
   }
   .tips {
     color:#ddd;
+    width:500px;
+    margin-bottom:20px;
   }
 }
 
@@ -216,10 +242,18 @@ body {
       }
     }
     &.wizard { background-position:-360px 0px; }
-    &.archer { background-position:-420px 0px; }
-    &.archer { background-position:-420px 0px; }
+    &.archer { 
+      background-position:-420px 0px; 
+      // &.left {
+      //   -webkit-transform : scaleX(-1);
+      //   -moz-transform    : scaleX(-1);
+      //   -ms-transform     : scaleX(-1);
+      //   -o-transform      : scaleX(-1);
+      // }
+    }
 
     .hp {
+      z-index:7;
       position:absolute;
       font-size:12px;
       color:white;
@@ -230,6 +264,22 @@ body {
       font-family: arial;
       font-weight:bold;
       text-shadow:0 0 2px black;
+    }
+    .hpbar {
+      z-index:6;
+      position:absolute;
+      height:5px;line-height:5px;
+      width:40px;
+      left:10px;top:-4px;
+      text-align:center;
+      font-family: arial;
+      font-weight:bold;
+      box-shadow:0 0 2px black;
+      background:darken(#FF3300, 50%);
+
+      .p {
+        height:100%;background:#FF3300;
+      }
     }
   }
 
