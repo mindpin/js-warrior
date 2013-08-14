@@ -127,6 +127,29 @@ body {
       background-position: -480px 0px;
       animation: flying .25s infinite linear;
       -webkit-animation: flying .25s infinite linear; }
+    .page-js-warrior-game .item.arrow {
+      z-index: 4;
+      background-position: -540px 0px; }
+      .page-js-warrior-game .item.arrow.right {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg); }
+      .page-js-warrior-game .item.arrow.down {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg); }
+      .page-js-warrior-game .item.arrow.left {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        -o-transform: rotate(180deg); }
+      .page-js-warrior-game .item.arrow.up {
+        -webkit-transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+        -ms-transform: rotate(270deg);
+        -o-transform: rotate(270deg); }
   .page-js-warrior-game .character {
     width: 60px;
     height: 60px;
