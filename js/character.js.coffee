@@ -63,6 +63,11 @@ class Character extends Unit
   is_warrior: ->
     @class_name() == 'warrior'
 
+  remove: ->
+    super()
+    @space.character = null
+
+
 class Warrior extends Character
   items: []
   damage: 5
@@ -137,7 +142,7 @@ class Warrior extends Character
       (new Walk(@, direction)).perform()
 
   consume: (type)->
-    index = @items.indexOf first(type)
+    index = @items.indexOf @first(type)
     return if index == -1
     @items.splice(index, 1)
 
@@ -169,6 +174,7 @@ class Enemy extends Character
   range: 1
 
   can_attack_warrior: ->
+    return false if @level.warrior.remove_flag
     space = @level.warrior.space
     @in_range(space) && !@blocked(space)
 
@@ -245,17 +251,15 @@ class Creeper extends Enemy
     ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
   warrior_in_excited_area: ->
-    @excited_area.some (s)->
-      @warrior.space == s
+    @get_excited_area().some (s)=>
+      @level.warrior.space == s
 
   constructor: (space)->
     super(space)
-    @excited_area = @get_excited_area()
 
   set_excited: ->
     @ensure_not_played =>
-      @excited = true
-      @action_info = new ActionInfo("excited")
+      (new Excited(@)).perform()
 
   explode: ->
     @ensure_not_played =>

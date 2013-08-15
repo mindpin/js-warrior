@@ -2,48 +2,32 @@ class Level
   constructor: (game, level_data) ->
     @game = game
     @space_profile = @_build_profile(level_data)
-    @units   = @_refresh_units()
-    @warrior = @_build_warrior(@units)
-    @door    = @_build_door(@units)
+    @_build_warrior()
+    @_build_door()
 
     @max_diamond_count = @diamonds_in_floor().length
     @height = @space_profile.length
     @width = @space_profile[0].length
 
   enemies: ->
-    result = []
-    for unit in @units
-      if unit.is_character && unit.constructor != Warrior
-        result.push(unit)
-    return result
+    return @units().filter (unit)=>
+      unit.is_enemy()
 
   diamonds_in_floor: ->
-    result = []
-    for unit in @units
-      if unit.constructor == Diamond && !unit.picked
-        result.push(unit)
-    return result
+    return @units().filter (unit)=>
+      unit.class_name() == 'diamond' && !unit.picked
 
   keys_in_floor: ->
-    result = []
-    for unit in @units
-      if unit.constructor == Key && !unit.picked
-        result.push(unit) 
-    return result
+    return @units().filter (unit)=>
+      unit.class_name() == 'key' && !unit.picked
 
-  open_intrigues: ->
-    result = []
-    for unit in @units
-      if unit.constructor == Lock && unit.is_open
-        result.push(unit)
-    return result
+  opened_locks: ->
+    return @units().filter (unit)=>
+      unit.class_name() == 'lock' && unit.is_open
 
-  close_intrigues: ->
-    result = []
-    for unit in @units
-      if unit.constructor == Lock && !unit.is_open
-        result.push(unit)
-    return result
+  closed_locks: ->
+    return @units().filter (unit)=>
+      unit.class_name() == 'lock' && !unit.is_open
 
   has_diamond_destroy: ->
     count = @warrior.diamonds.length + @diamonds_in_floor().length
@@ -51,19 +35,23 @@ class Level
 
   key_not_enough: ->
     count = @warrior.keys.length + @keys_in_floor().length
-    return @open_intrigues().length > count
+    return @closed_locks().length > count
   
-  all_intrigue_open: ->
-    return @close_intrigues().length == 0
+  all_locks_opened: ->
+    return @closed_locks().length == 0
 
   all_diamond_is_picked: ->
     return @max_diamond_count == @warrior.diamonds.length
 
   passed: ->
-    @warrior.space == @door.space && @all_diamond_is_picked() && @all_intrigue_open()
+    @warrior.space == @door.space && 
+    @all_diamond_is_picked() && 
+    @all_locks_opened()
 
   failed: ->
-    @has_diamond_destroy() || @key_not_enough() || @warrior.remove_flag
+    @has_diamond_destroy() || 
+    @key_not_enough() || 
+    @warrior.remove_flag
 
   init: ->
     jQuery(document).on 'js-warrior:pause', =>
@@ -96,7 +84,6 @@ class Level
 
     @current_index = index
     if @is_turn_end()
-      @destroy_removed_unit()
       @turn_run()
       return
     # console.log('logic new action')
@@ -130,13 +117,6 @@ class Level
     s = new Space(this, '', -1, -1) if !s
     return s
     
-
-  destroy_removed_unit: ->
-    for floor in @space_profile
-      for space in floor
-        space.destroy_removed_unit()
-    @units = @_refresh_units()
-
   _build_profile: (level_data) ->
     result = []
 
@@ -149,25 +129,23 @@ class Level
 
     return result
 
-  _refresh_units: () ->
+  units: () ->
     result = []
     for floor in @space_profile
       for space in floor
-        character = space.character
-        item = space.item
-        shurikens = space.shurikens
-        result.push(character) if character != null
-        result.push(item)      if item      != null
-        result = result.concat(shurikens) if shurikens.length != 0
-
+        result = result.concat(space.units())
     return result
 
-  _build_warrior: (units) ->
-    for unit in @units
-      return unit if unit.constructor == Warrior
+  _build_warrior: ->
+    for unit in @units()
+      if unit.constructor == Warrior
+        @warrior = unit
+        return
 
-  _build_door: (units) ->
-    for unit in @units
-      return unit if unit.constructor == Door
+  _build_door: ->
+    for unit in @units()
+      if unit.constructor == Door
+        @door = unit
+        return
 
 window.Level = Level

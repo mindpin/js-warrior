@@ -1,6 +1,14 @@
 class Item extends Unit
   constructor: (@space)->
     super(@space)
+
+  remove: ->
+    super()
+    if @class_name() == 'shuriken'
+      @space.shurikens = @space.shurikens.filter (shuriken)=>
+        shuriken != @
+      return
+    @space.item = null
     
 class Pickable extends Item
   destroyable: true

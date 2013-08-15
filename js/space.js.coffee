@@ -26,7 +26,6 @@ class Space
     @x = x
     @y = y
     @_build(space_data)
-    @units = @_build_units
     @is_border = true if x == -1 && y == -1
 
   _build: (space_data) ->
@@ -73,12 +72,12 @@ class Space
 
     @shurikens.push(flying_item)
 
-  _build_units: ->
-    result = []
-    result.push(@character) if @character != null
-    result.push(@item) if @item != null
-    result = result.concat(@shurikens)
-    return result
+  units: ->
+    units = []
+    units.push(@character) if @character != null
+    units.push(@item) if @item != null
+    units = units.concat(@shurikens)
+    return units
 
   range: (another_space) ->
     if this.x == another_space.x
@@ -130,23 +129,6 @@ class Space
     if @item == unit
       @item = null
       return
-
-  destroy_removed_unit: ->
-    if @character != null && @character.remove_flag
-      @character.space = null
-      @character = null
-
-    if @item != null && @item.remove_flag
-      @item.space = null
-      @item = null 
-
-    new_shurikens = []
-    for shuriken in @shurikens
-      if shuriken.remove_flag
-        shuriken.space = null
-        continue
-      new_shurikens.push(shuriken)
-    @shurikens = new_shurikens
 
   get_direction: (another_space) ->
     if another_space.x < @x && another_space.y == @y

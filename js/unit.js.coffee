@@ -33,6 +33,9 @@ class Unit extends Base
     @space.unlink(@)
     target && target.link(@)
 
+  is_enemy: ->
+    @is_character && @class_name() != 'warrior'
+
 
 jQuery.extend window,
   Base: Base

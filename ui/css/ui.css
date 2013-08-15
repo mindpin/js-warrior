@@ -49,6 +49,36 @@ body {
     -o-transform: scale(0.9);
     opacity: 1; } }
 
+@keyframes creeper_explode {
+  0% {
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -o-transform: scale(0.9);
+    opacity: 1; }
+
+  100% {
+    -webkit-transform: scale(3);
+    -moz-transform: scale(3);
+    -ms-transform: scale(3);
+    -o-transform: scale(3);
+    opacity: 0; } }
+
+@-webkit-keyframes creeper_explode {
+  0% {
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -o-transform: scale(0.9);
+    opacity: 1; }
+
+  100% {
+    -webkit-transform: scale(3);
+    -moz-transform: scale(3);
+    -ms-transform: scale(3);
+    -o-transform: scale(3);
+    opacity: 0; } }
+
 @keyframes flying {
   0% {
     -webkit-transform: rotate(0deg);
@@ -203,6 +233,10 @@ body {
       .page-js-warrior-game .character.creeper.excited {
         animation: creeper .125s infinite linear;
         -webkit-animation: creeper .125s infinite linear; }
+      .page-js-warrior-game .character.creeper.explode {
+        animation: creeper_explode .6s linear;
+        -webkit-animation: creeper_explode .6s linear;
+        opacity: 0; }
     .page-js-warrior-game .character.wizard {
       background-position: -360px 0px; }
     .page-js-warrior-game .character.archer {

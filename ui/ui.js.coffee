@@ -138,6 +138,8 @@ class UnitAni
           , @TIME / 4
 
   hp_change: (change, func)->
+    return if @character.type() == 'item'
+
     if change >= 0
       klass = 'heal'
       html = "+#{change}"
@@ -238,6 +240,22 @@ class UnitAni
               @_rendered()
               $fireball.delay(300).hide 1, => $fireball.remove()
 
+  excited: ->
+    @$el.addClass('excited')
+    setTimeout =>
+      @_rendered()
+    , @TIME * 2
+
+  explode: ->
+    @$el
+      .removeClass('excited')
+      .addClass('explode')
+
+    setTimeout =>
+      @_rendered()
+    , @TIME * 2
+
+
   idle: ->
     @_rendered()
 
@@ -265,7 +283,7 @@ class GameUi
     jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
       info = character.action_info
 
-      console.log(character.class_name(), info)
+      # console.log(character.class_name(), info)
       if 'idle' == info.type
         character.ani.idle()
 
@@ -273,6 +291,7 @@ class GameUi
         character.ani.walk(info.direction)
 
       if 'attack' == info.type
+        console.log(info)
         character.ani.attack(info.direction)
         if info.target
           info.target.ani.be_attack(info.hp_change)
@@ -289,6 +308,15 @@ class GameUi
         if info.target
           character.ani.fireball(info.direction, info.target)
           info.target.ani.be_attack(info.hp_change)
+
+      if 'excited' == info.type
+        character.ani.excited()
+
+      if 'explode' == info.type
+        character.ani.explode()
+        for target in info.targets
+          if target.ani
+            target.ani.be_attack(info.hp_change)
 
   init: ->
     @init_map()

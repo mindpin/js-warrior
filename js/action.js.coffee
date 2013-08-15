@@ -3,6 +3,7 @@ class ActionInfo extends Base
     @action = new Idle if !@action
     @type = @action.class_name()  
     @target = @action.target
+    @targets = @action.targets
     @target_space = @action.target_space
     @landing_point = @action.landing_point
     @direction = @action.direction
@@ -50,15 +51,27 @@ class Interact extends Action
 
   steps: ->
     @item.take_interact(@) if @item
-    @shurikens.each (shuriken)=>
+    @shurikens.forEach (shuriken)=>
       shuriken.take_interact(@)
 
-class Explode extends Action
+class Excited extends Action
   constructor: (@actor)->
 
   steps: ->
-    @actor.get_attack_area().each (s)=>
-      s.units.each (u)=>
+    @actor.excited = true
+
+class Explode extends Action
+  constructor: (@actor)->
+    @hp_change = -10000
+    @targets = @actor.get_attack_area()
+      .map (s)=> 
+        s.units().filter((u)=> u.destroyable)
+      .reduce((a, b)=> a.concat b)
+
+  steps: ->
+    @actor.get_attack_area().forEach (s)=>
+      s.units().forEach (u)=>
+        u.health_delta(@hp_change) if u.is_character
         u.remove() if u.destroyable
 
 class Shot extends Attack
@@ -82,5 +95,6 @@ jQuery.extend window,
   Attack: Attack
   Shot: Shot
   Magic: Magic
+  Excited: Excited
   Explode: Explode
   Dart: Dart
