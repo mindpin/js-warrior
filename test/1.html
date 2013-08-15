@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>js-warrior ui page</title>
+  <link href="/ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <div class='page-js-warrior-game' style='display:none;'></div>
+
+  <div class='page-control-panel'>
+    <div class='btns'>
+      <a class='start' href='javascript:;'>运行</a>
+      <a class='pause' href='javascript:;'>暂停</a>
+    </div>
+    <div>
+<textarea class='code' style='width:500px;height:300px;'>
+game.player.play_turn = function(warrior){
+  if (warrior.feel('right').has_enemy()) {
+    return warrior.attack('right')
+  }
+  warrior.walk('right')  
+}
+</textarea>
+    </div>
+  </div>
+
+  <div class='page-links'>
+    <a href='index.html'>&gt; DEMO 1</a>
+    <a href='2.html'>&gt; DEMO 2</a>
+    <a href='3.html'>&gt; DEMO 3</a>
+    <a href='4.html'>&gt; DEMO 4</a>
+    <a href='5.html'>&gt; DEMO 5</a>
+    <a href='6.html'>&gt; DEMO 6</a>
+  <div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <script type="text/javascript" src="/coffee-script.js"></script>
+  <script type="text/coffeescript" src="/js/game.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/unit.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/action.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/player.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/character.js.coffee"></script>
+  <script type="text/coffeescript" src="/js/item.js.coffee"></script>
+
+  <script type="text/coffeescript" src='/ui/ui.js.coffee'></script>
+  <script type="text/coffeescript">
+    level_data = [
+      ['C0','I4','','','','I4','','','','I4'],
+      ['','','','I4','','C4','C1','I4','','I2'],
+    ]
+
+
+    window.game_ui = new GameUi()
+
+    window.game = new Game(level_data)
+    window.game.init()
+
+  </script>
+</body>
+</html>

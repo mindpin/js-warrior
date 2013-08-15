@@ -125,9 +125,11 @@ class Level
     
   get_space: (x, y) ->
     try
-      return @space_profile[y][x]
+      s = @space_profile[y][x]
     catch error
-      return null
+    s = new Space(this, '', -1, -1) if !s
+    return s
+    
 
   destroy_removed_unit: ->
     for floor in @space_profile
