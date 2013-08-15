@@ -183,13 +183,7 @@ class Space
     @level.get_space(@x + x, @y + y)
 
   receive: (action)->
-    switch action.constructor
-      when Walk, Attack, Shot, Explode, Dart
-        action.perform()
-      when Interact
-        @item.take_interact(action) if @item
-        if @shurikens.length > 0
-          fa.take_interact(action) for fa in @shurikens
+    action.perform()
 
   get_distance: (another_space) ->
     if another_space.x == @x

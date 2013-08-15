@@ -36,7 +36,15 @@ class Attack extends Action
     @actor.action_info = new ActionInfo(@)
 
 class Interact extends Action
-  constructor: (@warrior)->
+  constructor: (@actor)->
+    @target_space = @actor.space
+    @item = @target_space.item
+    @shurikens = @target_space.shurikens
+
+  perform: ->
+    @item.take_interact(@) if @item
+    @shurikens.each (shuriken)=>
+      shuriken.take_interact(@)
 
 class Explode extends Action
   constructor: (@actor)->
@@ -56,11 +64,11 @@ class Dart extends Attack
     @hp_change = -@actor.shuriken_damage
 
   perform: ->
-    console.log(@)
     @actor.direction = @direction
     shuriken = @actor.space.level.warrior.draw_a_shuriken()
-    @target.take_attack(@)
+    @target && @target.take_attack(@)
     @target_space.link(shuriken)
+    @actor.action_info = new ActionInfo(@)
 
 jQuery.extend window,
   Rest: Rest

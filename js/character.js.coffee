@@ -101,26 +101,21 @@ class Warrior extends Character
     @ensure_not_played =>
       dart = new Dart(@, direction, distance)
 
-      return if !@can_dart_space(dart.target_space) #不在射程内
+      return if !@can_dart_space(dart.target_space) #无法投掷
       range = @space.range(dart.target_space)
 
       if @blocked(dart.target_space) #如果被阻挡
         enemy_space = range.filter((s)=> s.character)[0]
-        if enemy_space #如果被怪阻挡
-          dart.set('landing_space', enemy_space)
-          @action_info = new ActionInfo(dart)
-          return enemy_space.receive(dart)
+        space = enemy_space if enemy_space #如果被怪阻挡
 
         wall_space = range.filter((s)=> s.constructor == Wall)[0]
         drop_space = @space.range(wall_space)[rang.length - 1]
-        if drop_space #如果被墙阻挡
-          dart.set('landing_space', drop_space)
-          @action_info = new ActionInfo(dart)
-          return drop_space.receive(dart)
+        space = drop_space if drop_space #如果被墙阻挡
+      else
+        space = dart.target_space
 
-      dart.set('landing_space', dart.target_space)
-      @action_info = new ActionInfo(dart)
-      dart.target_space.receive(dart)
+      dart.set('landing_space', space)
+      space.receive(dart)
 
   has_shuriken: ->
     @shurikens.length > 0
