@@ -25,8 +25,9 @@ class Walk extends Action
 class Rest extends Action
   constructor: (@actor, @hp_change)->
 class Attack extends Action
-  constructor: (@actor, @direction, @target_space)->
+  constructor: (@actor, @direction, @distance)->
     @hp_change = -@actor.damage
+    @target_space = @actor.space.get_relative_space(@direction, distance)
     @target_space && @target = @target_space.character
   
   perform: ->
@@ -38,13 +39,28 @@ class Interact extends Action
   constructor: (@warrior)->
 
 class Explode extends Action
+  constructor: (@actor)->
 
+  perform: ->
+    @actor.get_attack_area().each (s)=>
+      s.units.each (u)=>
+        u.remove() if u.destroyable
+    @actor.action_info = new ActionInfo(@)
 
 class MeleeAttack extends Attack
 class Shot extends Attack
 class MagicAttack extends Attack
-class ShurikenAttack extends Attack
+class Dart extends Attack
+  constructor: (@actor, @direction, @target_space, @landing_space)->
+    super(arguments...)
+    @hp_change = -@actor.shuriken_damage
 
+  perform: ->
+    console.log(@)
+    @actor.direction = @direction
+    shuriken = @actor.space.level.warrior.draw_a_shuriken()
+    @target.take_attack(@)
+    @target_space.link(shuriken)
 
 jQuery.extend window,
   Rest: Rest
@@ -57,4 +73,4 @@ jQuery.extend window,
   Shot: Shot
   MagicAttack: MagicAttack
   Explode: Explode
-  ShurikenAttack: ShurikenAttack
+  Dart: Dart
