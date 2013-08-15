@@ -89,6 +89,10 @@ class UnitAni
       'left' : [-1,  0]
       'up'   : [ 0, -1]
       'down' : [ 0,  1]
+      'left-up'    : [-1, -1]
+      'left-down'  : [-1,  1]
+      'right-up'   : [ 1, -1]
+      'right-down' : [ 1,  1]
 
     arr = hash[dir]
 
