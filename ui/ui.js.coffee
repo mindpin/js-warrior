@@ -7,6 +7,8 @@ class AniSound
     new Audio("sound/heal.mp3").play()
   @shot: ->
     new Audio("sound/arrow.mp3").play()
+  @fireball: ->
+    new Audio("sount/fireball.mp3").play()
 
 
 class UnitAni
@@ -182,68 +184,59 @@ class UnitAni
     if @character.remove_flag
       @$el.fadeOut => @$el.remove()
 
-  # fireball: (dir)->
-  #   x = @$el.data('x')
-  #   y = @$el.data('y')
+  fireball: (dir, target)->
+    # 蓄力动画
+    $spark1 = jQuery('<div></div>')
+      .addClass('item').addClass('spark')
+      .css
+        left: @left() - @CONST_W / 2
+        top:  @top() - @CONST_W / 2
+    $spark2 = jQuery('<div></div>')
+      .addClass('item').addClass('spark')
+      .css
+        left: @left() + @CONST_W / 2
+        top:  @top() - @CONST_W / 2
+    $spark3 = jQuery('<div></div>')
+      .addClass('item').addClass('spark')
+      .css
+        left: @left() + @CONST_W / 2
+        top:  @top() + @CONST_W / 2
+    $spark4 = jQuery('<div></div>')
+      .addClass('item').addClass('spark')
+      .css
+        left: @left() - @CONST_W / 2
+        top:  @top() - @CONST_W / 2
 
-  #   if dir == 'right'
-  #     # 蓄力动画
-  #     $spark1 = jQuery('<div></div>')
-  #       .addClass('item').addClass('spark')
-  #       .css
-  #         left: (x - 0.5) * @CONST_W
-  #         top:  (y - 0.5) * @CONST_W
-  #     $spark2 = jQuery('<div></div>')
-  #       .addClass('item').addClass('spark')
-  #       .css
-  #         left: (x + 0.5) * @CONST_W
-  #         top:  (y - 0.5) * @CONST_W
-  #     $spark3 = jQuery('<div></div>')
-  #       .addClass('item').addClass('spark')
-  #       .css
-  #         left: (x + 0.5) * @CONST_W
-  #         top:  (y + 0.5) * @CONST_W
-  #     $spark4 = jQuery('<div></div>')
-  #       .addClass('item').addClass('spark')
-  #       .css
-  #         left: (x - 0.5) * @CONST_W
-  #         top:  (y + 0.5) * @CONST_W
-
-  #     $spark1.appendTo(@$game).animate
-  #       left: x * @CONST_W
-  #       top:  y * @CONST_W
-  #       , => $spark1.remove()
-
-
-  #     $spark2.appendTo(@$game).delay(50).animate
-  #       left: x * @CONST_W
-  #       top:  y * @CONST_W
-  #       , => $spark2.remove()
-
-  #     $spark3.appendTo(@$game).delay(100).animate
-  #       left: x * @CONST_W
-  #       top:  y * @CONST_W
-  #       , => $spark3.remove()
-
-  #     $spark4.appendTo(@$game).delay(150).animate
-  #       left: x * @CONST_W
-  #       top:  y * @CONST_W
-  #       , =>
-  #         $spark4.remove()
-
-  #         new Audio("js/fireball.mp3?a").play()
-
-  #         $fireball = jQuery('<div></div>')
-  #           .addClass('item').addClass('fireball')
-  #           .css
-  #             left: x * @CONST_W
-  #             top:  y * @CONST_W
-  #           .appendTo(@$game)
-  #           .animate
-  #             left: (x + 3) * @CONST_W
-  #             top:  y * @CONST_W
-  #             , 250, =>
-  #               $fireball.delay(300).hide 1, => $fireball.remove()
+    $spark1.appendTo(@$game).animate
+      left: @left()
+      top:  @top()
+      , => $spark1.remove()
+    $spark2.appendTo(@$game).delay(50).animate
+      left: @left()
+      top:  @top()
+      , => $spark2.remove()
+    $spark3.appendTo(@$game).delay(100).animate
+      left: @left()
+      top:  @top()
+      , => $spark3.remove()
+    $spark4.appendTo(@$game).delay(150).animate
+      left: @left()
+      top:  @top()
+      , =>
+        AniSound.fireball()
+        $spark4.remove()
+        $fireball = jQuery('<div></div>')
+          .addClass('item').addClass('fireball')
+          .css
+            left: @left()
+            top:  @top()
+          .appendTo(@$game)
+          .animate
+            left: target.ani.left()
+            top:  target.ani.top()
+            , 150, =>
+              @_rendered()
+              $fireball.delay(300).hide 1, => $fireball.remove()
 
   idle: ->
     @_rendered()
@@ -272,7 +265,7 @@ class GameUi
     jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
       info = character.action_info
 
-      # console.log(character.class_name(), info)
+      console.log(character.class_name(), info)
       if 'idle' == info.type
         character.ani.idle()
 
@@ -290,6 +283,11 @@ class GameUi
       if 'shot' == info.type
         if info.target
           character.ani.shot(info.direction, info.target)
+          info.target.ani.be_attack(info.hp_change)
+
+      if 'magic' == info.type
+        if info.target
+          character.ani.fireball(info.direction, info.target)
           info.target.ani.be_attack(info.hp_change)
 
   init: ->

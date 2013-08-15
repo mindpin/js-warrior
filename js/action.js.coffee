@@ -42,7 +42,7 @@ class Explode extends Action
 
 class MeleeAttack extends Attack
 class Shot extends Attack
-class MagicAttack extends Attack
+class Magic extends Attack
 class ShurikenAttack extends Attack
 
 
@@ -55,6 +55,6 @@ jQuery.extend window,
   Attack: Attack
   MeleeAttack: MeleeAttack
   Shot: Shot
-  MagicAttack: MagicAttack
+  Magic: Magic
   Explode: Explode
   ShurikenAttack: ShurikenAttack

@@ -184,7 +184,7 @@ class Space
 
   receive: (action)->
     switch action.constructor
-      when Walk, Attack, Shot
+      when Walk, Attack, Shot, Magic
         action.perform()
       when Explode
         @units.each (u)->

@@ -198,7 +198,9 @@ class Tauren extends Enemy
   health: 20
 
 class Wizard extends Enemy
-  attack_method: MagicAttack
+  attack_action: Magic
+  damage: 7
+  health: 5
 
   get_attack_area: ->
     [
@@ -208,6 +210,13 @@ class Wizard extends Enemy
       [-2, 0], [0, 2], [2, 0], [0, -2]  
     ].map (i)=>
       @space.relative(i...)
+
+  per_turn_strategy: ->
+    return if !@can_attack_warrior()
+    direction = @space.get_direction(@level.warrior.space)
+    distance = @space.get_distance(@level.warrior.space)
+    @direction = direction
+    @attack(@direction, distance)
 
 class Archer extends Enemy
   attack_action: Shot
