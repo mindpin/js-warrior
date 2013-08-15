@@ -16,10 +16,25 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  if (warrior.feel('right').has_enemy()) {
-    return warrior.attack('right')
+  right_space = warrior.feel('right')
+  up_space = warrior.feel('up')
+  down_space = warrior.feel('down')
+
+  if(right_space.has_enemy()){
+    warrior.attack('right')
+  }else{
+    if(warrior.health < 20){
+      warrior.rest()
+    }else{
+      if(!right_space.is_blocked()){
+        warrior.walk('right')
+      }else if(!up_space.is_blocked()){
+        warrior.walk('up')
+      }else if(!down_space.is_blocked()){
+        warrior.walk('down')
+      }
+    }
   }
-  warrior.walk('right')  
 }
 </textarea>
     </div>
