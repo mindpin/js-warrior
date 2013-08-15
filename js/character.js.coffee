@@ -18,7 +18,7 @@ class Character extends Unit
 
   blocked: (space)->
     @space.range(space).some (s)=>
-      (s.item && s.item.constructor == Wall) || s.character
+      s.is_blocked()
 
   attack: (direction, distance)->
     @ensure_not_played =>

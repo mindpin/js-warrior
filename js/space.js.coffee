@@ -229,6 +229,9 @@ class Space
       return Math.abs(@x - another_space.x)
     return null
 
+  is_blocked: ->
+    @character || (@item && @item.constructor == Wall)
+
   # API
   has_enemy: ->
     return @character && @character.constructor != Warrior
