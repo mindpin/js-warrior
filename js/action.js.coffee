@@ -13,7 +13,8 @@ class Action extends Base
 
 class Idle extends Action
 class Walk extends Action
-  constructor: (@actor, @direction, @target_space)->
+  constructor: (@actor, @direction)->
+    @target_space = @actor.space.get_relative_space(direction, 1)
 
   perform: ->
     @actor.direction = @direction
@@ -24,6 +25,11 @@ class Walk extends Action
 
 class Rest extends Action
   constructor: (@actor, @hp_change)->
+
+  perform: ->
+    @actor.health_delta(@hp_change)
+    @actor.action_info = new ActionInfo(@)
+
 class Attack extends Action
   constructor: (@actor, @direction, @distance)->
     @hp_change = -@actor.damage
@@ -45,6 +51,7 @@ class Interact extends Action
     @item.take_interact(@) if @item
     @shurikens.each (shuriken)=>
       shuriken.take_interact(@)
+    @actor.action_info = new ActionInfo(@)
 
 class Explode extends Action
   constructor: (@actor)->
@@ -55,9 +62,8 @@ class Explode extends Action
         u.remove() if u.destroyable
     @actor.action_info = new ActionInfo(@)
 
-class MeleeAttack extends Attack
 class Shot extends Attack
-class MagicAttack extends Attack
+class Magic extends Attack
 class Dart extends Attack
   constructor: (@actor, @direction, @target_space, @landing_space)->
     super(arguments...)
@@ -77,8 +83,7 @@ jQuery.extend window,
   Interact: Interact
   ActionInfo: ActionInfo
   Attack: Attack
-  MeleeAttack: MeleeAttack
   Shot: Shot
-  MagicAttack: MagicAttack
+  Magic: Magic
   Explode: Explode
   Dart: Dart

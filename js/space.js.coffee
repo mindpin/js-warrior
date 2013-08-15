@@ -182,9 +182,6 @@ class Space
   relative: (x, y)->
     @level.get_space(@x + x, @y + y)
 
-  receive: (action)->
-    action.perform()
-
   get_distance: (another_space) ->
     if another_space.x == @x
       return Math.abs(another_space.y - @y)

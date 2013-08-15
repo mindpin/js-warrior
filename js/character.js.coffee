@@ -23,8 +23,7 @@ class Character extends Unit
   attack: (direction, distance)->
     @ensure_not_played =>
       !distance && distance = 1
-      attack = new @attack_action(@, direction, distance)
-      attack.target_space.receive(attack)
+      (new @attack_action(@, direction, distance)).perform()
 
   health_delta: (delta)->
     result   = @health + delta
@@ -81,7 +80,7 @@ class Warrior extends Character
 
   interact: ->
     @ensure_not_payed ->
-      @space.receive(new Interact(@))
+      (new Interact(@)).perform()
 
   get_shuriken_range: ->
     [
@@ -114,17 +113,14 @@ class Warrior extends Character
       else
         space = dart.target_space
 
-      dart.set('landing_space', space)
-      space.receive(dart)
+      dart.set('landing_space', space).perform()
 
   has_shuriken: ->
     @shurikens.length > 0
 
   rest: ->
     @ensure_not_played =>
-      @health_delta(3)
-      heal = new Rest(@, 3)
-      @action_info = new ActionInfo(heal)
+      (new Rest(@, 3)).perform()
 
   look: (direction)->
     target_space = @space.get_relative_space(direction, 4)
@@ -138,9 +134,7 @@ class Warrior extends Character
 
   walk: (direction)->
     @ensure_not_played =>
-      target = @space.get_relative_space(direction, 1)
-      walk   = new Walk(@, direction, target)
-      target.receive(walk)
+      (new Walk(@, direction)).perform()
 
   consume: (type)->
     index = @items.indexOf first(type)
@@ -194,7 +188,7 @@ class Tauren extends Enemy
   health: 20
 
 class Wizard extends Enemy
-  attack_method: MagicAttack
+  attack_method: Magic
 
   get_attack_area: ->
     [
@@ -256,8 +250,7 @@ class Creeper extends Enemy
 
   explode: ->
     @ensure_not_played =>
-      explode = new Explode(@)
-      @space.receive(explode)
+      (new Explode(@)).perform()
 
   per_turn_strategy: ->
     if @warrior_in_excited_area()
