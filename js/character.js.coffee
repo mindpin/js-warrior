@@ -51,9 +51,7 @@ class Character extends Unit
 
   get_attack_area: ->
     [
-      [-1, 1], [0, 1], [1, 1],
-      [-1, 0], [1, 0],
-      [-1, -1], [0, -1], [1, -1]
+      [0, 1], [-1, 0], [1, 0], [0, -1]
     ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
   per_turn_strategy: ->
@@ -194,6 +192,7 @@ class Enemy extends Character
 class Slime extends Enemy
   damage: 3
   health: 15
+
 class Tauren extends Enemy
   damage: 3
   health: 20
