@@ -72,6 +72,7 @@ class Warrior extends Character
 
   constructor: (@space)->
     super(@space)
+    @shurikens = @init_shurikens()
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
 
@@ -118,10 +119,11 @@ class Warrior extends Character
           return drop_space.receive(dart)
 
       dart.set('landing_space', dart.target_space)
+      @action_info = new ActionInfo(dart)
       dart.target_space.receive(dart)
 
   has_shuriken: ->
-    @shurikens && @shurikens.length > 0
+    @shurikens.length > 0
 
   rest: ->
     @ensure_not_played =>
@@ -134,7 +136,6 @@ class Warrior extends Character
     @space.range(target_space)
 
   draw_a_shuriken: ->
-    @shurikens || @shurikens = @init_shurikens()
     shuriken = @shurikens[0]
     console.log(@shurikens)
     shuriken.outof_inventory(@)
