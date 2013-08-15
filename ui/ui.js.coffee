@@ -271,10 +271,10 @@ class GameUi
       jQuery(document).trigger 'js-warrior:start', code
 
     jQuery(document).on 'js-warrior:win', (evt)=>
-      alert('你过关了！！')
+      # alert('你过关了！！')
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
-      alert('你失败了 :(')
+      # alert('你失败了 :(')
 
     jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
       @level = level
