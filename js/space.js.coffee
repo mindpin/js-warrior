@@ -27,6 +27,7 @@ class Space
     @y = y
     @_build(space_data)
     @units = @_build_units
+    @is_border = true if x == -1 && y == -1
 
   _build: (space_data) ->
     @character   = null
@@ -181,29 +182,6 @@ class Space
   relative: (x, y)->
     @level.get_space(@x + x, @y + y)
 
-  get_relative_space_in_map: (dir, distance) ->
-    switch dir
-      when "left-up"    then @relative_in_map(-distance, -distance)
-      when "left-down"  then @relative_in_map(-distance, distance)
-      when "right-up"   then @relative_in_map(distance, -distance)
-      when "right-down" then @relative_in_map(distance, distance)
-      when "up"         then @relative_in_map(0, -distance)
-      when "down"       then @relative_in_map(0, distance)
-      when "left"       then @relative_in_map(-distance, 0)
-      when "right"      then @relative_in_map(distance, 0)
-      else throw new Error("Invalid dir!")
-
-  relative_in_map: (x, y)->
-    px = @x + x
-    px = Math.max(px, 0)
-    px = Math.min(px, @level.width - 1)
-
-    py = @y + y
-    py = Math.max(py, 0)
-    py = Math.min(py, @level.height - 1)
-
-    @level.get_space(px, py)
-
   receive: (action)->
     switch action.constructor
       when Walk, Attack, Shot, Explode, Dart
@@ -223,7 +201,7 @@ class Space
     return null
 
   is_blocked: ->
-    @character || (@item && @item.constructor == Wall)
+    @is_border || !!@character || !!(@item && @item.constructor == Wall)
 
   # API
   has_enemy: ->

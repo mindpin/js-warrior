@@ -130,7 +130,7 @@ class Warrior extends Character
       @action_info = new ActionInfo(heal)
 
   look: (direction)->
-    target_space = @space.get_relative_space_in_map(direction, 4)
+    target_space = @space.get_relative_space(direction, 4)
     @space.range(target_space)
 
   draw_a_shuriken: ->
