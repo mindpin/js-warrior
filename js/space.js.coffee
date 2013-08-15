@@ -182,22 +182,6 @@ class Space
   relative: (x, y)->
     @level.get_space(@x + x, @y + y)
 
-  receive: (action)->
-    switch action.constructor
-      when Walk, Attack, Shot, Magic
-        action.perform()
-      when Explode
-        @units.each (u)->
-          u.remove() if u.destroyable
-      when ShurikenAttack
-        shuriken = @level.warrior.draw_a_shuriken()
-        @character.take_attack(action) if @character
-        @link(shuriken)
-      when Interact
-        @item.take_interact(action) if @item
-        if @shurikens.length > 0
-          fa.take_interact(action) for fa in @shurikens
-
   get_distance: (another_space) ->
     if another_space.x == @x
       return Math.abs(another_space.y - @y)

@@ -9,42 +9,69 @@ class ActionInfo extends Base
     @hp_change = @action.hp_change
 
 class Action extends Base
-  perform: ->
+  steps: ->
 
+  perform: ->
+    @steps()
+    if @actor
+      @actor.direction = @direction if @direction
+      @actor.action_info = new ActionInfo(@)
+    
 class Idle extends Action
 class Walk extends Action
-  constructor: (@actor, @direction, @target_space)->
+  constructor: (@actor, @direction)->
+    @target_space = @actor.space.get_relative_space(direction, 1)
 
-  perform: ->
+  steps: ->
     @actor.direction = @direction
-    @target_space || @target_space = @actor.space.get_relative_space(@direction, 1)
     return if !@target_space || @target_space.is_blocked()
     @actor.update_link(@target_space)
-    @actor.action_info = new ActionInfo(@)
 
 class Rest extends Action
   constructor: (@actor, @hp_change)->
+
+  steps: ->
+    @actor.health_delta(@hp_change)
+
 class Attack extends Action
-  constructor: (@actor, @direction, @target_space)->
+  constructor: (@actor, @direction, @distance)->
     @hp_change = -@actor.damage
+    @target_space = @actor.space.get_relative_space(@direction, distance)
     @target_space && @target = @target_space.character
   
-  perform: ->
-    @actor.direction = @direction
+  steps: ->
     @target.take_attack(@) if @target
-    @actor.action_info = new ActionInfo(@)
 
 class Interact extends Action
-  constructor: (@warrior)->
+  constructor: (@actor)->
+    @target_space = @actor.space
+    @item = @target_space.item
+    @shurikens = @target_space.shurikens
+
+  steps: ->
+    @item.take_interact(@) if @item
+    @shurikens.each (shuriken)=>
+      shuriken.take_interact(@)
 
 class Explode extends Action
+  constructor: (@actor)->
 
+  steps: ->
+    @actor.get_attack_area().each (s)=>
+      s.units.each (u)=>
+        u.remove() if u.destroyable
 
-class MeleeAttack extends Attack
 class Shot extends Attack
 class Magic extends Attack
-class ShurikenAttack extends Attack
+class Dart extends Attack
+  constructor: (@actor, @direction, @target_space, @landing_space)->
+    super(arguments...)
+    @hp_change = -@actor.shuriken_damage
 
+  steps: ->
+    shuriken = @actor.space.level.warrior.draw_a_shuriken()
+    @target && @target.take_attack(@)
+    @target_space.link(shuriken)
 
 jQuery.extend window,
   Rest: Rest
@@ -53,8 +80,7 @@ jQuery.extend window,
   Interact: Interact
   ActionInfo: ActionInfo
   Attack: Attack
-  MeleeAttack: MeleeAttack
   Shot: Shot
   Magic: Magic
   Explode: Explode
-  ShurikenAttack: ShurikenAttack
+  Dart: Dart

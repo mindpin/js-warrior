@@ -23,9 +23,7 @@ class Character extends Unit
   attack: (direction, distance)->
     @ensure_not_played =>
       !distance && distance = 1
-      target_space = @space.get_relative_space(@direction, distance)
-      attack = new @attack_action(@, direction, target_space)
-      target_space.receive(attack)
+      (new @attack_action(@, direction, distance)).perform()
 
   health_delta: (delta)->
     result   = @health + delta
@@ -68,17 +66,21 @@ class Character extends Unit
 class Warrior extends Character
   items: []
   damage: 5
+  shuriken_damage: 5
   health: 20
 
   constructor: (@space)->
     super(@space)
-    @shurikens = (new Shuriken for i in [1..Shuriken.max_num()])
+    @shurikens = @init_shurikens()
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
 
+  init_shurikens: ->
+    (new Shuriken for i in [1..Shuriken.max_num()])
+
   interact: ->
     @ensure_not_payed ->
-      @space.receive(new Interact(@))
+      (new Interact(@)).perform()
 
   get_shuriken_range: ->
     [
@@ -91,45 +93,34 @@ class Warrior extends Character
   in_shuriken_range: (space)->
     @get_shuriken_range().some (s)=> s == space
 
-  shoot: (direction, distance)->
+  can_dart_space: (space)->
+    @in_shuriken_range(space) && @has_shuriken()
+
+  dart: (direction, distance)->
     @ensure_not_played =>
-      target_space = @space.get_relative_space(direction, distance)
+      dart = new Dart(@, direction, distance)
 
-      return if !@in_shuriken_range(target_space) #不在射程内
-      range = @space.range(target_space)
-      @direction = direction
-      shuriken_attack = (new ShurikenAttack(@damage)).set('direction', direction)
+      return if !@can_dart_space(dart.target_space) #无法投掷
+      range = @space.range(dart.target_space)
 
-      if @blocked(target_space) #如果被阻挡
+      if @blocked(dart.target_space) #如果被阻挡
         enemy_space = range.filter((s)=> s.character)[0]
-        if enemy_space #如果被怪阻挡
-          shuriken_attack
-            .set('target', enemy_space.character)
-            .set('landing_space', enemy_space)
-          @action_info = new ActinInfo(shuriken_attack)
-          return enemy_space.receive(shuriken_attack)
+        space = enemy_space if enemy_space #如果被怪阻挡
 
         wall_space = range.filter((s)=> s.constructor == Wall)[0]
         drop_space = @space.range(wall_space)[rang.length - 1]
-        if drop_space #如果被墙阻挡
-          shuriken_attack.set('landing_space', drop_space)
-          @action_info = new ActinInfo(shuriken_attack)
-          return drop_space.receive(shuriken_attack)
+        space = drop_space if drop_space #如果被墙阻挡
+      else
+        space = dart.target_space
 
-      shuriken_attack
-        .set('target', target_space.character)
-        .set('landing_space', target_space)
-
-      target_space.receive(shuriken_attack)
+      dart.set('landing_space', space).perform()
 
   has_shuriken: ->
     @shurikens.length > 0
 
   rest: ->
     @ensure_not_played =>
-      @health_delta(3)
-      heal = new Rest(@, 3)
-      @action_info = new ActionInfo(heal)
+      (new Rest(@, 3)).perform()
 
   look: (direction)->
     target_space = @space.get_relative_space(direction, 4)
@@ -137,14 +128,13 @@ class Warrior extends Character
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
+    console.log(@shurikens)
     shuriken.outof_inventory(@)
     shuriken
 
   walk: (direction)->
     @ensure_not_played =>
-      target = @space.get_relative_space(direction, 1)
-      walk   = new Walk(@, direction, target)
-      target.receive(walk)
+      (new Walk(@, direction)).perform()
 
   consume: (type)->
     index = @items.indexOf first(type)
@@ -247,6 +237,13 @@ class Creeper extends Enemy
     ].map (i)=>
       @space.relative(i...)
 
+  get_attack_area: ->
+    [
+      [-1, 1], [0, 1], [1, 1],
+      [-1, 0], [1, 0],
+      [-1, -1], [0, -1], [1, -1]
+    ].map((i)=> @space.relative(i...)).filter((s)=> s)
+
   warrior_in_excited_area: ->
     @excited_area.some (s)->
       @warrior.space == s
@@ -261,11 +258,8 @@ class Creeper extends Enemy
       @action_info = new ActionInfo("excited")
 
   explode: ->
-    @attack_area.each (s)->
-      explode = new Explode
-      s.receive explode
-      characters = @attack_area.filter((s)=> s.character).map((s)=> s.character)
-      @action_info = new ActionInfo(explode.class_name(), characters)
+    @ensure_not_played =>
+      (new Explode(@)).perform()
 
   per_turn_strategy: ->
     if @warrior_in_excited_area()
