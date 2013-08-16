@@ -6,6 +6,7 @@ class Level
     @space_profile = @_build_profile(level_data)
     @_build_warrior()
     @_build_door()
+    @_build_character_chain()
 
     @max_diamond_count = @diamonds_in_floor().length
     @height = @space_profile.length
@@ -60,48 +61,35 @@ class Level
       @pausing = true
     jQuery(document).on 'js-warrior:resume', =>
       @pausing = false
-      @_character_run(@current_index+1)
+      @_character_run(@current_character.next)
     jQuery(document).on 'js-warrior:start', (event, user_input)=>
       @current_round = 0
       @pausing = false
       eval(user_input)
-      @turn_run()
+      @_character_run(@warrior)
     jQuery(document).trigger('js-warrior:init-ui', this)
 
-  # 让每一个 生物 都行动一次
-  turn_run: ->
-    @current_round += 1
-    @current_index = 0
-    @_character_run(0)
-
-  is_turn_end: ->
-    return @current_index == @characters().length
-
-  _character_run: (index)->
-    character = @get_character_by_index(index)
-
-    if character && character.is_warrior()
+  _character_run: (character)->
+    @current_character = character
+    if !@current_character || @current_character.is_warrior()
+      @current_round += 1
       return jQuery(document).trigger('js-warrior:win') if @passed()
       return jQuery(document).trigger('js-warrior:lose') if @failed()
 
-    @current_index = index
-    if @is_turn_end()
-      @turn_run()
-      return
     # console.log('logic new action')
     # console.log(cs)
     # console.log(character)
-    if character.constructor == Warrior
-      character.play(@game.player.play_turn)
+    if @current_character.is_warrior()
+      @current_character.play(@game.player.play_turn)
     else
-      character.play()
+      @current_character.play()
 
     jQuery(document).one 'js-warrior:render-ui-success', (event, character)=>
       character.reset_action()
       return if @pausing
-      @_character_run(index+1)
+      @_character_run(character.next)
 
-    jQuery(document).trigger('js-warrior:render-ui', character)
+    jQuery(document).trigger('js-warrior:render-ui', @current_character)
 
   characters: ->
     result = []
@@ -109,9 +97,6 @@ class Level
     result = result.concat(@enemies())
     return result
 
-  get_character_by_index: (index)->
-    return @characters()[index]
-    
   get_space: (x, y) ->
     try
       s = @space_profile[y][x]
@@ -149,5 +134,13 @@ class Level
       if unit.constructor == Door
         @door = unit
         return
+
+  _build_character_chain: ->
+    characters = @characters()
+    prev_character = characters[characters.length-1]
+    for character in @characters()
+      character.prev = prev_character
+      prev_character.next = character
+      prev_character = character
 
 window.Level = Level
