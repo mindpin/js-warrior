@@ -291,7 +291,6 @@ class GameUi
         character.ani.walk(info.direction)
 
       if 'attack' == info.type
-        console.log(info)
         character.ani.attack(info.direction)
         if info.target
           info.target.ani.be_attack(info.hp_change)
@@ -317,6 +316,12 @@ class GameUi
         for target in info.targets
           if target.ani
             target.ani.be_attack(info.hp_change)
+
+      if 'dart' == info.type
+        if info.target
+          alert('creeper 爆炸') if info.target.class_name() == "creeper"
+          info.target.ani.be_attack(info.hp_change)
+        jQuery(document).trigger 'js-warrior:render-ui-success', character
 
   init: ->
     @init_map()

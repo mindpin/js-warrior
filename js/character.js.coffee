@@ -99,7 +99,8 @@ class Warrior extends Character
   can_dart_space: (space)->
     @in_shuriken_range(space) && @has_shuriken()
 
-  dart: (direction, distance)->
+  dart: (direction)->
+    distance = 3
     @ensure_not_played =>
       dart = new Dart(@, direction, distance)
 
@@ -131,7 +132,6 @@ class Warrior extends Character
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
-    console.log(@shurikens)
     shuriken.outof_inventory(@)
     shuriken
 
@@ -244,7 +244,7 @@ class Creeper extends Enemy
   get_attack_area: ->
     [
       [-1, 1], [0, 1], [1, 1],
-      [-1, 0], [1, 0],
+      [-1, 0], [0, 0], [1, 0],
       [-1, -1], [0, -1], [1, -1]
     ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
@@ -262,6 +262,10 @@ class Creeper extends Enemy
   explode: ->
     @ensure_not_played =>
       (new Explode(@)).perform()
+
+  take_attack: (atk)->
+    super(atk)
+    (new Explode(@)).perform() if atk.class_name() == "dart"
 
   per_turn_strategy: ->
     if @warrior_in_excited_area()

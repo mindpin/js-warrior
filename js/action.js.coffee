@@ -83,8 +83,8 @@ class Dart extends Attack
 
   steps: ->
     shuriken = @actor.space.level.warrior.draw_a_shuriken()
-    @target && @target.take_attack(@)
     @target_space.link(shuriken)
+    @target && @target.take_attack(@)
 
 jQuery.extend window,
   Rest: Rest
