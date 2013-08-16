@@ -14,8 +14,12 @@ class Pickable extends Item
   destroyable: true
   picked: false
 
+  @make: (num)->
+    return [] if !num
+    (new @ for i in [1..num])
+
   constructor: (@space)->
-    super(@space)
+    super(@space) if @space
 
   take_interact: (interact)->
     @into_inventory(interact.warrior)
@@ -47,8 +51,6 @@ class Key extends Pickable
 
 class Shuriken extends Pickable
   max_num = 3
-
-  constructor: ->
 
   @max_num: ->
     max_num

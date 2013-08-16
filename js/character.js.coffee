@@ -8,7 +8,7 @@ class Character extends Unit
   damage: 3
   health: 0
 
-  constructor: (@space)->
+  constructor: (@space, shuriken_count, key_count)->
     super(@space)
     @max_health = @health
 
@@ -74,14 +74,12 @@ class Warrior extends Character
   shuriken_damage: 5
   health: 20
 
-  constructor: (@space)->
+  constructor: (@space, shuriken_count, key_count)->
     super(@space)
-    @shurikens = @init_shurikens()
+    @shurikens = Shuriken.make(shuriken_count)
+    @items = @items.concat(Key.make(key_count))
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
-
-  init_shurikens: ->
-    (new Shuriken for i in [1..Shuriken.max_num()])
 
   interact: ->
     @ensure_not_payed ->
