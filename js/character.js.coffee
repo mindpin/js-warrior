@@ -66,6 +66,10 @@ class Character extends Unit
   remove: ->
     super()
     @space.character = null
+    prev = @prev
+    next = @next
+    prev.next = next
+    next.prev = prev
 
 
 class Warrior extends Character
