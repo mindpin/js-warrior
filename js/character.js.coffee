@@ -86,7 +86,7 @@ class Warrior extends Character
     @getter "diamonds", -> @select_items Diamond
 
   interact: ->
-    @ensure_not_payed ->
+    @ensure_not_played =>
       (new Interact(@)).perform()
 
   get_shuriken_range: ->

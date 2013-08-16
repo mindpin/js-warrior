@@ -85,7 +85,6 @@ class Level
       @current_character.play()
 
     jQuery(document).one 'js-warrior:render-ui-success', (event, character)=>
-      console.log('run', @current_round, character)
       character.reset_action()
       return if @pausing
       @_character_run(character.next)

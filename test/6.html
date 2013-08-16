@@ -16,12 +16,34 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  if(!this.dartd){
-    warrior.dart('right')
-    this.dartd = true
+  if(!this.round_count){
+    this.round_count = 1
+  }
+  if(this.round_count == 1){
+    warrior.interact()
+    this.round_count += 1
     return
   }
-  warrior.walk('right')
+  if(this.round_count == 2 || this.round_count == 3 || this.round_count == 4){
+    warrior.dart('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 5 || this.round_count == 6 || this.round_count == 7){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 8){
+    warrior.interact()
+    this.round_count += 1
+    return
+  }
+  if(this.round_count > 8){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
 }
 </textarea>
     </div>
@@ -52,14 +74,14 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript">
     level_data = [
       ['',  '','CSlime','CSlime','CSlime',  '','','','',''],
-      ['CWarrior','','',  'CCreeper','CSlime',  '','','','','IDoor'],
+      ['CWarrior,FShuriken,FShuriken,FShuriken','','',  'CCreeper','CSlime',  '','','','','IDoor'],
       ['',  '','CSlime','CTauren','CSlime','','','','',''],
     ]
 
 
     window.game_ui = new GameUi()
 
-    window.game = new Game(level_data, 3)
+    window.game = new Game(level_data)
     window.game.init()
 
   </script>

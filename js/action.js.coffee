@@ -48,11 +48,12 @@ class Interact extends Action
     @target_space = @actor.space
     @item = @target_space.item
     @shurikens = @target_space.shurikens
+    @targets = [@item].concat(@shurikens)
+      .filter((i)=> i)
 
   steps: ->
-    @item.take_interact(@) if @item
-    @shurikens.forEach (shuriken)=>
-      shuriken.take_interact(@)
+    @targets.forEach (i)=>
+      i.take_interact(@)
 
 class Excited extends Action
   constructor: (@actor)->

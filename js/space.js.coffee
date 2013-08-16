@@ -89,19 +89,17 @@ class Space
       return
 
   unlink: (unit) ->
-    if unit.space == this
-      unit.space = null
     if unit.constructor == Shuriken
       index = @shurikens.indexOf(unit)
       return if index == -1
       @shurikens.splice(index,1)
-      return
-    if @character == unit
+    else if @character == unit
       @character = null
-      return
-    if @item == unit
+    else if @item == unit
       @item = null
-      return
+
+    if unit.space == this
+      unit.space = null
 
   get_direction: (another_space) ->
     if another_space.x < @x && another_space.y == @y

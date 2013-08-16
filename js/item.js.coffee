@@ -22,11 +22,12 @@ class Pickable extends Item
     super(@space) if @space
 
   take_interact: (interact)->
-    @into_inventory(interact.warrior)
+    @into_inventory(interact.actor)
     @update_link()
 
-  into_inventory: (warrior)->
-    warrior.items.push @
+  into_inventory: (actor)->
+    set = if @class_name() == "shuriken" then "shurikens" else "items"
+    actor[set].push @
     @picked = true
 
 class Fixed extends Item

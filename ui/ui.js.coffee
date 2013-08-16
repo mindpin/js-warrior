@@ -271,10 +271,10 @@ class GameUi
       jQuery(document).trigger 'js-warrior:start', code
 
     jQuery(document).on 'js-warrior:win', (evt)=>
-      # alert('你过关了！！')
+      alert('你过关了！！')
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
-      # alert('你失败了 :(')
+      alert('你失败了 :(')
 
     jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
       @level = level
@@ -321,6 +321,10 @@ class GameUi
         if info.target
           alert('creeper 爆炸') if info.target.class_name() == "creeper"
           info.target.ani.be_attack(info.hp_change)
+        jQuery(document).trigger 'js-warrior:render-ui-success', character
+
+      if 'interact' == info.type
+        console.log info.targets
         jQuery(document).trigger 'js-warrior:render-ui-success', character
 
   init: ->
