@@ -1,5 +1,7 @@
 class Level
-  constructor: (game, level_data) ->
+  constructor: (game, level_data, warrior_shuriken_count, warrior_key_count) ->
+    @warrior_init_shuriken_count = warrior_shuriken_count || 0
+    @warrior_init_key_count = warrior_key_count || 0
     @game = game
     @space_profile = @_build_profile(level_data)
     @_build_warrior()

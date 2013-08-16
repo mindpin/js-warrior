@@ -29,7 +29,10 @@ class Space
     throw '一个格子不能有两个生物' if @character != null
     klass = window[unit_data[1..-1]]
     if klass
-      @character = new klass(@)
+      if klass != Warrior
+        @character = new klass(@)
+        return
+      @character = new klass(@, @level.warrior_init_shuriken_count, @level.warrior_init_key_count)
 
   _build_item: (unit_data) ->
     throw '一个格子不能有两个 item' if @item != null
