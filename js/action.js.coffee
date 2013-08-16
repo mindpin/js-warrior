@@ -78,7 +78,7 @@ class Explode extends Action
 class Shot extends Attack
 class Magic extends Attack
 class Dart extends Attack
-  constructor: (@actor, @direction, @target_space, @landing_space)->
+  constructor: (@actor, @direction, @distance)->
     super(arguments...)
     @hp_change = -@actor.shuriken_damage
 

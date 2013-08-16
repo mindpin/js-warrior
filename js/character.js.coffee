@@ -98,7 +98,8 @@ class Warrior extends Character
     ].map((i)=> @space.relative(i...)).filter((s)=> s)
 
   in_shuriken_range: (space)->
-    @get_shuriken_range().some (s)=> s == space
+    @get_shuriken_range().some (s)=>
+      s == space
 
   can_dart_space: (space)->
     @in_shuriken_range(space) && @has_shuriken()
@@ -106,22 +107,17 @@ class Warrior extends Character
   dart: (direction)->
     distance = 3
     @ensure_not_played =>
+      return if !@has_shuriken()
       dart = new Dart(@, direction, distance)
-
-      return if !@can_dart_space(dart.target_space) #无法投掷
       range = @space.range(dart.target_space)
-
-      if @blocked(dart.target_space) #如果被阻挡
-        enemy_space = range.filter((s)=> s.character)[0]
-        space = enemy_space if enemy_space #如果被怪阻挡
-
-        wall_space = range.filter((s)=> s.constructor == Wall)[0]
-        drop_space = @space.range(wall_space)[rang.length - 1]
-        space = drop_space if drop_space #如果被墙阻挡
-      else
-        space = dart.target_space
-
-      dart.set('landing_space', space).perform()
+      blocked_space = range.filter((s)=> s.is_blocked())[0]
+      if blocked_space #如果被阻挡
+        if blocked_space.has_enemy() #如果被怪物阻挡
+          dart.target_space = blocked_space
+        if blocked_space.has_wall() || blocked_space.is_border #如果被墙和边界阻挡
+          dart.target_space = [@space].concat(@space.range(blocked_space)).pop()
+          
+      dart.set('landing_space', dart.target_space).perform()
 
   has_shuriken: ->
     @shurikens.length > 0

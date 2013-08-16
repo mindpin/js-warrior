@@ -1,10 +1,10 @@
 class Space
-  constructor: (level, space_data, x, y) ->
+  constructor: (level, space_data, x, y, is_border) ->
     @level = level
     @x = x
     @y = y
     @_build(space_data)
-    @is_border = true if x == -1 && y == -1
+    @is_border = true if is_border
 
   _build: (space_data) ->
     @character   = null
@@ -145,8 +145,7 @@ class Space
     return null
 
   is_blocked: ->
-    @is_border || !!@character || !!(@item && @item.constructor == Wall)
-
+    @is_border || !!@character || @has_wall()
   # API
   has_enemy: ->
     return @character && @character.constructor != Warrior
