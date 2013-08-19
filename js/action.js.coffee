@@ -1,13 +1,14 @@
 class ActionInfo extends Base
   constructor: (@action)->
-    @action = new Idle if !@action
-    @type = @action.class_name()  
-    @target = @action.target
-    @targets = @action.targets
-    @target_space = @action.target_space
+    @action        = new Idle if !@action
+    @type          = @action.class_name()  
+    @target        = @action.target
+    @targets       = @action.targets
+    @target_space  = @action.target_space
     @landing_point = @action.landing_point
-    @direction = @action.direction
-    @hp_change = @action.hp_change
+    @direction     = @action.direction
+    @hp_change     = @action.hp_change
+    @lock          = @action.lock
 
 class Action extends Base
   steps: ->
@@ -15,7 +16,7 @@ class Action extends Base
   perform: ->
     @steps()
     if @actor
-      @actor.direction = @direction if @direction
+      @actor.direction   = @direction if @direction
       @actor.action_info = new ActionInfo(@)
     
 class Idle extends Action
@@ -36,7 +37,7 @@ class Rest extends Action
 
 class Attack extends Action
   constructor: (@actor, @direction, @distance)->
-    @hp_change = -@actor.damage
+    @hp_change    = -@actor.damage
     @target_space = @actor.space.get_relative_space(@direction, distance)
     @target_space && @target = @target_space.character
   
@@ -46,10 +47,10 @@ class Attack extends Action
 class Interact extends Action
   constructor: (@actor)->
     @target_space = @actor.space
-    @item = @target_space.item
-    @shurikens = @target_space.shurikens
-    @targets = [@item].concat(@shurikens)
-      .filter((i)=> i)
+    @item         = @target_space.item
+    @lock         = @target_space.lock
+    @shurikens    = @target_space.shurikens
+    @targets      = [@item].concat(@shurikens).filter((i)=> i)
 
   steps: ->
     @targets.forEach (i)=>
@@ -88,14 +89,14 @@ class Dart extends Attack
     @target && @target.take_attack(@)
 
 jQuery.extend window,
-  Rest: Rest
-  Idle: Idle
-  Walk: Walk
-  Interact: Interact
+  Rest:       Rest
+  Idle:       Idle
+  Walk:       Walk
+  Interact:   Interact
   ActionInfo: ActionInfo
-  Attack: Attack
-  Shot: Shot
-  Magic: Magic
-  Excited: Excited
-  Explode: Explode
-  Dart: Dart
+  Attack:     Attack
+  Shot:       Shot
+  Magic:      Magic
+  Excited:    Excited
+  Explode:    Explode
+  Dart:       Dart

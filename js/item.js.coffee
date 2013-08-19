@@ -5,8 +5,8 @@ class Item extends Unit
   remove: ->
     super()
     if @class_name() == 'shuriken'
-      @space.shurikens = @space.shurikens.filter (shuriken)=>
-        shuriken != @
+      @space.shurikens = @space.shurikens
+        .filter((shuriken)=> @eq(shuriken))
       return
     @space.item = null
     
@@ -21,13 +21,18 @@ class Pickable extends Item
   constructor: (@space)->
     super(@space) if @space
 
+  is_shuriken: ->
+    @class_name() == "shuriken"
+
+  shurikens_or_items: ->
+    if @is_shuriken() then "shurikens" else "items"
+
   take_interact: (interact)->
     @into_inventory(interact.actor)
     @update_link()
 
   into_inventory: (actor)->
-    set = if @class_name() == "shuriken" then "shurikens" else "items"
-    actor[set].push @
+    actor[@shurikens_or_items()].push @
     @picked = true
 
 class Fixed extends Item
@@ -57,6 +62,9 @@ class Shuriken extends Pickable
     max_num
 
   picked: true
+
+  eq: (shuriken)->
+    @ == shuriken
 
   outof_inventory: (warrior)->
     index = warrior.shurikens.indexOf @
