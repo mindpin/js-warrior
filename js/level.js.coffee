@@ -71,7 +71,7 @@ class Level
 
   _character_run: (character)->
     @current_character = character
-    if !@current_character || @current_character.is_warrior()
+    if !@current_character || @current_character.is_warrior() || @warrior.remove_flag
       @current_round += 1
       return jQuery(document).trigger('js-warrior:win') if @passed()
       return jQuery(document).trigger('js-warrior:lose') if @failed()
