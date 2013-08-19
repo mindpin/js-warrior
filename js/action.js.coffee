@@ -50,7 +50,7 @@ class Interact extends Action
     @item         = @target_space.item
     @lock         = @target_space.lock
     @shurikens    = @target_space.shurikens
-    @targets      = [@item].concat(@shurikens).filter((i)=> i)
+    @targets      = [@item, @lock].concat(@shurikens).filter((i)=> i)
 
   steps: ->
     @targets.forEach (i)=>

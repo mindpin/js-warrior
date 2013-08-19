@@ -48,8 +48,8 @@ class Wall extends Fixed
 class Lock extends Fixed
   is_open: false
 
-  transit: (interact)->
-    interact.warrior.consume(Key)
+  transit: (action)->
+    action.actor.consume(Key)
     @is_open = true
 
 class Diamond extends Pickable
