@@ -11,6 +11,10 @@ class Level
     @max_diamond_count = @diamonds_in_floor().length
     @height = @space_profile.length
     @width = @space_profile[0].length
+    @actions_queue = []
+
+  add_action: (action)->
+    @actions_queue.push(action)
 
   enemies: ->
     return @units().filter (unit)=>
@@ -61,17 +65,18 @@ class Level
       @pausing = true
     jQuery(document).on 'js-warrior:resume', =>
       @pausing = false
-      @_character_run(@current_character.next)
+      @_character_run()
     jQuery(document).on 'js-warrior:start', (event, user_input)=>
       @current_round = 0
       @pausing = false
       eval(user_input)
-      @_character_run(@warrior)
+      @current_character = @warrior
+      @_character_run()
     jQuery(document).trigger('js-warrior:init-ui', this)
 
-  _character_run: (character)->
-    @current_character = character
-    if !@current_character || @current_character.is_warrior()
+  _character_run: ()->
+    @actions_queue = []
+    if !@current_character || @current_character.is_warrior() || @warrior.remove_flag
       @current_round += 1
       return jQuery(document).trigger('js-warrior:win') if @passed()
       return jQuery(document).trigger('js-warrior:lose') if @failed()
@@ -79,17 +84,18 @@ class Level
     # console.log('logic new action')
     # console.log(cs)
     # console.log(character)
+    @current_character.reset_action()
     if @current_character.is_warrior()
       @current_character.play(@game.player.play_turn)
     else
       @current_character.play()
 
-    jQuery(document).one 'js-warrior:render-ui-success', (event, character)=>
-      character.reset_action()
+    jQuery(document).one 'js-warrior:render-ui-success', ()=>
+      @current_character = @current_character.next()
       return if @pausing
-      @_character_run(character.next)
+      @_character_run()
 
-    jQuery(document).trigger('js-warrior:render-ui', @current_character)
+    jQuery(document).trigger('js-warrior:render-ui')
 
   characters: ->
     result = []
