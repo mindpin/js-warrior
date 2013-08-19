@@ -9,6 +9,8 @@ class AniSound
     new Audio("/sound/arrow.mp3").play()
   @fireball: ->
     new Audio("/sound/fireball.mp3").play()
+  @explode: ->
+    new Audio("/sound/explode.mp3").play()
 
 
 class UnitAni
@@ -140,6 +142,32 @@ class UnitAni
             @_rendered()
           , @TIME / 4
 
+  dart: (dir, target, hp_change)->
+    if target
+      target.ani.be_attack(hp_change)
+
+    AniSound.shot()
+    @_change_face_dir(dir)
+
+    $arrow = jQuery('<div></div>')
+      .addClass('item').addClass('shuriken').addClass('flying').addClass(dir)
+      .appendTo(@$game)
+
+    $arrow
+      .css
+        left: @left()
+        top: @top()
+      .delay(0)
+      .animate
+        left: target.ani.left()
+        top:  target.ani.top()
+        easing: 'easeout'
+        , @TIME / 2, =>
+          setTimeout =>
+            $arrow.fadeOut => $arrow.remove()
+            @_rendered()
+          , @TIME / 4
+
   hp_change: (change, func)->
     return if @character.type() == 'item'
 
@@ -254,6 +282,7 @@ class UnitAni
     , @TIME * 2
 
   explode: ->
+    AniSound.explode()
     @$el
       .removeClass('excited')
       .addClass('explode')
@@ -292,6 +321,7 @@ class GameUi
 
     jQuery(document).on 'js-warrior:render-ui', (evt)=>
       actions = @level.actions_queue
+      console.log actions
       return @warrior.ani.idle() if actions.length == 0
 
       @ani_action_queue_length = actions.length
@@ -309,7 +339,7 @@ class GameUi
 
 
   do_ani_action: (action)=>
-    console.log action, action.type
+    # console.log action, action.type
 
     type = action.type
     ani  = action.actor.ani
@@ -338,11 +368,19 @@ class GameUi
         if target.ani
           target.ani.be_attack(action.hp_change)
 
-      # if 'dart' == info.type
-      #   if info.target
-      #     alert('creeper 爆炸') if info.target.class_name() == "creeper"
-      #     info.target.ani.be_attack(info.hp_change)
-      #   jQuery(document).trigger 'js-warrior:render-ui-success', character
+    if 'dart' == type
+      ani.dart(action.direction, action.target, action.hp_change)
+
+    if action.next_action
+      setTimeout =>
+        @do_ani_action action.next_action
+      , 150
+
+
+      # if info.target
+      #   alert('creeper 爆炸') if info.target.class_name() == "creeper"
+      #   info.target.ani.be_attack(info.hp_change)
+      # jQuery(document).trigger 'js-warrior:render-ui-success', character
 
       # if 'interact' == info.type
       #   console.log info.targets

@@ -171,6 +171,7 @@ body {
     .page-js-warrior-game .item.diamond {
       background-position: -300px 0px; }
     .page-js-warrior-game .item.shuriken {
+      z-index: 4;
       background-position: -360px 0px; }
       .page-js-warrior-game .item.shuriken.flying {
         animation: flying .5s infinite linear;

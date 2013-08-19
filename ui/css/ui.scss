@@ -203,6 +203,7 @@ body {
       background-position:-300px 0px;
     }
     &.shuriken {
+      z-index:4;
       background-position:-360px 0px;
       &.flying {
         animation: flying .5s infinite linear;
