@@ -9,7 +9,7 @@ class Item extends Unit
     super()
     if @is_shuriken()
       @space.shurikens = @space.shurikens
-        .filter((shuriken)=> @eq(shuriken))
+        .filter((shuriken)=> @is(shuriken))
       return
     @space.item = null
     
@@ -63,7 +63,7 @@ class Shuriken extends Pickable
 
   picked: true
 
-  eq: (shuriken)->
+  is: (shuriken)->
     @ == shuriken
 
   outof_inventory: (warrior)->

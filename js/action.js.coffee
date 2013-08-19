@@ -18,6 +18,9 @@ class Action extends Base
     if @actor
       @actor.direction   = @direction if @direction
       @actor.action_info = new ActionInfo(@)
+
+  is_dart: ->
+    @class_name() == "dart"
     
 class Idle extends Action
 class Walk extends Action

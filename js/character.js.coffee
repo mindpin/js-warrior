@@ -1,12 +1,12 @@
 class Character extends Unit
-  is_character: true
-  destroyable: true
-  remove_flag: false
+  is_character:  true
+  destroyable:   true
+  remove_flag:   false
   attack_action: Attack
-  action_info: new ActionInfo
-  direction: "down"
-  damage: 3
-  health: 0
+  action_info:   new ActionInfo
+  direction:     "down"
+  damage:        3
+  health:        0
 
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
@@ -25,15 +25,16 @@ class Character extends Unit
       !distance && distance = 1
       (new @attack_action(@, direction, distance)).perform()
 
+  is_hp_exceeded: (hp)->
+    hp > @max_health
+
   health_delta: (delta)->
-    result   = @health + delta
-    exceeded = result > @max_health
-    @health  = if exceeded then @max_health else result 
+    hp      = @health + delta
+    @health = if @is_hp_exceeded(hp) then @max_health else hp
 
   take_attack: (atk)->
     @health_delta(atk.hp_change)
-    if @health <= 0
-      @remove() 
+    @remove() if @health <= 0
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
@@ -47,10 +48,15 @@ class Character extends Unit
   reset_played: ->
     @played = false
 
+  calculate_area: (array)->
+    array.map((i)=> @space.relative(i...)).filter((s)=> s)
+
+  attack_area_plan: [
+    [0, 1], [-1, 0], [1, 0], [0, -1]
+  ]
+
   get_attack_area: ->
-    [
-      [0, 1], [-1, 0], [1, 0], [0, -1]
-    ].map((i)=> @space.relative(i...)).filter((s)=> s)
+    @calculate_area @attack_area_plan
 
   per_turn_strategy: ->
 
@@ -71,7 +77,6 @@ class Character extends Unit
     prev.next = next
     next.prev = prev
 
-
 class Warrior extends Character
   items: []
   damage: 5
@@ -81,7 +86,7 @@ class Warrior extends Character
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
     @shurikens = Shuriken.make(shuriken_count)
-    @items = @items.concat(Key.make(key_count))
+    @items     = @items.concat(Key.make(key_count))
     @getter "keys",     -> @select_items Key
     @getter "diamonds", -> @select_items Diamond
 
@@ -89,13 +94,15 @@ class Warrior extends Character
     @ensure_not_played =>
       (new Interact(@)).perform()
 
+  shuriken_area_plan: [
+    [0, 1], [0, 2], [0, 3],
+    [0, -1], [0, -2], [0, -3],
+    [1, 0], [2, 0], [3, 0],
+    [-1, 0], [-2, 0], [-3, 0]
+  ]
+
   get_shuriken_range: ->
-    [
-      [0, 1], [0, 2], [0, 3],
-      [0, -1], [0, -2], [0, -3],
-      [1, 0], [2, 0], [3, 0],
-      [-1, 0], [-2, 0], [-3, 0]
-    ].map((i)=> @space.relative(i...)).filter((s)=> s)
+    @calculate_area @shuriken_area_plan
 
   in_shuriken_range: (space)->
     @get_shuriken_range().some (s)=>
@@ -196,14 +203,12 @@ class Wizard extends Enemy
   damage: 7
   health: 5
 
-  get_attack_area: ->
-    [
-      [-1, 1], [0, 1], [1, 1],
-      [-1, 0], [1, 0],
-      [-1, -1], [0, -1], [1, -1],
-      [-2, 0], [0, 2], [2, 0], [0, -2]  
-    ].map (i)=>
-      @space.relative(i...)
+  attack_area_plan: [
+    [-1, 1], [0, 1], [1, 1],
+    [-1, 0], [1, 0],
+    [-1, -1], [0, -1], [1, -1],
+    [-2, 0], [0, 2], [2, 0], [0, -2]  
+  ]
 
   per_turn_strategy: ->
     return if !@can_attack_warrior()
@@ -217,13 +222,12 @@ class Archer extends Enemy
   health: 10
   damage: 3
 
-  get_attack_area: ->
-    [
-      [0, 1], [0, 2], [0, 3],
-      [0, -1], [0, -2], [0, -3],
-      [1, 0], [2, 0], [3, 0],
-      [-1, 0], [-2, 0], [-3, 0]
-    ].map((i)=> @space.relative(i...)).filter((s)=> s)
+  attack_area_plan: [
+    [0, 1], [0, 2], [0, 3],
+    [0, -1], [0, -2], [0, -3],
+    [1, 0], [2, 0], [3, 0],
+    [-1, 0], [-2, 0], [-3, 0]
+  ]
 
   per_turn_strategy: ->
     return if !@can_attack_warrior()
@@ -235,18 +239,18 @@ class Archer extends Enemy
 class Creeper extends Enemy
   excited: false
 
-  get_excited_area: ->
-    [
-      [-1, 0], [0, 1], [1, 0], [0, -1]
-    ].map (i)=>
-      @space.relative(i...)
+  excited_area_plan: [
+    [-1, 0], [0, 1], [1, 0], [0, -1]
+  ]
 
-  get_attack_area: ->
-    [
-      [-1, 1], [0, 1], [1, 1],
-      [-1, 0], [0, 0], [1, 0],
-      [-1, -1], [0, -1], [1, -1]
-    ].map((i)=> @space.relative(i...)).filter((s)=> s)
+  get_excited_area: ->
+    @calculate_area @excited_area_plan
+
+  attack_area_plan: [
+    [-1, 1], [0, 1], [1, 1],
+    [-1, 0], [0, 0], [1, 0],
+    [-1, -1], [0, -1], [1, -1]
+  ]
 
   warrior_in_excited_area: ->
     @get_excited_area().some (s)=>
@@ -265,7 +269,7 @@ class Creeper extends Enemy
 
   take_attack: (atk)->
     super(atk)
-    (new Explode(@)).perform() if atk.class_name() == "dart"
+    (new Explode(@)).perform() if atk.is_dart()
 
   per_turn_strategy: ->
     if @warrior_in_excited_area()
