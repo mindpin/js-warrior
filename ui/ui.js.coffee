@@ -111,9 +111,6 @@ class UnitAni
       .removeClass('right')
       .addClass(dir)
 
-  _rendered: ->
-    jQuery(document).trigger 'js-warrior:render-ui-success', @character
-
   shot: (dir, target)->
     AniSound.shot()
     @_change_face_dir(dir)
@@ -255,9 +252,12 @@ class UnitAni
       @_rendered()
     , @TIME * 2
 
-
   idle: ->
     @_rendered()
+
+  _rendered: ->
+    # jQuery(document).trigger 'js-warrior:render-ui-success', @character
+    jQuery(document).trigger 'js-warrior:action-rendered'
 
 class GameUi
   constructor: ->
@@ -280,52 +280,79 @@ class GameUi
       @level = level
       @init()
 
-    jQuery(document).on 'js-warrior:render-ui', (evt, character)=>
-      info = character.action_info
+    jQuery(document).on 'js-warrior:render-ui', (evt)=>
+      actions = @level.actions_queue
+      return @warrior.ani.idle() if actions.length == 0
 
-      # console.log(character.class_name(), info)
-      if 'idle' == info.type
-        character.ani.idle()
+      @ani_action_queue_length = actions.length
 
-      if 'walk' == info.type
-        character.ani.walk(info.direction)
+      for i in [0...actions.length]
+        actions[i].next_action = actions[i + 1]
 
-      if 'attack' == info.type
-        character.ani.attack(info.direction)
-        if info.target
-          info.target.ani.be_attack(info.hp_change)
+      @do_ani_action actions[0]
 
-      if 'rest' == info.type
-        character.ani.rest(info.hp_change)
+    jQuery(document).on 'js-warrior:action-rendered', (evt)=>
+      @ani_action_queue_length--
 
-      if 'shot' == info.type
-        if info.target
-          character.ani.shot(info.direction, info.target)
-          info.target.ani.be_attack(info.hp_change)
+      if @ani_action_queue_length == 0
+        jQuery(document).trigger 'js-warrior:render-ui-success'
 
-      if 'magic' == info.type
-        if info.target
-          character.ani.fireball(info.direction, info.target)
-          info.target.ani.be_attack(info.hp_change)
 
-      if 'excited' == info.type
-        character.ani.excited()
+  do_ani_action: (action)=>
+    console.log action, action.type
 
-      if 'explode' == info.type
-        character.ani.explode()
-        for target in info.targets
-          if target.ani
-            target.ani.be_attack(info.hp_change)
+    type = action.type
+    ani  = action.actor.ani
 
-      if 'dart' == info.type
-        if info.target
-          alert('creeper 爆炸') if info.target.class_name() == "creeper"
-          info.target.ani.be_attack(info.hp_change)
-        jQuery(document).trigger 'js-warrior:render-ui-success', character
+    if 'walk' == type
+      ani.walk(action.direction)
 
-      if 'interact' == info.type
-        console.log info.targets
-        jQuery(document).trigger 'js-warrior:render-ui-success', character
+    
+
+
+      # # console.log(character.class_name(), info)
+      # if 'idle' == info.type
+      #   character.ani.idle()
+
+
+      # if 'attack' == info.type
+      #   character.ani.attack(info.direction)
+      #   if info.target
+      #     info.target.ani.be_attack(info.hp_change)
+
+      # if 'rest' == info.type
+      #   character.ani.rest(info.hp_change)
+
+      # if 'shot' == info.type
+      #   if info.target
+      #     character.ani.shot(info.direction, info.target)
+      #     info.target.ani.be_attack(info.hp_change)
+
+      # if 'magic' == info.type
+      #   if info.target
+      #     character.ani.fireball(info.direction, info.target)
+      #     info.target.ani.be_attack(info.hp_change)
+
+      # if 'excited' == info.type
+      #   character.ani.excited()
+
+      # if 'explode' == info.type
+      #   character.ani.explode()
+      #   for target in info.targets
+      #     if target.ani
+      #       target.ani.be_attack(info.hp_change)
+
+      # if 'dart' == info.type
+      #   if info.target
+      #     alert('creeper 爆炸') if info.target.class_name() == "creeper"
+      #     info.target.ani.be_attack(info.hp_change)
+      #   jQuery(document).trigger 'js-warrior:render-ui-success', character
+
+      # if 'interact' == info.type
+      #   console.log info.targets
+      #   jQuery(document).trigger 'js-warrior:render-ui-success', character
+
+
 
   init: ->
     @init_map()

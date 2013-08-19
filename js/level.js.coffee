@@ -84,14 +84,13 @@ class Level
     # console.log('logic new action')
     # console.log(cs)
     # console.log(character)
-    @current_character.reset_action()
     if @current_character.is_warrior()
       @current_character.play(@game.player.play_turn)
     else
       @current_character.play()
 
     jQuery(document).one 'js-warrior:render-ui-success', ()=>
-      @current_character = @current_character.next()
+      @current_character = @current_character.next
       return if @pausing
       @_character_run()
 
