@@ -5,10 +5,10 @@ class Action extends Base
   steps: ->
 
   perform: ->
-    @steps()
     if @actor
       @actor.direction = @direction if @direction
       @actor.level.add_action(@)
+    @steps()
 
   is_dart: ->
     @class_name() == "dart"
@@ -19,7 +19,6 @@ class Walk extends Action
     @target_space = @actor.space.get_relative_space(direction, 1)
 
   steps: ->
-    @actor.direction = @direction
     return if !@target_space || @target_space.is_blocked()
     @actor.update_link(@target_space)
 
@@ -50,8 +49,7 @@ class Interact extends Action
     @targets      = [@item, @lock].concat(@shurikens).filter((i)=> i)
 
   steps: ->
-    @targets.forEach (i)=>
-      i.take_interact(@)
+    @targets.forEach (i)=> i.take_interact(@)
 
 class Excited extends Action
   constructor: (@actor)->
