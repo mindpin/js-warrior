@@ -1,14 +1,14 @@
 class AniSound
   @walk: ->
-    new Audio("sound/step1.mp3").play()
+    new Audio("/sound/step1.mp3").play()
   @attack: ->
-    new Audio("sound/attack.mp3").play()
+    new Audio("/sound/attack.mp3").play()
   @rest: ->
-    new Audio("sound/heal.mp3").play()
+    new Audio("/sound/heal.mp3").play()
   @shot: ->
-    new Audio("sound/arrow.mp3").play()
+    new Audio("/sound/arrow.mp3").play()
   @fireball: ->
-    new Audio("sount/fireball.mp3").play()
+    new Audio("/sound/fireball.mp3").play()
 
 
 class UnitAni
@@ -63,7 +63,10 @@ class UnitAni
         top:  @top()
         @TIME, => @_rendered()
 
-  attack: (dir)->
+  attack: (dir, target, hp_change)->
+    if target
+      target.ani.be_attack(hp_change)
+
     delta = @_xydelta(dir)
     @_change_face_dir(dir)
 
@@ -111,7 +114,10 @@ class UnitAni
       .removeClass('right')
       .addClass(dir)
 
-  shot: (dir, target)->
+  shot: (dir, target, hp_change)->
+    if target
+      target.ani.be_attack(hp_change)
+
     AniSound.shot()
     @_change_face_dir(dir)
 
@@ -180,10 +186,14 @@ class UnitAni
 
     @hp_change hp_change
 
+
     if @character.remove_flag
       @$el.fadeOut => @$el.remove()
 
-  fireball: (dir, target)->
+  fireball: (dir, target, hp_change)->
+    if target
+      target.ani.be_attack(hp_change)
+
     # 蓄力动画
     $spark1 = jQuery('<div></div>')
       .addClass('item').addClass('spark')
@@ -209,19 +219,19 @@ class UnitAni
     $spark1.appendTo(@$game).animate
       left: @left()
       top:  @top()
-      , => $spark1.remove()
-    $spark2.appendTo(@$game).delay(50).animate
+      150, => $spark1.remove()
+    $spark2.appendTo(@$game).delay(25).animate
       left: @left()
       top:  @top()
-      , => $spark2.remove()
-    $spark3.appendTo(@$game).delay(100).animate
+      125, => $spark2.remove()
+    $spark3.appendTo(@$game).delay(50).animate
       left: @left()
       top:  @top()
-      , => $spark3.remove()
-    $spark4.appendTo(@$game).delay(150).animate
+      100, => $spark3.remove()
+    $spark4.appendTo(@$game).delay(75).animate
       left: @left()
       top:  @top()
-      , =>
+      75, =>
         AniSound.fireball()
         $spark4.remove()
         $fireball = jQuery('<div></div>')
@@ -250,7 +260,7 @@ class UnitAni
 
     setTimeout =>
       @_rendered()
-    , @TIME * 2
+    , @TIME
 
   idle: ->
     @_rendered()
@@ -294,7 +304,7 @@ class GameUi
     jQuery(document).on 'js-warrior:action-rendered', (evt)=>
       @ani_action_queue_length--
 
-      if @ani_action_queue_length == 0
+      if @ani_action_queue_length <= 0
         jQuery(document).trigger 'js-warrior:render-ui-success'
 
 
@@ -307,40 +317,26 @@ class GameUi
     if 'walk' == type
       ani.walk(action.direction)
 
-    
+    if 'attack' == type
+      ani.attack(action.direction, action.target, action.hp_change)
 
+    if 'rest' == type
+      ani.rest(action.hp_change)
 
-      # # console.log(character.class_name(), info)
-      # if 'idle' == info.type
-      #   character.ani.idle()
+    if 'shot' == type
+      ani.shot(action.direction, action.target, action.hp_change)
 
+    if 'magic' == type
+      ani.fireball(action.direction, action.target, action.hp_change)
 
-      # if 'attack' == info.type
-      #   character.ani.attack(info.direction)
-      #   if info.target
-      #     info.target.ani.be_attack(info.hp_change)
+    if 'excited' == type
+      ani.excited()
 
-      # if 'rest' == info.type
-      #   character.ani.rest(info.hp_change)
-
-      # if 'shot' == info.type
-      #   if info.target
-      #     character.ani.shot(info.direction, info.target)
-      #     info.target.ani.be_attack(info.hp_change)
-
-      # if 'magic' == info.type
-      #   if info.target
-      #     character.ani.fireball(info.direction, info.target)
-      #     info.target.ani.be_attack(info.hp_change)
-
-      # if 'excited' == info.type
-      #   character.ani.excited()
-
-      # if 'explode' == info.type
-      #   character.ani.explode()
-      #   for target in info.targets
-      #     if target.ani
-      #       target.ani.be_attack(info.hp_change)
+    if 'explode' == type
+      ani.explode()
+      for target in action.targets
+        if target.ani
+          target.ani.be_attack(action.hp_change)
 
       # if 'dart' == info.type
       #   if info.target
