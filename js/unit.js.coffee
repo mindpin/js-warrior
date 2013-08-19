@@ -3,6 +3,9 @@ class Base
     @[field] = value
     @
 
+  is_a: (type)->
+    @constructor == type
+
   property: (prop, desc)->
     Object.defineProperty @, prop, desc
 

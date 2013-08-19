@@ -40,7 +40,7 @@ class Attack extends Action
     @target.take_attack(@) if @target
 
 class Interact extends Action
-  constructor: (@actor)->
+  constructor: (@actor, @direction)->
     super()
     @target_space = @actor.space
     @item         = @target_space.item
@@ -81,9 +81,14 @@ class Dart extends Attack
     @hp_change = -@actor.shuriken_damage
 
   steps: ->
-    shuriken = @actor.space.level.warrior.draw_a_shuriken()
-    @target_space.link(shuriken)
     @target && @target.take_attack(@)
+
+    if @target_space.item.class_name() != "shuriken"
+      @target_space.item.remove()
+      @target_space.link(@shuriken)
+    else
+      @target_space.shuriken.count += @count
+      @shuriken.remove()
 
 jQuery.extend window,
   Rest:       Rest

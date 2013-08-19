@@ -1,5 +1,6 @@
 class Item extends Unit
-  constructor: (@space)->
+  constructor: (@space, @count)->
+    @count ||= 0
     super(@space)
 
   is_shuriken: ->
@@ -15,24 +16,20 @@ class Item extends Unit
     
 class Pickable extends Item
   destroyable: true
-  picked: false
-
-  @make: (num)->
-    return [] if !num
-    (new @ for i in [1..num])
+  picked: true
 
   constructor: (@space)->
-    super(@space) if @space
-
-  shurikens_or_items: ->
-    if @is_shuriken() then "shurikens" else "items"
+    if @space
+      super(@space)
+      @picked = false
 
   take_interact: (interact)->
     @into_inventory(interact.actor)
     @update_link()
 
   into_inventory: (actor)->
-    actor[@shurikens_or_items()].push @
+    actor.item_change(@constructor, @count)
+    @remove()
     @picked = true
 
 class Fixed extends Item
@@ -56,19 +53,11 @@ class Diamond extends Pickable
 class Key extends Pickable
 
 class Shuriken extends Pickable
-  max_num = 3
-
-  @max_num: ->
-    max_num
-
-  picked: true
-
   is: (shuriken)->
     @ == shuriken
 
   outof_inventory: (warrior)->
-    index = warrior.shurikens.indexOf @
-    warrior.shurikens.splice(index, 1)
+    warrior.item_change(@constructor, -@count)
     @picked = false
 
 jQuery.extend window,

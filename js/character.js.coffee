@@ -80,10 +80,27 @@ class Warrior extends Character
 
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
-    @shurikens = Shuriken.make(shuriken_count)
-    @items     = @items.concat(Key.make(key_count))
-    @getter "keys",     -> @select_items Key
-    @getter "diamonds", -> @select_items Diamond
+    @items = @items.concat([@create_item(Shuriken, shuriken_count))]) if shuriken_count
+    @items = @items.concat([@create_item(key, shuriken_count))]) if key_count
+
+  find_item: (type)->
+    @items.filter((i)=> i.is_a(type))[0]
+
+  create_item: (type, count)->
+    new type(null, count)
+
+  count: (type_str)->
+    type = switch type_str
+      when "shuriken" then Shuriken
+      when "key"      then Key
+      when "diamond"  then Diamond
+
+    @find_item(type).count || 0
+
+  item_change: (type, count)->
+    item = @find_item(type)
+    if item then item.count += count; item
+    else @create_item(type, count)
 
   interact: ->
     @ensure_not_played =>
