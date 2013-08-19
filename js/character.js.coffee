@@ -3,7 +3,6 @@ class Character extends Unit
   destroyable:   true
   remove_flag:   false
   attack_action: Attack
-  action_info:   new ActionInfo
   direction:     "down"
   damage:        3
   health:        0
@@ -38,12 +37,10 @@ class Character extends Unit
 
   ensure_not_played: (action)->
     throw new Error("一回合不能行动两次") if @played
-    throw new Error("行动没有重置") if @action_info.type != "idle"
     action()
     @played = true
 
   reset_action: ->
-    @action_info = new ActionInfo
 
   reset_played: ->
     @played = false
