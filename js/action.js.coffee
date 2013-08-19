@@ -7,13 +7,12 @@ class Action extends Base
   perform: ->
     @steps()
     if @actor
-      @actor.direction   = @direction if @direction
+      @actor.direction = @direction if @direction
       @actor.level.add_action(@)
 
   is_dart: ->
     @class_name() == "dart"
     
-class Idle extends Action
 class Walk extends Action
   constructor: (@actor, @direction)->
     super()
@@ -90,7 +89,6 @@ class Dart extends Attack
 
 jQuery.extend window,
   Rest:       Rest
-  Idle:       Idle
   Walk:       Walk
   Interact:   Interact
   Attack:     Attack

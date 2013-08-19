@@ -40,8 +40,6 @@ class Character extends Unit
     action()
     @played = true
 
-  reset_action: ->
-
   reset_played: ->
     @played = false
 
