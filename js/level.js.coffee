@@ -8,7 +8,7 @@ class Level
     @_build_door()
     @_build_character_chain()
 
-    @max_diamond_count = @diamonds_in_floor().length
+    @max_diamond_count = @diamond_count_in_floor()
     @height = @space_profile.length
     @width = @space_profile[0].length
     @actions_queue = []
@@ -20,40 +20,52 @@ class Level
     return @units().filter (unit)=>
       unit.is_enemy()
 
-  diamonds_in_floor: ->
-    return @units().filter (unit)=>
-      unit.class_name() == 'diamond' && !unit.picked
+  diamond_count_in_floor: ->
+    count = 0
+    @units().forEach (unit)=>
+      if unit.class_name() == 'diamond' && !unit.picked
+        count += unit.count
+    return count
 
-  keys_in_floor: ->
-    return @units().filter (unit)=>
-      unit.class_name() == 'key' && !unit.picked
+  key_count_in_floor: ->
+    count = 0
+    @units().forEach (unit)=>
+      if unit.class_name() == 'key' && !unit.picked
+        count += unit.count
+    return count
 
-  opened_locks: ->
-    return @units().filter (unit)=>
-      unit.class_name() == 'lock' && unit.is_open
+  opened_lock_count: ->
+    count = 0
+    @units().forEach (unit)=>
+      if unit.class_name() == 'lock' && unit.is_open
+        count += unit.count
+    return count
 
-  closed_locks: ->
-    return @units().filter (unit)=>
-      unit.class_name() == 'lock' && !unit.is_open
+  closed_lock_count: ->
+    count = 0
+    @units().forEach (unit)=>
+      if unit.class_name() == 'lock' && !unit.is_open
+        count += unit.count
+    return count
 
   has_diamond_destroy: ->
-    count = @warrior.diamonds.length + @diamonds_in_floor().length
+    count = @warrior.count('diamond') + @diamond_count_in_floor()
     return @max_diamond_count > count
 
   key_not_enough: ->
-    count = @warrior.keys.length + @keys_in_floor().length
-    return @closed_locks().length > count
+    count = @warrior.count('key') + @key_count_in_floor()
+    return @closed_lock_count() > count
   
-  all_locks_opened: ->
-    return @closed_locks().length == 0
+  all_lock_opened: ->
+    return @closed_lock_count() == 0
 
   all_diamond_is_picked: ->
-    return @max_diamond_count == @warrior.diamonds.length
+    return @max_diamond_count == @warrior.count('diamond')
 
   passed: ->
     @warrior.space == @door.space && 
     @all_diamond_is_picked() && 
-    @all_locks_opened()
+    @all_lock_opened()
 
   failed: ->
     @has_diamond_destroy() || 

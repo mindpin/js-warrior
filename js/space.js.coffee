@@ -9,7 +9,6 @@ class Space
   _build: (space_data) ->
     @character   = null
     @item        = null
-    @shurikens = []
 
     unit_datas = space_data.split(',')
     for unit_data in unit_datas
@@ -17,39 +16,32 @@ class Space
 
   _build_unit: (unit_data) ->
     type_code = unit_data[0]
+    klass_and_count = unit_data[1..-1].split(/x|X/)
+    klass = window[klass_and_count[0]]
+    count = klass_and_count[1] || 1
     switch type_code
       when 'C'
-        @_build_character(unit_data)
+        @_build_character(klass)
       when 'I'
-        @_build_item(unit_data)
-      when 'F'
-        @_build_flying_item(unit_data)
+        @_build_item(klass, count)
 
-  _build_character: (unit_data) ->
+  _build_character: (klass) ->
     throw '一个格子不能有两个生物' if @character != null
-    klass = window[unit_data[1..-1]]
     if klass
       if klass != Warrior
         @character = new klass(@)
         return
       @character = new klass(@, @level.warrior_init_shuriken_count, @level.warrior_init_key_count)
 
-  _build_item: (unit_data) ->
+  _build_item: (klass, count) ->
     throw '一个格子不能有两个 item' if @item != null
-    klass = window[unit_data[1..-1]]
     if klass
-      @item = new klass(@)
-
-  _build_flying_item: (unit_data) ->
-    klass = window[unit_data[1..-1]]
-    if klass
-      @shurikens.push(new klass(@))
+      @item = new klass(@, count)
 
   units: ->
     units = []
     units.push(@character) if @character != null
     units.push(@item) if @item != null
-    units = units.concat(@shurikens)
     return units
 
   range: (another_space) ->
@@ -78,9 +70,6 @@ class Space
 
   link: (unit) ->
     unit.space = this
-    if unit.constructor == Shuriken
-      @shurikens.push(unit)
-      return
     if unit.is_character && @character == null
       @character = unit
       return
@@ -89,11 +78,7 @@ class Space
       return
 
   unlink: (unit) ->
-    if unit.constructor == Shuriken
-      index = @shurikens.indexOf(unit)
-      return if index == -1
-      @shurikens.splice(index,1)
-    else if @character == unit
+    if @character == unit
       @character = null
     else if @item == unit
       @item = null
@@ -181,10 +166,10 @@ class Space
     return @item && @item.constructor == Wall
 
   has_shuriken: ->
-    return @shurikens.length != 0
+    return @item && @item.class_name() == 'shuriken'
 
   is_empty: ->
-    @character == null && @item == null && @shurikens.length == 0
+    @character == null && @item == null
 
 
 window.Space = Space
