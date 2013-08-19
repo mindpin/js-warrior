@@ -18,7 +18,7 @@ class Space
     type_code = unit_data[0]
     klass_and_count = unit_data[1..-1].split(/x|X/)
     klass = window[klass_and_count[0]]
-    count = klass_and_count[1] || 1
+    count = parseInt(klass_and_count[1]) || 1
     switch type_code
       when 'C'
         @_build_character(klass)
