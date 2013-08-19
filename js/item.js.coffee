@@ -2,9 +2,12 @@ class Item extends Unit
   constructor: (@space)->
     super(@space)
 
+  is_shuriken: ->
+    @class_name() == "shuriken"
+
   remove: ->
     super()
-    if @class_name() == 'shuriken'
+    if @is_shuriken()
       @space.shurikens = @space.shurikens
         .filter((shuriken)=> @eq(shuriken))
       return
@@ -20,9 +23,6 @@ class Pickable extends Item
 
   constructor: (@space)->
     super(@space) if @space
-
-  is_shuriken: ->
-    @class_name() == "shuriken"
 
   shurikens_or_items: ->
     if @is_shuriken() then "shurikens" else "items"
