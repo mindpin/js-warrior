@@ -46,10 +46,9 @@ class Interact extends Action
     @item         = @target_space.item
     @lock         = @target_space.lock
     @shurikens    = @target_space.shurikens
-    @targets      = [@item, @lock].concat(@shurikens).filter((i)=> i)
 
   steps: ->
-    @targets.forEach (i)=> i.take_interact(@)
+    @item.take_interact(@) if @item
 
 class Excited extends Action
   constructor: (@actor)->
@@ -68,10 +67,9 @@ class Explode extends Action
       .reduce((a, b)=> a.concat b)
 
   steps: ->
-    @actor.get_attack_area().forEach (s)=>
-      s.units().forEach (u)=>
-        u.health_delta(@hp_change) if u.is_character
-        u.remove() if u.destroyable
+    @targets.forEach (u)=>
+      u.health_delta(@hp_change) if u.is_character
+      u.remove() if u.destroyable
 
 class Shot extends Attack
 class Magic extends Attack
@@ -81,14 +79,19 @@ class Dart extends Attack
     @hp_change = -@actor.shuriken_damage
 
   steps: ->
+    item = @target_space.item
+
+    if !item
+      @shuriken.update_link(@target_space)
+    else
+      if item.is_shuriken()
+        @target_space.item.count += @shuriken.count
+      else
+        @target_space.item.remove()
+        @shuriken.update_link(@target_space)
+
     @target && @target.take_attack(@)
 
-    if @target_space.item.class_name() != "shuriken"
-      @target_space.item.remove()
-      @target_space.link(@shuriken)
-    else
-      @target_space.shuriken.count += @count
-      @shuriken.remove()
 
 jQuery.extend window,
   Rest:       Rest

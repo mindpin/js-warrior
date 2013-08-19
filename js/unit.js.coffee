@@ -3,9 +3,6 @@ class Base
     @[field] = value
     @
 
-  is_a: (type)->
-    @constructor == type
-
   property: (prop, desc)->
     Object.defineProperty @, prop, desc
 
@@ -23,7 +20,7 @@ class Unit extends Base
   remove_flag: false
 
   constructor: (@space)->
-    @level = @space.level
+    @level = @space.level if @space
 
   remove: ->
     @remove_flag = true
@@ -33,7 +30,7 @@ class Unit extends Base
     "character" if @ instanceof Character
 
   update_link: (target)->
-    @space.unlink(@)
+    @space.unlink(@) if @space
     target && target.link(@)
 
   is_enemy: ->

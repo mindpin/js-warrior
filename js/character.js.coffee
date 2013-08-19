@@ -80,11 +80,11 @@ class Warrior extends Character
 
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
-    @items = @items.concat([@create_item(Shuriken, shuriken_count))]) if shuriken_count
-    @items = @items.concat([@create_item(key, shuriken_count))]) if key_count
+    @items = @items.concat([@create_item(Shuriken, shuriken_count)]) if shuriken_count
+    @items = @items.concat([@create_item(key, shuriken_count)]) if key_count
 
   find_item: (type)->
-    @items.filter((i)=> i.is_a(type))[0]
+    @items.filter((i)=> i.constructor == type)[0]
 
   create_item: (type, count)->
     new type(null, count)
@@ -95,12 +95,17 @@ class Warrior extends Character
       when "key"      then Key
       when "diamond"  then Diamond
 
-    @find_item(type).count || 0
+    result = @find_item(type)
+    parseInt if result then result.count else 0
 
   item_change: (type, count)->
     item = @find_item(type)
-    if item then item.count += count; item
-    else @create_item(type, count)
+    if item
+      item.count += count
+      item
+    else
+      result = @create_item(type, count)
+      @items.push result; result
 
   interact: ->
     @ensure_not_played =>
@@ -136,10 +141,12 @@ class Warrior extends Character
         if blocked_space.has_wall() || blocked_space.is_border #如果被墙和边界阻挡
           dart.target_space = [@space].concat(@space.range(blocked_space)).pop()
           
-      dart.set('landing_space', dart.target_space).perform()
+      dart
+        .set('landing_space', dart.target_space)
+        .set('shuriken', @consume(Shuriken)).perform()
 
   has_shuriken: ->
-    @shurikens.length > 0
+    @count("shuriken") > 0
 
   rest: ->
     @ensure_not_played =>
@@ -159,16 +166,8 @@ class Warrior extends Character
       (new Walk(@, direction)).perform()
 
   consume: (type)->
-    index = @items.indexOf @first(type)
-    return if index == -1
-    @items.splice(index, 1)
-
-  first: (type)->
-    @select_items(type)[0]
-
-  select_items: (type)->
-    @items.filter (i)->
-      i.constructor == type
+    @find_item(type).count -= 1
+    @create_item(type, 1)
 
   left: ->
     @walk("left")

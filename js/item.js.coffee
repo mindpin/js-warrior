@@ -8,20 +8,15 @@ class Item extends Unit
 
   remove: ->
     super()
-    if @is_shuriken()
-      @space.shurikens = @space.shurikens
-        .filter((shuriken)=> @is(shuriken))
-      return
-    @space.item = null
+    @update_link(null)
     
 class Pickable extends Item
   destroyable: true
-  picked: true
+  picked:      true
 
-  constructor: (@space)->
-    if @space
-      super(@space)
-      @picked = false
+  constructor: (@space, @count)->
+    @picked = false if @space
+    super(@space, @count)
 
   take_interact: (interact)->
     @into_inventory(interact.actor)
@@ -30,7 +25,6 @@ class Pickable extends Item
   into_inventory: (actor)->
     actor.item_change(@constructor, @count)
     @remove()
-    @picked = true
 
 class Fixed extends Item
   constructor: (@space)->
