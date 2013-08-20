@@ -19,36 +19,67 @@ game.player.play_turn = function(warrior){
   if(!this.round_count){
     this.round_count = 1
   }
-  if(this.round_count == 1){
-    warrior.dart('right')
+  if(this.round_count == 1 || this.round_count == 2){
+    warrior.dart('left')
     this.round_count += 1
     return
   }
-  if(this.round_count == 2){
+  if(this.round_count == 3 || this.round_count == 4){
     warrior.dart('up')
     this.round_count += 1
     return
   }
-  if(this.round_count == 3){
+  if(this.round_count == 5){
     warrior.walk('right')
     this.round_count += 1
     return
   }
-  if(this.round_count == 4){
-    warrior.walk('up')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count > 4 && this.round_count < 13){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 13){
+  if(this.round_count == 6){
     warrior.walk('down')
     this.round_count += 1
     return
   }
+  if(this.round_count == 7 || this.round_count == 8){
+    warrior.dart('up')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 9){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 10 || this.round_count == 11){
+    warrior.dart('up')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 12){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 13 || this.round_count == 14){
+    warrior.dart('up')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 15 || this.round_count == 16){
+    warrior.dart('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 17 ){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 18 ){
+    warrior.walk('up')
+    this.round_count += 1
+    return
+  }
+  warrior.walk('right')
 }
 </textarea>
     </div>
@@ -79,14 +110,15 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['',  '','','','',  '','','','',''],
-      ['CWarrior','','IWall',  '','',  '','','','','IDoor']
+      ['',        '',     '','IWall','',  '','','','',''],
+      ['CWarrior','','IWall',     '','',  '','','','','IDoor'],
+      ['',        '',     '',     '','',  '','IWall','','','']
     ]
 
 
     window.game_ui = new GameUi()
 
-    window.game = new Game(level_data,3)
+    window.game = new Game(level_data,12)
     window.game.init()
 
   </script>

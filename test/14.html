@@ -25,12 +25,12 @@ game.player.play_turn = function(warrior){
     return
   }
   if(this.round_count == 2){
-    warrior.walk('right')
+    warrior.interact('right')
     this.round_count += 1
     return
   }
   if(this.round_count == 3){
-    warrior.interact()
+    warrior.walk('right')
     this.round_count += 1
     return
   }
@@ -40,12 +40,12 @@ game.player.play_turn = function(warrior){
     return
   }
   if(this.round_count == 5){
-    warrior.walk('right')
+    warrior.interact('right')
     this.round_count += 1
     return
   }
   if(this.round_count == 6){
-    warrior.interact()
+    warrior.walk('right')
     this.round_count += 1
     return
   }
@@ -55,12 +55,7 @@ game.player.play_turn = function(warrior){
     return
   }
   if(this.round_count == 8){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 9){
-    warrior.interact()
+    warrior.interact('right')
     this.round_count += 1
     return
   }
