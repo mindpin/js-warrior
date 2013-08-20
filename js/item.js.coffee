@@ -6,6 +6,9 @@ class Item extends Unit
   is_shuriken: ->
     @class_name() == "shuriken"
 
+  is_wall: ->
+    @class_name() == "wall"
+
   take_attack: (atk)->
     if @is_shuriken() && atk.shuriken
       atk.target_space.item.count += atk.shuriken.count

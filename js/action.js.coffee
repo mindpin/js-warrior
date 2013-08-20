@@ -87,7 +87,7 @@ class Dart extends Attack
 
   steps: ->
     @shuriken.update_link(@target_space) if !@target
-    @target && @target.take_attack(@)
+    @target && !@target.space.has_wall() && @target.take_attack(@)
 
 
 jQuery.extend window,

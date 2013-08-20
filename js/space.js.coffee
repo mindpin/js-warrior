@@ -130,7 +130,7 @@ class Space
     return null
 
   is_blocked: ->
-    !@has_door() && (@is_border || !!@character || !!@item)
+    !@has_door() && (@is_border || !!@character || (@item && !@item.is_shuriken()))
   # API
   has_enemy: ->
     return @character && @character.constructor != Warrior
