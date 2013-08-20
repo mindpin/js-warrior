@@ -3,12 +3,15 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>js-warrior ui page</title>
-  <link href="/ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="../ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
 <body>
   <div class='page-js-warrior-game' style='display:none;'></div>
 
   <div class='page-control-panel'>
+    <div class='tips'>
+      DEMO6：玩家能够调用勇者身上的一些API，例如，攻击，移动，休息。而这些API是有限的。想要过关，就必须通过思考，组合这些API，来实现越来越“智能”的AI，来战胜难关。
+    </div>
     <div class='btns'>
       <a class='start' href='javascript:;'>运行</a>
       <a class='pause' href='javascript:;'>暂停</a>
@@ -16,34 +19,38 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  if(!this.round_count){
-    this.round_count = 1
+  var has_enemy = function(direction) {
+    return warrior.feel(direction).has_enemy()
   }
-  if(this.round_count == 1){
-    warrior.interact("right")
-    this.round_count += 1
+  var spot_enemy = function(direction) {
+    spaces = warrior.look(direction)
+    return spaces.some(function(s) {
+      return s.character
+    })
+  }
+  var spot_archer = function(direction) {
+    spaces = warrior.look(direction)
+    return spaces.some(function(s) {
+      return s.has_archer()
+    })
+  }
+
+
+  if( spot_archer('right') && !has_enemy('right') && warrior.health < 12 ){
+    warrior.left()
     return
   }
-  if(this.round_count == 2 || this.round_count == 3 || this.round_count == 4){
-    warrior.dart('right')
-    this.round_count += 1
+
+  if( !has_enemy('right') && !spot_archer('right') && warrior.health < 20 ){
+    warrior.rest()
     return
   }
-  if(this.round_count == 5 || this.round_count == 6 || this.round_count == 7){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 8){
-    warrior.interact("right")
-    this.round_count += 1
-    return
-  }
-  if(this.round_count > 8){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
+
+  if (has_enemy('right')) return warrior.attack('right')
+
+  warrior.right()
+  this.prev_turn_hp = warrior.health
+  return 
 }
 </textarea>
     </div>
@@ -60,24 +67,23 @@ game.player.play_turn = function(warrior){
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-  <script type="text/javascript" src="/coffee-script.js"></script>
-  <script type="text/coffeescript" src="/js/game.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/level.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/unit.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/action.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/space.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/player.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/character.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/item.js.coffee"></script>
+  <script type="text/javascript" src="../coffee-script.js"></script>
+  <script type="text/coffeescript" src="../js/game.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/unit.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/action.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/player.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/character.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/item.js.coffee"></script>
 
-  <script type="text/coffeescript" src='/ui/ui.js.coffee'></script>
+  <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['',  '','CSlime','CSlime','CSlime',  '','','','',''],
-      ['CWarrior','IShurikenx3','',  'CCreeper','CSlime',  '','','','','IDoor'],
-      ['',  '','CSlime','CTauren','CSlime','','','','',''],
+      ['','IWall','','','','IWall','','','',''],
+      ['CWarrior','','','CTauren','','CArcher','CSlime','CTauren','','IDoor'],
+      ['','','','','IWall','','IWall','','',''],
     ]
-
 
     window.game_ui = new GameUi()
 

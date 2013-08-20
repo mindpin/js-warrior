@@ -3,12 +3,21 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>js-warrior ui page</title>
-  <link href="/ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="../ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
 <body>
   <div class='page-js-warrior-game' style='display:none;'></div>
 
   <div class='page-control-panel'>
+    <div class='tips'>
+      js-warrior 是一个训练编程能力的游戏化教学场景。玩家可以通过对游戏角色的行为编程，来实现控制角色过关的过程。
+    </div>
+    <div class='tips'>
+      每个回合，系统会调用玩家实现的 game.player.play_turn 方法来控制游戏角色的行为，进行行走，攻击，和判断。
+    </div>    
+    <div class='tips'>
+      DEMO1：最简单的情况。反复调用 warrior.walk('right') 方法，让勇者一直向右走，就可以过关了
+    </div>
     <div class='btns'>
       <a class='start' href='javascript:;'>运行</a>
       <a class='pause' href='javascript:;'>暂停</a>
@@ -16,25 +25,7 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  right_space = warrior.feel('right')
-  up_space = warrior.feel('up')
-  down_space = warrior.feel('down')
-
-  if(right_space.has_enemy()){
-    warrior.attack('right')
-  }else{
-    if(warrior.health < 20){
-      warrior.rest()
-    }else{
-      if(!right_space.is_blocked()){
-        warrior.walk('right')
-      }else if(!up_space.is_blocked()){
-        warrior.walk('up')
-      }else if(!down_space.is_blocked()){
-        warrior.walk('down')
-      }
-    }
-  }
+  warrior.walk('right')  
 }
 </textarea>
     </div>
@@ -51,23 +42,21 @@ game.player.play_turn = function(warrior){
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-  <script type="text/javascript" src="/coffee-script.js"></script>
-  <script type="text/coffeescript" src="/js/game.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/level.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/unit.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/action.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/space.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/player.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/character.js.coffee"></script>
-  <script type="text/coffeescript" src="/js/item.js.coffee"></script>
+  <script type="text/javascript" src="../coffee-script.js"></script>
+  <script type="text/coffeescript" src="../js/game.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/unit.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/action.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/player.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/character.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/item.js.coffee"></script>
 
-  <script type="text/coffeescript" src='/ui/ui.js.coffee'></script>
+  <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['CWarrior','IWall','','','','IWall','','','','IWall'],
-      ['','','','IWall','','CArcher','CSlime','IWall','','IDoor'],
+      ['CWarrior','','','','','','','','','IDoor']
     ]
-
 
     window.game_ui = new GameUi()
 

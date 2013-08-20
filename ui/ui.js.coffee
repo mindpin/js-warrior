@@ -27,6 +27,8 @@ class UnitAni
     @$el = @_build_el()
     @_refresh_hp_dom()
 
+  destroy: ->
+    @$el.remove()
 
   _build_el: ->
     # 图标
@@ -37,6 +39,15 @@ class UnitAni
         left: @left()
         top:  @top()
       .appendTo(@$game)
+
+    if @type == 'item'
+      $count = jQuery('<div></div>')
+        .addClass('item-count')
+        .appendTo($ui_el)
+
+      $count.html if @character.count > 0 then "×#{@character.count}" else ''
+
+    return $ui_el
 
   _refresh_hp_dom: ->
     if @character.type() == 'character'
@@ -142,29 +153,40 @@ class UnitAni
             @_rendered()
           , @TIME / 4
 
-  dart: (dir, target, hp_change)->
+  dart: (action)->
+    dir = action.direction
+    target_space = action.target_space
+    target = action.target
+    hp_change = action.hp_change
+
     if target
       target.ani.be_attack(hp_change)
 
     AniSound.shot()
     @_change_face_dir(dir)
 
-    $arrow = jQuery('<div></div>')
+    $shuriken = jQuery('<div></div>')
       .addClass('item').addClass('shuriken').addClass('flying').addClass(dir)
       .appendTo(@$game)
 
-    $arrow
+    $shuriken
       .css
         left: @left()
         top: @top()
       .delay(0)
       .animate
-        left: target.ani.left()
-        top:  target.ani.top()
+        left: target_space.x * @CONST_W
+        top:  target_space.y * @CONST_W
         easing: 'easeout'
         , @TIME / 2, =>
           setTimeout =>
-            $arrow.fadeOut => $arrow.remove()
+            $shuriken.fadeOut => $shuriken.remove()
+            console.log target_space.item
+
+            if target_space.item
+              target_space.item.ani.destroy() if target_space.item.ani
+              target_space.item.ani = new UnitAni(@game_ui, target_space.item)
+
             @_rendered()
           , @TIME / 4
 
@@ -291,6 +313,21 @@ class UnitAni
       @_rendered()
     , @TIME
 
+  interact: (dir, item)->
+    # 捡东西
+    # 被捡起来的东西消失
+    @_change_face_dir(dir)
+    if item
+      item.ani.fade => @_rendered()
+    else
+      @_rendered()
+
+
+  fade: (func)->
+    @$el.fadeOut => 
+      @$el.remove()
+      func() if func
+
   idle: ->
     @_rendered()
 
@@ -369,7 +406,11 @@ class GameUi
           target.ani.be_attack(action.hp_change)
 
     if 'dart' == type
-      ani.dart(action.direction, action.target, action.hp_change)
+      ani.dart(action)
+
+    if 'interact' == type
+      ani.interact(action.direction, action.item)
+
 
     if action.next_action
       setTimeout =>

@@ -158,6 +158,15 @@ body {
     height: 60px;
     background: url(../img/item.png?d) no-repeat;
     position: absolute; }
+    .page-js-warrior-game .item .item-count {
+      position: absolute;
+      color: #ffffda;
+      right: 3px;
+      bottom: 3px;
+      font-weight: bold;
+      font-family: arial;
+      text-shadow: 0 0 1px black;
+      font-size: 16px; }
     .page-js-warrior-game .item.lock.close {
       background-position: 0px 0px; }
     .page-js-warrior-game .item.lock.open {
