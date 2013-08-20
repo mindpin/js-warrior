@@ -37,11 +37,10 @@ class Door extends Fixed
 class Wall extends Fixed
   destroyable: true
 class Lock extends Fixed
-  is_open: false
-
   transit: (action)->
     action.actor.consume(Key)
-    @is_open = true
+    @update_link(null)
+    @remove()
 
 class Diamond extends Pickable
 class Key extends Pickable
