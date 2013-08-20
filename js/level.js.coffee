@@ -34,17 +34,10 @@ class Level
         count += unit.count
     return count
 
-  opened_lock_count: ->
-    count = 0
-    @units().forEach (unit)=>
-      if unit.class_name() == 'lock' && unit.is_open
-        count += unit.count
-    return count
-
   closed_lock_count: ->
     count = 0
     @units().forEach (unit)=>
-      if unit.class_name() == 'lock' && !unit.is_open
+      if unit.class_name() == 'lock'
         count += unit.count
     return count
 
