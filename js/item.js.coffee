@@ -1,6 +1,6 @@
 class Item extends Unit
   constructor: (@space, @count)->
-    @count ||= 0
+    @count ||= 1
     super(@space)
 
   is_shuriken: ->
@@ -11,7 +11,7 @@ class Item extends Unit
       atk.target_space.item.count += atk.shuriken.count
       atk.shuriken.remove()
     else
-      @remove()
+      @destroyable && @remove()
       atk.shuriken && atk.shuriken.update_link(@target_space)
 
   remove: ->

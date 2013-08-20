@@ -76,9 +76,7 @@ class Explode extends Action
       .reduce((a, b)=> a.concat b)
 
   steps: ->
-    @targets.forEach (u)=>
-      u.health_delta(@hp_change) if u.is_character
-      u.remove() if u.destroyable
+    @targets.forEach (u)=> u.take_attack(@)
 
 class Shot extends Attack
 class Magic extends Attack
