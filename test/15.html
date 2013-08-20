@@ -16,55 +16,7 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  if(!this.round_count){
-    this.round_count = 1
-  }
-  if(this.round_count == 1){
-    warrior.dart('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 2){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 3){
-    warrior.interact()
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 4){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 5){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 6){
-    warrior.interact()
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 7){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 8){
-    warrior.walk('right')
-    this.round_count += 1
-    return
-  }
-  if(this.round_count == 9){
-    warrior.interact()
-    this.round_count += 1
-    return
-  }
-  warrior.walk('right')
+  warrior.dart('right')
 }
 </textarea>
     </div>
@@ -95,7 +47,7 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['CWarrior','','IDiamond',  'CCreeper','IKey',  '','ILock','','','IDoor']
+      ['CWarrior','','IKey',  'IDiamond','IKeyx2',  '','ILock','','','IDoor']
     ]
 
 
