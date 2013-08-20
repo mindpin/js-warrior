@@ -13,6 +13,8 @@ class AniSound
     new Audio("/sound/explode.mp3").play()
   @pick: ->
     new Audio("/sound/pick.mp3").play()
+  @open_lock: ->
+    new Audio("/sound/open_lock.mp3").play()
 
 
 class UnitAni
@@ -318,18 +320,24 @@ class UnitAni
   interact: (dir, item)->
     # 捡东西
     # 被捡起来的东西消失
-    AniSound.pick()
     @_change_face_dir(dir)
-    if item
-      item.ani.$el
-        .addClass('picked')
-        .animate
-          left: @left()
-          top: @top()
-          =>
-            item.ani.$el.remove()
-            @_rendered()
 
+
+    if item
+      if item.class_name() == 'lock'
+        AniSound.open_lock()
+        item.ani.fade => @_rendered()
+              
+      else
+        AniSound.pick()
+        item.ani.$el
+          .addClass('picked')
+          .animate
+            left: @left()
+            top: @top()
+            =>
+              item.ani.$el.remove()
+              @_rendered()
     else
       @_rendered()
 
