@@ -9,7 +9,8 @@ class Action extends Base
       @actor.direction = @direction if @direction
       @actor.level.add_action(@)
     if @target_space
-      @target_space && @target = @target_space.character
+      @target = @target_space.character
+      !@target && @target = @target_space.item
     @steps()
 
   is_dart: ->
@@ -87,18 +88,7 @@ class Dart extends Attack
     @hp_change = -@actor.shuriken_damage
 
   steps: ->
-    item = @target_space.item
-
-    if !item
-      @shuriken.update_link(@target_space)
-    else
-      if item.is_shuriken()
-        @target_space.item.count += @shuriken.count
-        @shuriken.remove()
-      else
-        item.remove()
-        @shuriken.update_link(@target_space)
-
+    @shuriken.update_link(@target_space) if !@target
     @target && @target.take_attack(@)
 
 

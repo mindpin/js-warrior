@@ -6,6 +6,14 @@ class Item extends Unit
   is_shuriken: ->
     @class_name() == "shuriken"
 
+  take_attack: (atk)->
+    if @is_shuriken() && atk.shuriken
+      atk.target_space.item.count += atk.shuriken.count
+      atk.shuriken.remove()
+    else
+      @remove()
+      atk.shuriken && atk.shuriken.update_link(@target_space)
+
   remove: ->
     super()
     @space && @space.item = null
