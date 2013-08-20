@@ -2,7 +2,8 @@ class UserWarrior extends Base
   white_list = [
     "attack", "interact", "dart",
     "rest",   "walk",     "feel",
-    "look"
+    "look",   "left",     "right",
+    "up",     "down"
   ]
 
   constructor: (warrior)->
