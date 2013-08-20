@@ -1,4 +1,4 @@
-class UserWarrior
+class UserWarrior extends Base
   white_list = [
     "attack", "interact", "dart",
     "rest",   "walk",     "feel",
@@ -9,6 +9,8 @@ class UserWarrior
     return if !warrior
     white_list.forEach (field)=>
       @[field] = -> warrior[field].apply(warrior, arguments)
+
+    @getter "health", -> warrior.health
 
 jQuery.extend window,
   UserWarrior: UserWarrior
