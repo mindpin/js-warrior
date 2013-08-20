@@ -139,6 +139,8 @@ class Warrior extends Character
       if blocked_space #如果被阻挡
         if blocked_space.has_enemy() #如果被怪物阻挡
           dart.target_space = blocked_space
+        if blocked_space.item && !blocked_space.item.is_shuriken()#如果被物品阻挡
+          dart.target_space = blocked_space
         if blocked_space.has_wall() || blocked_space.is_border #如果被墙和边界阻挡
           dart.target_space = [@space].concat(@space.range(blocked_space)).pop()
           

@@ -8,7 +8,7 @@ class Item extends Unit
 
   remove: ->
     super()
-    @space.item = null
+    @space && @space.item = null
     
 class Pickable extends Item
   destroyable: true

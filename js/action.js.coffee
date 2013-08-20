@@ -94,13 +94,10 @@ class Dart extends Attack
     else
       if item.is_shuriken()
         @target_space.item.count += @shuriken.count
+        @shuriken.remove()
       else
-        @target_space.item.remove()
+        item.remove()
         @shuriken.update_link(@target_space)
-
-    if @target
-      a = @target.space
-      console.log "(#{a.x}, #{a.y})"
 
     @target && @target.take_attack(@)
 
