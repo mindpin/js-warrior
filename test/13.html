@@ -79,6 +79,11 @@ game.player.play_turn = function(warrior){
     this.round_count += 1
     return
   }
+  if([19,20,21,22,23,24].indexOf(this.round_count) != -1  ){
+    warrior.dart('right')
+    this.round_count += 1
+    return
+  }
   warrior.walk('right')
 }
 </textarea>
@@ -111,14 +116,14 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript">
     level_data = [
       ['',        '',     '','IWall','',  '','','','',''],
-      ['CWarrior','','IWall',     '','',  '','','','','IDoor'],
+      ['CWarrior','','IWall',     '','',  '','CSlime','CSlime','','IDoor'],
       ['',        '',     '',     '','',  '','IWall','','','']
     ]
 
 
     window.game_ui = new GameUi()
 
-    window.game = new Game(level_data,12)
+    window.game = new Game(level_data,18)
     window.game.init()
 
   </script>
