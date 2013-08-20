@@ -182,6 +182,16 @@ body {
     background:url(../img/item.png?d) no-repeat;
     position:absolute;
 
+    .item-count {
+      position:absolute;
+      color:#ffffda;
+      right:3px;bottom:3px;
+      font-weight:bold;
+      font-family:arial;
+      text-shadow:0 0 1px black;
+      font-size:16px;
+    }
+
     &.lock {
       &.close {
         background-position:0px 0px;

@@ -9,9 +9,6 @@
   <div class='page-js-warrior-game' style='display:none;'></div>
 
   <div class='page-control-panel'>
-    <div class='tips'>
-      DEMO2：路被一只史莱姆挡住，如果还是一直往右走，勇者就会被打败。这时，玩家就必须修改程序，才能成功过关。
-    </div>
     <div class='btns'>
       <a class='start' href='javascript:;'>运行</a>
       <a class='pause' href='javascript:;'>暂停</a>
@@ -19,7 +16,34 @@
     <div>
 <textarea class='code' style='width:500px;height:300px;'>
 game.player.play_turn = function(warrior){
-  warrior.walk('right')  
+  if(!this.round_count){
+    this.round_count = 1
+  }
+  if(this.round_count == 1){
+    warrior.interact("right")
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 2 || this.round_count == 3 || this.round_count == 4){
+    warrior.dart('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 5 || this.round_count == 6 || this.round_count == 7){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 8){
+    warrior.interact("right")
+    this.round_count += 1
+    return
+  }
+  if(this.round_count > 8){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
 }
 </textarea>
     </div>
@@ -49,8 +73,11 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
   <script type="text/coffeescript">
     level_data = [
-      ['CWarrior','','','CSlime','','','','','','IDoor']
+      ['',  '','CSlime','CSlime','CSlime',  '','','','',''],
+      ['CWarrior','IShurikenx3','',  'CCreeper','CSlime',  '','','','','IDoor'],
+      ['',  '','CSlime','CTauren','CSlime','','','','',''],
     ]
+
 
     window.game_ui = new GameUi()
 
