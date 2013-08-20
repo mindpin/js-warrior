@@ -1,14 +1,22 @@
 class Item extends Unit
   constructor: (@space, @count)->
-    @count ||= 0
+    @count ||= 1
     super(@space)
 
   is_shuriken: ->
     @class_name() == "shuriken"
 
+  take_attack: (atk)->
+    if @is_shuriken() && atk.shuriken
+      atk.target_space.item.count += atk.shuriken.count
+      atk.shuriken.remove()
+    else
+      @destroyable && @remove()
+      atk.shuriken && atk.shuriken.update_link(atk.target_space)
+
   remove: ->
     super()
-    @space.item = null
+    @space && @space.item = null
     
 class Pickable extends Item
   destroyable: true

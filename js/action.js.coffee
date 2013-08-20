@@ -9,7 +9,8 @@ class Action extends Base
       @actor.direction = @direction if @direction
       @actor.level.add_action(@)
     if @target_space
-      @target_space && @target = @target_space.character
+      @target = @target_space.character
+      !@target && @target = @target_space.item
     @steps()
 
   is_dart: ->
@@ -75,9 +76,7 @@ class Explode extends Action
       .reduce((a, b)=> a.concat b)
 
   steps: ->
-    @targets.forEach (u)=>
-      u.health_delta(@hp_change) if u.is_character
-      u.remove() if u.destroyable
+    @targets.forEach (u)=> u.take_attack(@)
 
 class Shot extends Attack
 class Magic extends Attack
@@ -87,21 +86,7 @@ class Dart extends Attack
     @hp_change = -@actor.shuriken_damage
 
   steps: ->
-    item = @target_space.item
-
-    if !item
-      @shuriken.update_link(@target_space)
-    else
-      if item.is_shuriken()
-        @target_space.item.count += @shuriken.count
-      else
-        @target_space.item.remove()
-        @shuriken.update_link(@target_space)
-
-    if @target
-      a = @target.space
-      console.log "(#{a.x}, #{a.y})"
-
+    @shuriken.update_link(@target_space) if !@target
     @target && @target.take_attack(@)
 
 
