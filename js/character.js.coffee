@@ -107,9 +107,9 @@ class Warrior extends Character
       result = @create_item(type, count)
       @items.push result; result
 
-  interact: ->
+  interact:(direction) ->
     @ensure_not_played =>
-      (new Interact(@)).perform()
+      (new Interact(@, direction)).perform()
 
   shuriken_area_plan: [
     [0, 1], [0, 2], [0, 3],

@@ -18,8 +18,12 @@ class Walk extends Action
     super()
     @target_space = @actor.space.get_relative_space(direction, 1)
 
+  blocked: ->
+    warrior_blocked = @target_space.item && @actor.type == "warrior"
+    !@target_space || @target_space.is_blocked() || warrior_blocked
+
   steps: ->
-    return if !@target_space || @target_space.is_blocked()
+    return if @blocked()
     @actor.update_link(@target_space)
 
 class Rest extends Action
@@ -42,12 +46,12 @@ class Attack extends Action
 class Interact extends Action
   constructor: (@actor, @direction)->
     super()
-    @target_space = @actor.space
+    @target_space = @actor.space.get_relative_space(@direction, 1)
     @item         = @target_space.item
     @lock         = @target_space.lock
-    @shurikens    = @target_space.shurikens
 
   steps: ->
+    @actor.direction = @direction
     @item.take_interact(@) if @item
 
 class Excited extends Action

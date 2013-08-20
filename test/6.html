@@ -20,7 +20,7 @@ game.player.play_turn = function(warrior){
     this.round_count = 1
   }
   if(this.round_count == 1){
-    warrior.interact()
+    warrior.interact("right")
     this.round_count += 1
     return
   }
@@ -35,7 +35,7 @@ game.player.play_turn = function(warrior){
     return
   }
   if(this.round_count == 8){
-    warrior.interact()
+    warrior.interact("right")
     this.round_count += 1
     return
   }
@@ -74,7 +74,7 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript">
     level_data = [
       ['',  '','CSlime','CSlime','CSlime',  '','','','',''],
-      ['CWarrior,IShurikenx3','','',  'CCreeper','CSlime',  '','','','','IDoor'],
+      ['CWarrior','IShurikenx3','',  'CCreeper','CSlime',  '','','','','IDoor'],
       ['',  '','CSlime','CTauren','CSlime','','','','',''],
     ]
 
