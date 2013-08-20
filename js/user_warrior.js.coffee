@@ -6,7 +6,10 @@ class UserWarrior extends Base
     "up",     "down"
   ]
 
-  constructor: (warrior)->
+  warrior = null
+
+  constructor: (iwarrior)->
+    warrior = iwarrior
     return if !warrior
     white_list.forEach (field)=>
       @[field] = -> warrior[field].apply(warrior, arguments)

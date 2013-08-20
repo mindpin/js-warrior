@@ -19,10 +19,15 @@ class Walk extends Action
     @target_space = @actor.space.get_relative_space(direction, 1)
 
   blocked: ->
-    warrior_blocked = @target_space.item && @actor.type == "warrior"
+    warrior_blocked = @target_space.item &&
+      @actor.is_warrior() &&
+      !@target_space.has_door()
+
     !@target_space || @target_space.is_blocked() || warrior_blocked
 
   steps: ->
+    console.log("~>space>>", @target_space.x, @target_space.y, @blocked())
+    console.log("~>actor>>", @actor.space.x, @actor.space.y)
     return if @blocked()
     @actor.update_link(@target_space)
 
