@@ -358,10 +358,9 @@ class GameUi
 
     jQuery(document).on 'js-warrior:render-ui', (evt)=>
       actions = @level.actions_queue
-      #console.log actions
+      @ani_action_queue_length = actions.length
       return @warrior.ani.idle() if actions.length == 0
 
-      @ani_action_queue_length = actions.length
 
       for i in [0...actions.length]
         actions[i].next_action = actions[i + 1]
@@ -370,7 +369,6 @@ class GameUi
 
     jQuery(document).on 'js-warrior:action-rendered', (evt)=>
       @ani_action_queue_length--
-
       if @ani_action_queue_length <= 0
         jQuery(document).trigger 'js-warrior:render-ui-success'
 

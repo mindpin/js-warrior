@@ -84,6 +84,26 @@ game.player.play_turn = function(warrior){
     this.round_count += 1
     return
   }
+  if(this.round_count == 25){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 26){
+    warrior.interact('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 27){
+    warrior.walk('right')
+    this.round_count += 1
+    return
+  }
+  if(this.round_count == 28){
+    warrior.interact('right')
+    this.round_count += 1
+    return
+  }
   warrior.walk('right')
 }
 </textarea>

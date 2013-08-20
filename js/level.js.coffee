@@ -105,7 +105,6 @@ class Level
       @current_character = @current_character.next
       return if @pausing
       @_character_run()
-
     jQuery(document).trigger('js-warrior:render-ui')
 
   characters: ->
