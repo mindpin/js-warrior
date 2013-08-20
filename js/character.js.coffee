@@ -57,7 +57,8 @@ class Character extends Unit
 
   play: (strategy)->
     return if @remove_flag
-    strategy && strategy(@)
+    character = if @is_warrior() then new UserWarrior(@) else @ 
+    strategy && strategy(character)
     @per_turn_strategy()
     @reset_played()
 
@@ -154,7 +155,8 @@ class Warrior extends Character
 
   look: (direction)->
     target_space = @space.get_relative_space(direction, 4)
-    @space.range(target_space)
+    @space.range(target_space).map (space)=>
+      new UserSpace(space)
 
   draw_a_shuriken: ->
     shuriken = @shurikens[0]
@@ -182,7 +184,7 @@ class Warrior extends Character
     @walk("down")
 
   feel: (direction)->
-    @space.get_relative_space(direction, 1)
+    new UserSpace(@space.get_relative_space(direction, 1))
 
 class Enemy extends Character
   health: 12
