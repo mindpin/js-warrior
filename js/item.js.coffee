@@ -8,7 +8,7 @@ class Item extends Unit
 
   remove: ->
     super()
-    @update_link(null)
+    @space.item = null
     
 class Pickable extends Item
   destroyable: true
@@ -39,7 +39,6 @@ class Wall extends Fixed
 class Lock extends Fixed
   transit: (action)->
     action.actor.consume(Key)
-    @update_link(null)
     @remove()
 
 class Diamond extends Pickable
