@@ -134,7 +134,7 @@ class Warrior extends Character
     @ensure_not_played =>
       return if !@has_shuriken()
       dart = new Dart(@, direction, distance)
-      range = @space.range(dart.target_space)
+      range = @space.range(dart.target_space).concat([dart.target_space])
       blocked_space = range.filter((s)=> s.is_blocked())[0]
       if blocked_space #如果被阻挡
         if blocked_space.has_enemy() #如果被怪物阻挡

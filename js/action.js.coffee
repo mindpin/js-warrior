@@ -26,8 +26,6 @@ class Walk extends Action
     !@target_space || @target_space.is_blocked() || warrior_blocked
 
   steps: ->
-    console.log("~>space>>", @target_space.x, @target_space.y, @blocked())
-    console.log("~>actor>>", @actor.space.x, @actor.space.y)
     return if @blocked()
     @actor.update_link(@target_space)
 
@@ -83,6 +81,8 @@ class Explode extends Action
 class Shot extends Attack
 class Magic extends Attack
 class Dart extends Attack
+  bla = 0
+
   constructor: (@actor, @direction, @distance)->
     super(arguments...)
     @hp_change = -@actor.shuriken_damage
@@ -100,6 +100,7 @@ class Dart extends Attack
         @shuriken.update_link(@target_space)
 
     @target && @target.take_attack(@)
+    bla +=1
 
 
 jQuery.extend window,
