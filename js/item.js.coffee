@@ -12,7 +12,7 @@ class Item extends Unit
       atk.shuriken.remove()
     else
       @destroyable && @remove()
-      atk.shuriken && atk.shuriken.update_link(@target_space)
+      atk.shuriken && atk.shuriken.update_link(atk.target_space)
 
   remove: ->
     super()
