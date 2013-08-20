@@ -8,6 +8,8 @@ class Action extends Base
     if @actor
       @actor.direction = @direction if @direction
       @actor.level.add_action(@)
+    if @target_space
+      @target_space && @target = @target_space.character
     @steps()
 
   is_dart: ->
@@ -41,7 +43,6 @@ class Attack extends Action
     super()
     @hp_change    = -@actor.damage
     @target_space = @actor.space.get_relative_space(@direction, distance)
-    @target_space && @target = @target_space.character
   
   steps: ->
     @target.take_attack(@) if @target
@@ -81,8 +82,6 @@ class Explode extends Action
 class Shot extends Attack
 class Magic extends Attack
 class Dart extends Attack
-  bla = 0
-
   constructor: (@actor, @direction, @distance)->
     super(arguments...)
     @hp_change = -@actor.shuriken_damage
@@ -99,8 +98,11 @@ class Dart extends Attack
         @target_space.item.remove()
         @shuriken.update_link(@target_space)
 
+    if @target
+      a = @target.space
+      console.log "(#{a.x}, #{a.y})"
+
     @target && @target.take_attack(@)
-    bla +=1
 
 
 jQuery.extend window,
