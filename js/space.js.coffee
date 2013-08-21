@@ -144,12 +144,11 @@ class Space
   dart_block: ->
     @units().some((u)=> u.dartable == "block") || @is_border
 
-  # API
   can_walk: ->
     !@is_border && !@units().some((u)=> !u.walkthroughable)
-
+  # API
   is_empty: ->
-    @character == null && @item == null
+    !@is_border && @character == null && @item == null
     
   has: (name) ->
     class_name = name[0].toUpperCase() + name[1..-1]
