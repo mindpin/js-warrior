@@ -1,10 +1,9 @@
 UserWarrior
 
-所有direction都为"up", "down", "left", "right", "left-up",
-"left-down", "right-up", "right-down"之一
+所有direction都为"up", "down", "left", "right"之一
 
 01. #attack(direction)
-    对direction方向发起近身攻击
+   对direction方向发起近身攻击
 
 02. #dart(direction)
     对direction方向投掷手里剑(射程为3格), 会被途中的物品和生物阻挡,
@@ -26,8 +25,36 @@ UserWarrior
 07. #rest()
     休息一回合，并恢复少量的HP
 
-08. #listen()
-    通过声音洞察全图单位所处的位置, 返回这些单位所在格子的数组
+09. #listen()
+   通过声音洞察全图单位所处的位置, 返回这些单位所在格子的数组
 
-09. #health()
-    获得warrior当前的HP
+UserSpace
+
+1 space.is_blocked()
+   判断格子是否可以行走
+2 space.has_enemy()
+   判断格子是否有怪
+3 space.has_slime()
+   判断格子是否有史莱姆
+4 space.has_tauren()
+   判断格子是否有牛头
+5 space.has_creeper()
+   判断格子是否有 creeper
+6 space.has_archer()
+   判断格子是否有弓箭手
+7 space.has_wizard()
+   判断格子是否有魔法师
+8 space.has_door()
+   判断格子是否有门
+9 space.has_key()
+   判断格子是否有钥匙
+10 space.has_lock()
+   判断格子是否有锁
+11 space.has_diamond()
+   判断格子是否有宝石
+12 space.has_wall()
+   判断格子是否有墙
+13 space.has_shuriken()
+   判断格子是否有手里剑
+14 space.is_empty()
+   判断格子是否为空

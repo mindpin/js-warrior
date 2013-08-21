@@ -11,6 +11,10 @@ class AniSound
     new Audio("/sound/fireball.mp3").play()
   @explode: ->
     new Audio("/sound/explode.mp3").play()
+  @pick: ->
+    new Audio("/sound/pick.mp3").play()
+  @open_lock: ->
+    new Audio("/sound/open_lock.mp3").play()
 
 
 class UnitAni
@@ -46,6 +50,26 @@ class UnitAni
         .appendTo($ui_el)
 
       $count.html if @character.count > 0 then "×#{@character.count}" else ''
+
+
+    if @class_name == 'warrior'
+      @$item_counts = jQuery("<div></div>")
+        .addClass('warrior-item-counts')
+        .appendTo(@game_ui.$game)
+
+      $shuriken_count = jQuery("<div><div class='icon'></div><div class='count'></div></div>")
+        .addClass('shuriken')
+        .appendTo(@$item_counts)
+
+      $key_count = jQuery("<div><div class='icon'></div><div class='count'></div></div>")
+        .addClass('key')
+        .appendTo(@$item_counts)
+
+      $diamond_count = jQuery("<div><div class='icon'></div><div class='count'></div></div>")
+        .addClass('diamond')
+        .appendTo(@$item_counts)
+
+      @refresh_warrior_items()
 
     return $ui_el
 
@@ -181,7 +205,6 @@ class UnitAni
         , @TIME / 2, =>
           setTimeout =>
             $shuriken.fadeOut => $shuriken.remove()
-            console.log target_space.item
 
             if target_space.item
               target_space.item.ani.destroy() if target_space.item.ani
@@ -317,8 +340,23 @@ class UnitAni
     # 捡东西
     # 被捡起来的东西消失
     @_change_face_dir(dir)
+
+
     if item
-      item.ani.fade => @_rendered()
+      if item.class_name() == 'lock'
+        AniSound.open_lock()
+        item.ani.fade => @_rendered()
+              
+      else
+        AniSound.pick()
+        item.ani.$el
+          .addClass('picked')
+          .animate
+            left: @left()
+            top: @top()
+            =>
+              item.ani.$el.remove()
+              @_rendered()
     else
       @_rendered()
 
@@ -332,8 +370,13 @@ class UnitAni
     @_rendered()
 
   _rendered: ->
-    # jQuery(document).trigger 'js-warrior:render-ui-success', @character
     jQuery(document).trigger 'js-warrior:action-rendered'
+
+  refresh_warrior_items: ->
+    return if @class_name != 'warrior'
+    @$item_counts.find('.shuriken .count').html @character.count('shuriken')
+    @$item_counts.find('.key .count').html @character.count('key')
+    @$item_counts.find('.diamond .count').html @character.count('diamond')
 
 class GameUi
   constructor: ->
@@ -374,7 +417,6 @@ class GameUi
 
 
   do_ani_action: (action)=>
-    # console.log action, action.type
 
     type = action.type
     ani  = action.actor.ani
@@ -409,23 +451,12 @@ class GameUi
     if 'interact' == type
       ani.interact(action.direction, action.item)
 
-
     if action.next_action
       setTimeout =>
         @do_ani_action action.next_action
       , 150
 
-
-      # if info.target
-      #   alert('creeper 爆炸') if info.target.class_name() == "creeper"
-      #   info.target.ani.be_attack(info.hp_change)
-      # jQuery(document).trigger 'js-warrior:render-ui-success', character
-
-      # if 'interact' == info.type
-      #   console.log info.targets
-      #   jQuery(document).trigger 'js-warrior:render-ui-success', character
-
-
+    @warrior.ani.refresh_warrior_items()
 
   init: ->
     @init_map()
