@@ -92,6 +92,8 @@ class Level
     if @current_character.is_warrior()
       try
         @current_character.play(@game.player.play_turn)
+        if @actions_queue.length == 0
+          throw new WarriorNotActionError('没有任何行动') 
       catch e
         return jQuery(document).trigger('js-warrior:error',e)
     else
