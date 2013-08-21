@@ -174,6 +174,9 @@ class Space
   has_blowupable: ->
     return @item && @item.blowupable
 
+  is_walkthroughable: ->
+    !@units().some((u)=> !u.walkthroughable)
+
   dart_stop: ->
     @dart_hit() || @dart_block()
 

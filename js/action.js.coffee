@@ -22,7 +22,7 @@ class Walk extends Action
     @target_space = @actor.space.get_relative_space(direction, 1)
 
   steps: ->
-    return if !@target_space.walkthroughable
+    return if !@target_space.is_walkthroughable()
     @actor.update_link(@target_space)
 
 class Rest extends Action
