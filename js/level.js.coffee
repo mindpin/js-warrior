@@ -93,7 +93,7 @@ class Level
       try
         @current_character.play(@game.player.play_turn)
       catch e
-        return jQuery(document).trigger('js-warrior:error')
+        return jQuery(document).trigger('js-warrior:error',e)
     else
       @current_character.play()
 
