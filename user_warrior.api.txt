@@ -2,30 +2,30 @@ UserWarrior
 
 所有direction都为"up", "down", "left", "right"之一
 
-1. #attack(direction)
+01. #attack(direction)
    对direction方向发起近身攻击
 
-2. #dart(direction)
-   对direction方向投掷手里剑(射程为3格), 会被途中的物品和生物阻挡,
-   并摧毁除墙/门/锁以外的所有单位
+02. #dart(direction)
+    对direction方向投掷手里剑(射程为3格), 会被途中的物品和生物阻挡,
+    并摧毁除墙/门/锁以外的所有单位
 
-3. #interact(direction)
-   对direction方向的方格作出拾取动作, 捡起该格中物品或操作可互动物品(如锁)
+03. #interact(direction)
+    对direction方向的方格作出拾取动作, 捡起该格中物品或操作可互动物品(如锁)
 
-4. #walk(direction)
-   向direction方向前进一格, 若改格上有其他单位, 则会阻止warrior前进
-   #left(), #right(), #up(), #down()为刚方法的快捷移动方法.
+04. #walk(direction)
+    向direction方向前进一格, 若改格上有其他单位, 则会阻止warrior前进
+    #left(), #right(), #up(), #down()为刚方法的快捷移动方法.
 
-5. #feel(direction)
-   感应direction方向邻近一格的状况, 返回目标格的实例对象
+05. #feel(direction)
+    感应direction方向邻近一格的状况, 返回目标格的实例对象
 
-7. #look(direction)
-   检查direction方向邻近三格的状况, 返回包含此三格实例对象的数组
+06. #look(direction)
+    检查direction方向邻近三格的状况, 返回包含此三格实例对象的数组
 
-8. #rest()
-   休息一回合，并恢复少量的HP
+07. #rest()
+    休息一回合，并恢复少量的HP
 
-9. #listen()
+09. #listen()
    通过声音洞察全图单位所处的位置, 返回这些单位所在格子的数组
 
 UserSpace

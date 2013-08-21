@@ -80,10 +80,10 @@ class Character extends Unit
     next.prev = prev
 
 class Warrior extends Character
-  items: []
-  damage: 5
+  items:           []
+  damage:          5
   shuriken_damage: 5
-  health: 20
+  health:          20
 
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
@@ -135,17 +135,34 @@ class Warrior extends Character
   can_dart_space: (space)->
     @in_shuriken_range(space) && @has_shuriken()
 
+  listen: ->
+    @level.units().map (u)=> unit.space
+
+  distance_of: (space)->
+    [@space.x - space.x, @space.y - space.y]
+      .map((i)=> Math.abs(i))
+      .reduce((a, b)=> a + b)
+
+  direction_of: (space)->
+    @space.get_direction(space)
+
+  direction_of_door: ->
+    @space.get_direction(@level.door.space)
+
   dart: (direction)->
     distance = 3
     @ensure_not_played =>
       return if !@has_shuriken()
       dart = new Dart(@, direction, distance)
       range = @space.range(dart.target_space).concat([dart.target_space])
-      blocked_space = range.filter((s)=> s.is_blocked())[0]
+      blocked_space = range.filter((s)=>
+        s.dart_stop()
+      )[0]
+
       if blocked_space #如果被阻挡
-        if blocked_space.has_enemy() || blocked_space.has_destroyable() #如果被怪物或可摧毁物品阻挡
+        if blocked_space.dart_hit()   #如果被可攻击物
           dart.target_space = blocked_space
-        if blocked_space.has_wall() || blocked_space.is_border #如果被墙和边界阻挡
+        if blocked_space.dart_block() #如果被阻止物阻挡
           dart.target_space = [@space].concat(@space.range(blocked_space)).pop()
           
       return if dart.target_space == @space
@@ -197,7 +214,7 @@ class Warrior extends Character
 class Enemy extends Character
   health: 12
   damage: 3
-  range: 1
+  range:  1
 
   can_attack_warrior: ->
     return false if @level.warrior.remove_flag
@@ -221,8 +238,8 @@ class Tauren extends Enemy
 
 class Wizard extends Enemy
   attack_action: Magic
-  damage: 7
-  health: 5
+  damage:        7
+  health:        5
 
   attack_area_plan: [
     [-1, 1], [0, 1], [1, 1],
@@ -300,10 +317,10 @@ class Creeper extends Enemy
 
 jQuery.extend window,
   Character: Character
-  Enemy: Enemy
-  Slime: Slime
-  Tauren: Tauren
-  Creeper: Creeper
-  Wizard: Wizard
-  Archer: Archer
-  Warrior: Warrior
+  Enemy:     Enemy
+  Slime:     Slime
+  Tauren:    Tauren
+  Creeper:   Creeper
+  Wizard:    Wizard
+  Archer:    Archer
+  Warrior:   Warrior

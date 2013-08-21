@@ -46,11 +46,18 @@ class Fixed extends Item
     @transit(interact) if @transit
 
 class Door extends Fixed
-  blowupable: false
+  dartable:        "block"
+  blowupable:      false
+  walkthroughable: true
+
 class Wall extends Fixed
+  dartable:    "block"
   destroyable: true
+
 class Lock extends Fixed
+  dartable:   "block"
   blowupable: false
+
   transit: (action)->
     action.actor.consume(Key)
     @remove()
@@ -59,6 +66,8 @@ class Diamond extends Pickable
 class Key extends Pickable
 
 class Shuriken extends Pickable
+  dartable: "through"
+
   is: (shuriken)->
     @ == shuriken
 
@@ -67,12 +76,12 @@ class Shuriken extends Pickable
     @picked = false
 
 jQuery.extend window,
-  Item: Item
+  Item:     Item
   Pickable: Pickable
-  Fixed: Fixed
-  Door: Door
-  Lock: Lock
-  Wall: Wall
-  Key: Key
-  Diamond: Diamond
+  Fixed:    Fixed
+  Door:     Door
+  Lock:     Lock
+  Wall:     Wall
+  Key:      Key
+  Diamond:  Diamond
   Shuriken: Shuriken

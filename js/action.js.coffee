@@ -21,15 +21,8 @@ class Walk extends Action
     super()
     @target_space = @actor.space.get_relative_space(direction, 1)
 
-  blocked: ->
-    warrior_blocked = @target_space.item &&
-      @actor.is_warrior() &&
-      !@target_space.has_door()
-
-    !@target_space || @target_space.is_blocked() || warrior_blocked
-
   steps: ->
-    return if @blocked()
+    return if !@target_space.is_walkthroughable()
     @actor.update_link(@target_space)
 
 class Rest extends Action
