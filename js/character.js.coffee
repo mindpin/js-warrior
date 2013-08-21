@@ -42,7 +42,7 @@ class Character extends Unit
       atk.shuriken && atk.shuriken.update_link(atk.target_space)
 
   ensure_not_played: (action)->
-    throw new Error("一回合不能行动两次") if @played
+    throw new DuplicateActionsError("一回合不能行动两次") if @played
     action()
     @played = true
 
@@ -176,6 +176,7 @@ class Warrior extends Character
 
   rest: ->
     @ensure_not_played =>
+      return if @health == @max_health
       (new Rest(@, 3)).perform()
 
   look: (direction)->

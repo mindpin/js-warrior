@@ -6,4 +6,10 @@ class Game
   init: ->
     @level.init()
 
-window.Game = Game
+class DuplicateActionsError extends Error
+  constructor: ->
+    super(arguments...)
+
+jQuery.extend window,
+  Game:                  Game
+  DuplicateActionsError: DuplicateActionsError
