@@ -176,6 +176,7 @@ class Warrior extends Character
 
   rest: ->
     @ensure_not_played =>
+      return if @health == @max_health
       (new Rest(@, 3)).perform()
 
   look: (direction)->

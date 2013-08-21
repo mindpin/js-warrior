@@ -10,18 +10,3 @@ class UserSpace
 
 
 window.UserSpace = UserSpace
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
