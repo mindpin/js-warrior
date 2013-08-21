@@ -132,6 +132,17 @@ class Space
   is_blocked: ->
     !@has_door() && (@is_border || !!@character || (@item && !@item.is_shuriken()))
   # API
+  has: (name) ->
+    class_name = name[0].toUpperCase() + name[1..-1]
+    klass = window[class_name]
+    throw "#{name} 不是有效的名字" if !klass
+    if klass == Enemy
+      return @character && @character.constructor != Warrior
+    if klass.type == 'item'
+      return @item && @item.constructor == klass
+    if klass.type == 'character'
+      return @character && @character.constructor == klass
+
   has_enemy: ->
     return @character && @character.constructor != Warrior
 

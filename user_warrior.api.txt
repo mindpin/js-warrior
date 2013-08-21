@@ -1,7 +1,6 @@
 UserWarrior
 
-所有direction都为"up", "down", "left", "right", "left-up",
-"left-down", "right-up", "right-down"之一
+所有direction都为"up", "down", "left", "right"之一
 
 1. #attack(direction)
    对direction方向发起近身攻击

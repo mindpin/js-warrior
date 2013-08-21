@@ -1,4 +1,5 @@
 class Item extends Unit
+  @type = 'item'
   constructor: (@space, @count)->
     @count ||= 1
     super(@space)

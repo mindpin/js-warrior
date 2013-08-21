@@ -1,4 +1,5 @@
 class Character extends Unit
+  @type = 'character'
   is_character:  true
   destroyable:   true
   remove_flag:   false
