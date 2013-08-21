@@ -1,0 +1,94 @@
+<div class='title'>每回合可以使用的一次API：</div>
+<div class='api'>
+  <div class='t'>warrior.walk(direction)</div>
+  <div class='d'>
+    让勇者向指定的方向(direction)行走一格。方向取值可以是 up down left right.
+    也可以使用 #left(), #right(), #up(), #down() 来向四个方向行走。
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.attack(direction)</div>
+  <div class='d'>
+    勇者向指定的方向进行近战攻击
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.rest()</div>
+  <div class='d'>
+    勇者停留在原地休息，回复生命值
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.dart(direction)</div>
+  <div class='d'>
+    勇者对指定方向投掷手里剑，射程3格，投出去的手里剑可以再捡回来
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.interact(direction)</div>
+  <div class='d'>
+    勇者对指定方向的方格作出拾取动作, 捡起该格中物品或操作可互动物品(如锁)
+  </div>
+</div>
+
+<div class='title'>每回合可以反复使用的API：</div>
+<div class='api'>
+  <div class='t'>warrior.feel(direction)</div>
+  <div class='d'>
+    勇者感应指定方向邻近一格的状况, 返回目标格的space对象
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.look(direction)</div>
+  <div class='d'>
+    勇者感应指定方向邻近三格的状况, 返回目标格的space对象数组，由近到远排序
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.listen()</div>
+  <div class='d'>
+    勇者侧耳倾听全图所有敌人和物品所处的位置，返回对应目标格的space对象数组
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.direction_of(space)</div>
+  <div class='d'>
+    判断传入的space在勇者的哪个方向, 返回对应方向的字符串
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.distance_of(space)</div>
+  <div class='d'>
+    返回传入的space和勇者的直线距离。（横向距离+纵向距离）
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>warrior.direction_of_door()</div>
+  <div class='d'>
+    判断过关的门在勇者的哪个方向, 返回对应方向的字符串
+  </div>
+</div>
+
+<div class='title'>格子相关的API：</div>
+<div class='api'>
+  <div class='t'>space.is_empty()</div>
+  <div class='d'>
+    判断格子是否为空
+  </div>
+</div>
+
+<div class='api'>
+  <div class='t'>space.has(name)</div>
+  <div class='d'>
+    判断格子里是否有指定的物品。参数支持 'enemy'(任何敌人), 'slime'(史莱姆), 'tauren'(牛头人), 'creeper'(苦力怕), 'archer'(弓箭手), 'wizard'(魔法师), 'door'(过关的门), 'key'(钥匙), 'lock'(锁), 'diamond'(钻石), 'wall'(墙), 'shuriken'(手里剑)
+  </div>
+</div>

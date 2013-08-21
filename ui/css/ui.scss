@@ -207,6 +207,57 @@ body {
   }
 }
 
+.page-map {
+  position:fixed;
+  top:0;left:0;bottom:0;
+  background-color:rgba(white, 0.05);
+  width:500px;
+  padding:20px;
+
+  .page-api {
+    position:fixed;
+    left:0;bottom:0;top:400px;width:500px;
+    background-color:rgba(white, 0.05);
+    padding:20px;
+    overflow-y:scroll;
+
+    .title {
+      color:#ffffda;
+      font-weight:bold;
+      margin-bottom:10px;
+      margin-top:20px;
+      background-color:rgba(white, 0.2);
+      &:first-child{
+        margin-top:0;
+      }
+    }
+    .api {
+      margin-bottom:10px;
+      .t{
+        color:lighten(green, 60%);
+        margin-bottom:5px;
+        font-weight:bold;
+      }
+      .d {
+        color:#eee;
+        font-size:12px;
+      }
+    }
+  }
+}
+
+.page-intro {
+  position:fixed;
+  top:0;left:540px;right:0;
+  padding:20px;
+  color:white;
+
+  .levels {
+    margin-top:10px;
+    a {color:#ffffda;}
+  }
+}
+
 .page-js-warrior-game {
   background-color:rgba(white, 0.1);
   position:relative;

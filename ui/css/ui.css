@@ -179,6 +179,53 @@ body {
     width: 500px;
     margin-bottom: 20px; }
 
+.page-map {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  width: 500px;
+  padding: 20px; }
+  .page-map .page-api {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: 400px;
+    width: 500px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    overflow-y: scroll; }
+    .page-map .page-api .title {
+      color: #ffffda;
+      font-weight: bold;
+      margin-bottom: 10px;
+      margin-top: 20px;
+      background-color: rgba(255, 255, 255, 0.2); }
+      .page-map .page-api .title:first-child {
+        margin-top: 0; }
+    .page-map .page-api .api {
+      margin-bottom: 10px; }
+      .page-map .page-api .api .t {
+        color: #b3ffb3;
+        margin-bottom: 5px;
+        font-weight: bold; }
+      .page-map .page-api .api .d {
+        color: #eee;
+        font-size: 12px; }
+
+.page-intro {
+  position: fixed;
+  top: 0;
+  left: 540px;
+  right: 0;
+  padding: 20px;
+  color: white; }
+  .page-intro .levels {
+    margin-top: 10px; }
+    .page-intro .levels a {
+      color: #ffffda; }
+
 .page-js-warrior-game {
   background-color: rgba(255, 255, 255, 0.1);
   position: relative;
