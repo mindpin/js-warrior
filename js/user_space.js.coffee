@@ -1,7 +1,6 @@
 class UserSpace
   white_list = [
-    'is_empty','can_walk',
-    'has'
+    'is_empty','has'
   ]
 
   constructor: (space)->

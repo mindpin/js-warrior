@@ -26,11 +26,11 @@ game.player.play_turn = function(warrior){
     if(warrior.health < 20){
       warrior.rest()
     }else{
-      if(right_space.can_walk()){
+      if(right_space.is_empty() || right_space.has('door')){
         warrior.walk('right')
-      }else if(up_space.can_walk()){
+      }else if(up_space.is_empty() || right_space.has('door')){
         warrior.walk('up')
-      }else if(down_space.can_walk()){
+      }else if(down_space.is_empty() || right_space.has('door')){
         warrior.walk('down')
       }
     }
