@@ -1,5 +1,7 @@
-# blowupable: 可被爆炸摧毁
-# destroyable: 可被攻击摧毁
+# blowupable:      可被爆炸摧毁
+# destroyable:     可被攻击摧毁
+# dartable:        对手里剑攻击的反应, 可为"hit", "block", "through"
+# walkthroughable: 可步行穿过
 
 class Base
   set: (field, value)->
@@ -20,8 +22,10 @@ class Base
     underscored.toLowerCase()
 
 class Unit extends Base
-  blowupable: true
-  remove_flag: false
+  blowupable:      true
+  dartable:        "hit"
+  remove_flag:     false
+  walkthroughable: false
 
   constructor: (@space)->
     @level = @space.level if @space

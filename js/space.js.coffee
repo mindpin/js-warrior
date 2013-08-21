@@ -174,6 +174,18 @@ class Space
   has_blowupable: ->
     return @item && @item.blowupable
 
+  dart_stop: ->
+    @dart_hit() || @dart_block()
+
+  dart_through: ->
+    @units().some((u)=> u.dartable == "through")
+
+  dart_hit: ->
+    @units().some((u)=> u.dartable == "hit")
+
+  dart_block: ->
+    @units().some((u)=> u.dartable == "block") || @is_border
+
   is_empty: ->
     @character == null && @item == null
 
