@@ -90,7 +90,10 @@ class Level
     # console.log(cs)
     # console.log(character)
     if @current_character.is_warrior()
-      @current_character.play(@game.player.play_turn)
+      try
+        @current_character.play(@game.player.play_turn)
+      catch e
+        return jQuery(document).trigger('js-warrior:error')
     else
       @current_character.play()
 
