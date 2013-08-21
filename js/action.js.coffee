@@ -16,13 +16,15 @@ class Action extends Base
   is_dart: ->
     @class_name() == "dart"
     
+class Idle extends Action
+  constructor: (@actor)->
+
 class Walk extends Action
   constructor: (@actor, @direction)->
     super()
     @target_space = @actor.space.get_relative_space(direction, 1)
 
   steps: ->
-    return if !@target_space.can_walk()
     @actor.update_link(@target_space)
 
 class Rest extends Action
@@ -93,3 +95,4 @@ jQuery.extend window,
   Excited:    Excited
   Explode:    Explode
   Dart:       Dart
+  Idle:       Idle

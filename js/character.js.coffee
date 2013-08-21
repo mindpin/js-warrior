@@ -25,6 +25,9 @@ class Character extends Unit
       !distance && distance = 1
       (new @attack_action(@, direction, distance)).perform()
 
+  idle: ->
+    @level.add_action(new Idle(@))
+
   is_hp_exceeded: (hp)->
     hp > @max_health
 
@@ -152,7 +155,7 @@ class Warrior extends Character
   dart: (direction)->
     distance = 3
     @ensure_not_played =>
-      return if !@has_shuriken()
+      return @idle() if !@has_shuriken()
       dart = new Dart(@, direction, distance)
       range = @space.range(dart.target_space).concat([dart.target_space])
       blocked_space = range.filter((s)=>
@@ -165,7 +168,7 @@ class Warrior extends Character
         if blocked_space.dart_block() #如果被阻止物阻挡
           dart.target_space = [@space].concat(@space.range(blocked_space)).pop()
           
-      return if dart.target_space == @space
+      return @idle() if dart.target_space == @space
 
       dart
         .set('landing_space', dart.target_space)
@@ -176,7 +179,7 @@ class Warrior extends Character
 
   rest: ->
     @ensure_not_played =>
-      return if @health == @max_health
+      return @idle() if @health == @max_health
       (new Rest(@, 3)).perform()
 
   look: (direction)->
@@ -191,7 +194,10 @@ class Warrior extends Character
 
   walk: (direction)->
     @ensure_not_played =>
-      (new Walk(@, direction)).perform()
+      walk = new Walk(@, direction)
+      console.log(walk.target_space)
+      return @idle() if !walk.target_space.can_walk()
+      walk.perform()
 
   consume: (type)->
     @find_item(type).count -= 1
@@ -223,7 +229,7 @@ class Enemy extends Character
     @in_range(space) && !@blocked(space)
 
   per_turn_strategy: ->
-    return if !@can_attack_warrior()
+    return @idle() if !@can_attack_warrior()
     direction = @space.get_direction(@level.warrior.space)
     target = @space.get_relative_space(direction, @range)
     @direction = direction
@@ -250,7 +256,7 @@ class Wizard extends Enemy
   ]
 
   per_turn_strategy: ->
-    return if !@can_attack_warrior()
+    return @idle() if !@can_attack_warrior()
     direction = @space.get_direction(@level.warrior.space)
     distance = @space.get_distance(@level.warrior.space)
     @direction = direction
@@ -269,7 +275,7 @@ class Archer extends Enemy
   ]
 
   per_turn_strategy: ->
-    return if !@can_attack_warrior()
+    return @idle() if !@can_attack_warrior()
     direction = @space.get_direction(@level.warrior.space)
     distance = @space.get_distance(@level.warrior.space)
     @direction = direction
