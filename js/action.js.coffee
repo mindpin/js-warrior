@@ -72,7 +72,7 @@ class Explode extends Action
     @hp_change = -10000
     @targets = @actor.get_attack_area()
       .map (s)=> 
-        s.units().filter((u)=> u.destroyable)
+        s.units().filter((u)=> u.blowupable)
       .reduce((a, b)=> a.concat b)
 
   steps: ->
@@ -87,7 +87,7 @@ class Dart extends Attack
 
   steps: ->
     @shuriken.update_link(@target_space) if !@target
-    @target && @target.take_attack(@)
+    @target && !@target.space.has_wall() && @target.take_attack(@)
 
 
 jQuery.extend window,

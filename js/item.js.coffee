@@ -6,6 +6,9 @@ class Item extends Unit
   is_shuriken: ->
     @class_name() == "shuriken"
 
+  is_wall: ->
+    @class_name() == "wall"
+
   take_attack: (atk)->
     if @is_shuriken() && atk.shuriken
       atk.target_space.item.count += atk.shuriken.count
@@ -42,9 +45,11 @@ class Fixed extends Item
     @transit(interact) if @transit
 
 class Door extends Fixed
+  blowupable: false
 class Wall extends Fixed
   destroyable: true
 class Lock extends Fixed
+  blowupable: false
   transit: (action)->
     action.actor.consume(Key)
     @remove()
