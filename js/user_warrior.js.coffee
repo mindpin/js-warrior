@@ -3,7 +3,8 @@ class UserWarrior extends Base
     "attack", "interact", "dart",
     "rest",   "walk",     "feel",
     "look",   "left",     "right",
-    "up",     "down"
+    "up",     "down",     "distance_of",
+    "drection_of_door",   "direction_of"
   ]
 
   warrior = null

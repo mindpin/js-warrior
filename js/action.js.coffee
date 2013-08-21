@@ -64,8 +64,8 @@ class Explode extends Action
     super()
     @hp_change = -10000
     @targets = @actor.get_attack_area()
-      .map (s)=> 
-        s.units().filter((u)=> u.blowupable)
+      .filter((s)=> s.has_blowupable())
+      .map((s)=> s.units())
       .reduce((a, b)=> a.concat b)
 
   steps: ->

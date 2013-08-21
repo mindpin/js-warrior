@@ -28,6 +28,15 @@ UserWarrior
 09. #listen()
    通过声音洞察全图单位所处的位置, 返回这些单位所在格子的数组
 
+10. #direction_of(space)
+    判断传入的space在哪个方向, 返回对应方向的字符串
+
+11. #distance_of(space)
+    判断传入的space距离warrior有多少步的直线距离
+
+12. #direction_of_door()
+    洞察门所在的方向, 返回对应方向的字符串
+
 UserSpace
 
 1 space.can_walk()
