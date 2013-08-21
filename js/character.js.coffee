@@ -18,7 +18,7 @@ class Character extends Unit
 
   blocked: (space)->
     @space.range(space).some (s)=>
-      s.is_blocked()
+      !s.is_empty()
 
   attack: (direction, distance)->
     @ensure_not_played =>
@@ -35,7 +35,7 @@ class Character extends Unit
   take_attack: (atk)->
     @health_delta(atk.hp_change)
     @remove() if @health <= 0
-    if @space.has_shuriken() && atk.shuriken
+    if @space.has('shuriken') && atk.shuriken
       atk.target_space.item.count += atk.shuriken.count
       atk.shuriken.remove()
     else

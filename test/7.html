@@ -20,17 +20,17 @@ game.player.play_turn = function(warrior){
   up_space = warrior.feel('up')
   down_space = warrior.feel('down')
 
-  if(right_space.has_enemy()){
+  if(right_space.has('enemy')){
     warrior.attack('right')
   }else{
     if(warrior.health < 20){
       warrior.rest()
     }else{
-      if(!right_space.is_blocked()){
+      if(right_space.can_walk()){
         warrior.walk('right')
-      }else if(!up_space.is_blocked()){
+      }else if(up_space.can_walk()){
         warrior.walk('up')
-      }else if(!down_space.is_blocked()){
+      }else if(down_space.can_walk()){
         warrior.walk('down')
       }
     }

@@ -129,64 +129,8 @@ class Space
       return Math.abs(@x - another_space.x)
     return null
 
-  is_blocked: ->
-    !@has_door() && (@is_border || !!@character || (@item && !@item.is_shuriken()))
-  # API
-  has: (name) ->
-    class_name = name[0].toUpperCase() + name[1..-1]
-    klass = window[class_name]
-    throw "#{name} 不是有效的名字" if !klass
-    if klass == Enemy
-      return @character && @character.constructor != Warrior
-    if klass.type == 'item'
-      return @item && @item.constructor == klass
-    if klass.type == 'character'
-      return @character && @character.constructor == klass
-
-  has_enemy: ->
-    return @character && @character.constructor != Warrior
-
-  has_slime: ->
-    return @character && @character.constructor == Slime
-
-  has_tauren: ->
-    return @character && @character.constructor == Tauren
-
-  has_creeper: ->
-    return @character && @character.constructor == Creeper
-
-  has_archer: ->
-    return @character && @character.constructor == Archer
-
-  has_wizard: ->
-    return @character && @character.constructor == Wizard
-
-  has_door: ->
-    return @item && @item.constructor == Door
-
-  has_key: ->
-    return @item && @item.constructor == Key
-
-  has_lock: ->
-    return @item && @item.constructor == Lock
-
-  has_diamond: ->
-    return @item && @item.constructor == Diamond
-
-  has_wall: ->
-    return @item && @item.constructor == Wall
-
-  has_shuriken: ->
-    return @item && @item.class_name() == 'shuriken'
-
-  has_destroyable: ->
-    return @item && @item.destroyable
-
   has_blowupable: ->
     return @item && @item.blowupable
-
-  is_walkthroughable: ->
-    !@units().some((u)=> !u.walkthroughable)
 
   dart_stop: ->
     @dart_hit() || @dart_block()
@@ -200,8 +144,24 @@ class Space
   dart_block: ->
     @units().some((u)=> u.dartable == "block") || @is_border
 
+  # API
+  can_walk: ->
+    !@is_border && !@units().some((u)=> !u.walkthroughable)
+
   is_empty: ->
     @character == null && @item == null
+    
+  has: (name) ->
+    class_name = name[0].toUpperCase() + name[1..-1]
+    klass = window[class_name]
+    throw "#{name} 不是有效的名字" if !klass
+    if klass == Enemy
+      return @character && @character.constructor != Warrior
+    if klass.type == 'item'
+      return @item && @item.constructor == klass
+    if klass.type == 'character'
+      return @character && @character.constructor == klass
+
 
 
 window.Space = Space

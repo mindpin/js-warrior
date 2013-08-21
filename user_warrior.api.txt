@@ -30,31 +30,31 @@ UserWarrior
 
 UserSpace
 
-1 space.is_blocked()
+1 space.can_walk()
    判断格子是否可以行走
-2 space.has_enemy()
+2 space.has('enemy')
    判断格子是否有怪
-3 space.has_slime()
+3 space.has('slime')
    判断格子是否有史莱姆
-4 space.has_tauren()
+4 space.has('tauren')
    判断格子是否有牛头
-5 space.has_creeper()
+5 space.has('creeper')
    判断格子是否有 creeper
-6 space.has_archer()
+6 space.has('archer')
    判断格子是否有弓箭手
-7 space.has_wizard()
+7 space.has('wizard')
    判断格子是否有魔法师
-8 space.has_door()
+8 space.has('door')
    判断格子是否有门
-9 space.has_key()
+9 space.has('key')
    判断格子是否有钥匙
-10 space.has_lock()
+10 space.has('lock')
    判断格子是否有锁
-11 space.has_diamond()
+11 space.has('diamond')
    判断格子是否有宝石
-12 space.has_wall()
+12 space.has('wall')
    判断格子是否有墙
-13 space.has_shuriken()
+13 space.has('shuriken')
    判断格子是否有手里剑
 14 space.is_empty()
    判断格子是否为空

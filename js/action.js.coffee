@@ -22,7 +22,7 @@ class Walk extends Action
     @target_space = @actor.space.get_relative_space(direction, 1)
 
   steps: ->
-    return if !@target_space.is_walkthroughable()
+    return if !@target_space.can_walk()
     @actor.update_link(@target_space)
 
 class Rest extends Action
@@ -80,7 +80,7 @@ class Dart extends Attack
 
   steps: ->
     @shuriken.update_link(@target_space) if !@target
-    @target && !@target.space.has_wall() && @target.take_attack(@)
+    @target && !@target.space.has('wall') && @target.take_attack(@)
 
 
 jQuery.extend window,
