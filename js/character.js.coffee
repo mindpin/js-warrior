@@ -142,7 +142,7 @@ class Warrior extends Character
       range = @space.range(dart.target_space).concat([dart.target_space])
       blocked_space = range.filter((s)=> s.is_blocked())[0]
       if blocked_space #如果被阻挡
-        if blocked_space.has_enemy() #如果被怪物阻挡
+        if blocked_space.has_enemy() || blocked_space.has_destroyable() #如果被怪物或可摧毁物品阻挡
           dart.target_space = blocked_space
         if blocked_space.has_wall() || blocked_space.is_border #如果被墙和边界阻挡
           dart.target_space = [@space].concat(@space.range(blocked_space)).pop()

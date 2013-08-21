@@ -1,3 +1,6 @@
+# blowupable: 可被爆炸摧毁
+# destroyable: 可被攻击摧毁
+
 class Base
   set: (field, value)->
     @[field] = value
@@ -17,6 +20,7 @@ class Base
     underscored.toLowerCase()
 
 class Unit extends Base
+  blowupable: true
   remove_flag: false
 
   constructor: (@space)->

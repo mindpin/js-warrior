@@ -72,7 +72,7 @@ class Explode extends Action
     @hp_change = -10000
     @targets = @actor.get_attack_area()
       .map (s)=> 
-        s.units().filter((u)=> u.destroyable)
+        s.units().filter((u)=> u.blowupable)
       .reduce((a, b)=> a.concat b)
 
   steps: ->

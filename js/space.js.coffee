@@ -168,6 +168,12 @@ class Space
   has_shuriken: ->
     return @item && @item.class_name() == 'shuriken'
 
+  has_destroyable: ->
+    return @item && @item.destroyable
+
+  has_blowupable: ->
+    return @item && @item.blowupable
+
   is_empty: ->
     @character == null && @item == null
 
