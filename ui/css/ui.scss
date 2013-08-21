@@ -199,6 +199,12 @@ body {
     a.pause {
       display:none;
     }
+
+    &.started {
+      a.start{
+        display:none;
+      }
+    }
   }
   .tips {
     color:#ddd;

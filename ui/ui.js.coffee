@@ -387,6 +387,7 @@ class GameUi
   init_events: ->
     jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
       code = jQuery('.page-control-panel textarea.code').val()
+      jQuery('.page-control-panel .btns').addClass('started')
       jQuery(document).trigger 'js-warrior:start', code
 
     jQuery(document).on 'js-warrior:win', (evt)=>
@@ -394,6 +395,9 @@ class GameUi
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
       alert('你失败了 :(')
+
+    jQuery(document).on 'js-warrior:error', (evt, error)=>
+      console.log error
 
     jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
       @level = level
@@ -450,6 +454,9 @@ class GameUi
 
     if 'interact' == type
       ani.interact(action.direction, action.item)
+
+    if 'idle' == type
+      ani._rendered()
 
     if action.next_action
       setTimeout =>
