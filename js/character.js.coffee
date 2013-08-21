@@ -195,7 +195,6 @@ class Warrior extends Character
   walk: (direction)->
     @ensure_not_played =>
       walk = new Walk(@, direction)
-      console.log(walk.target_space)
       return @idle() if !walk.target_space.can_walk()
       walk.perform()
 

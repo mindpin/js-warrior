@@ -18,6 +18,7 @@ class Action extends Base
     
 class Idle extends Action
   constructor: (@actor)->
+    super()
 
 class Walk extends Action
   constructor: (@actor, @direction)->
