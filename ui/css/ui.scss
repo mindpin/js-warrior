@@ -212,10 +212,58 @@ body {
   position:relative;
   background:url(../img/ground.png);
   border:solid 10px #222;
+  margin-top:30px;
+
+  .warrior-item-counts {
+    // background-color:white;
+    width:100%;
+    height:30px;line-height:30px;
+    position:absolute;
+    top:-50px;left:0;
+
+    .icon {
+      width:60px;height:60px;
+      -webkit-transform : scale(0.5);
+      -moz-transform    : scale(0.5);
+      -ms-transform     : scale(0.5);
+      -o-transform      : scale(0.5);
+      position:relative;
+      top:-15px;
+      left:-15px;
+      float:left;
+    }
+
+    .count {
+      font-size:18px;
+      font-weight:bold;
+      font-family: Helvetica,Arial,sans-serif;
+      float:left;
+      color:white;
+      margin-left:-30px;
+      margin-right:20px;
+      &:before{
+        content:"×";
+        margin-right:3px;
+      }
+    }
+
+    .shuriken .icon{
+      background:url(../img/item.png) no-repeat;
+      background-position:-360px 0px;
+    }
+    .key .icon{
+      background:url(../img/item.png) no-repeat;
+      background-position:-240px 0px;
+    }
+    .diamond .icon{
+      background:url(../img/item.png) no-repeat;
+      background-position:-300px 0px;
+    }
+  }
 
   .item {
     width:60px;height:60px;
-    background:url(../img/item.png?d) no-repeat;
+    background:url(../img/item.png) no-repeat;
     position:absolute;
 
     .item-count {
@@ -226,6 +274,11 @@ body {
       font-family:arial;
       text-shadow:0 0 1px black;
       font-size:16px;
+      display:none;
+    }
+
+    &.key, &.diamond, &.shuriken {
+      .item-count {display:block;}
     }
 
     &.lock {

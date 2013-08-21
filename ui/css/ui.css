@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   background-color: #333;
   padding: 0;
@@ -182,11 +183,50 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
   position: relative;
   background: url(../img/ground.png);
-  border: solid 10px #222; }
+  border: solid 10px #222;
+  margin-top: 30px; }
+  .page-js-warrior-game .warrior-item-counts {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    position: absolute;
+    top: -50px;
+    left: 0; }
+    .page-js-warrior-game .warrior-item-counts .icon {
+      width: 60px;
+      height: 60px;
+      -webkit-transform: scale(0.5);
+      -moz-transform: scale(0.5);
+      -ms-transform: scale(0.5);
+      -o-transform: scale(0.5);
+      position: relative;
+      top: -15px;
+      left: -15px;
+      float: left; }
+    .page-js-warrior-game .warrior-item-counts .count {
+      font-size: 18px;
+      font-weight: bold;
+      font-family: Helvetica,Arial,sans-serif;
+      float: left;
+      color: white;
+      margin-left: -30px;
+      margin-right: 20px; }
+      .page-js-warrior-game .warrior-item-counts .count:before {
+        content: "×";
+        margin-right: 3px; }
+    .page-js-warrior-game .warrior-item-counts .shuriken .icon {
+      background: url(../img/item.png) no-repeat;
+      background-position: -360px 0px; }
+    .page-js-warrior-game .warrior-item-counts .key .icon {
+      background: url(../img/item.png) no-repeat;
+      background-position: -240px 0px; }
+    .page-js-warrior-game .warrior-item-counts .diamond .icon {
+      background: url(../img/item.png) no-repeat;
+      background-position: -300px 0px; }
   .page-js-warrior-game .item {
     width: 60px;
     height: 60px;
-    background: url(../img/item.png?d) no-repeat;
+    background: url(../img/item.png) no-repeat;
     position: absolute; }
     .page-js-warrior-game .item .item-count {
       position: absolute;
@@ -196,7 +236,10 @@ body {
       font-weight: bold;
       font-family: arial;
       text-shadow: 0 0 1px black;
-      font-size: 16px; }
+      font-size: 16px;
+      display: none; }
+    .page-js-warrior-game .item.key .item-count, .page-js-warrior-game .item.diamond .item-count, .page-js-warrior-game .item.shuriken .item-count {
+      display: block; }
     .page-js-warrior-game .item.lock.close {
       background-position: 0px 0px; }
     .page-js-warrior-game .item.lock.open {
