@@ -4,7 +4,7 @@ class UserWarrior extends Base
     "rest",   "walk",     "feel",
     "look",   "left",     "right",
     "up",     "down",     "distance_of",
-    "drection_of_door",   "direction_of",
+    "direction_of_door",   "direction_of",
     "listen"
   ]
 

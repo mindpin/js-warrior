@@ -139,7 +139,7 @@ class Warrior extends Character
     @in_shuriken_range(space) && @has_shuriken()
 
   listen: ->
-    @level.units().map (u)=> unit.space
+    @level.units().map (u)=> u.space
 
   distance_of: (space)->
     [@space.x - space.x, @space.y - space.y]
@@ -180,7 +180,7 @@ class Warrior extends Character
   rest: ->
     @ensure_not_played =>
       return @idle() if @health == @max_health
-      (new Rest(@, 3)).perform()
+      (new Rest(@, 2)).perform()
 
   look: (direction)->
     target_space = @space.get_relative_space(direction, 4)
