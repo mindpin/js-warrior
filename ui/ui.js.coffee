@@ -1,20 +1,20 @@
 class AniSound
   @walk: ->
-    new Audio("/sound/step1.mp3").play()
+    new Audio("../sound/step1.mp3").play()
   @attack: ->
-    new Audio("/sound/attack.mp3").play()
+    new Audio("../sound/attack.mp3").play()
   @rest: ->
-    new Audio("/sound/heal.mp3").play()
+    new Audio("../sound/heal.mp3").play()
   @shot: ->
-    new Audio("/sound/arrow.mp3").play()
+    new Audio("../sound/arrow.mp3").play()
   @fireball: ->
-    new Audio("/sound/fireball.mp3").play()
+    new Audio("../sound/fireball.mp3").play()
   @explode: ->
-    new Audio("/sound/explode.mp3").play()
+    new Audio("../sound/explode.mp3").play()
   @pick: ->
-    new Audio("/sound/pick.mp3").play()
+    new Audio("../sound/pick.mp3").play()
   @open_lock: ->
-    new Audio("/sound/open_lock.mp3").play()
+    new Audio("../sound/open_lock.mp3").play()
 
 
 class UnitAni
