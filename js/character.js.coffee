@@ -180,7 +180,7 @@ class Warrior extends Character
   rest: ->
     @ensure_not_played =>
       return @idle() if @health == @max_health
-      (new Rest(@, 3)).perform()
+      (new Rest(@, 2)).perform()
 
   look: (direction)->
     target_space = @space.get_relative_space(direction, 4)
