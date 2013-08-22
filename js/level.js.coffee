@@ -65,6 +65,12 @@ class Level
     @key_not_enough() || 
     @warrior.remove_flag
 
+  end: ->
+    jQuery(document).off 'js-warrior:pause'
+    jQuery(document).off 'js-warrior:resume'
+    jQuery(document).off 'js-warrior:start'
+    jQuery(document).off 'js-warrior:render-ui-success'
+
   init: ->
     jQuery(document).on 'js-warrior:pause', =>
       @pausing = true
@@ -77,9 +83,11 @@ class Level
       eval(user_input)
       @current_character = @warrior
       @_character_run()
+
     jQuery(document).trigger('js-warrior:init-ui', this)
 
   _character_run: ()->
+
     @actions_queue = []
     if !@current_character || @current_character.is_warrior() || @warrior.remove_flag
       @current_round += 1

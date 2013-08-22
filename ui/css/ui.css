@@ -455,10 +455,22 @@ body {
         text-align: center;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 3px; }
+      .page-control .page-code-panel .btns a.stop {
+        display: none;
+        color: white;
+        background-color: #555;
+        width: 80px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        border-radius: 3px;
+        text-decoration: none; }
+        .page-control .page-code-panel .btns a.stop:hover {
+          background-color: #6e6e6e; }
       .page-control .page-code-panel .btns.started a.start {
         display: none; }
-      .page-control .page-code-panel .btns.started .running {
-        display: block; }
+      .page-control .page-code-panel .btns.started .running, .page-control .page-code-panel .btns.started a.stop, .page-control .page-code-panel .btns.started a.restart {
+        display: inline-block; }
     .page-control .page-code-panel #code-input.code {
       width: 100%;
       height: 600px;

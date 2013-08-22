@@ -384,71 +384,73 @@ class UnitAni
     @$item_counts.find('.diamond .count').html @character.count('diamond')
 
 class GameUi
-  constructor: ->
+  constructor: (@editor, @jqconsole)->
     @CONST_W = 60
     @$game = jQuery('.page-js-warrior-game')
     @init_events()
 
+  _run_code: ->
+    $panel = jQuery('.page-code-panel')
+    code = @editor.getSession().getValue()
+    $panel.find('.btns').addClass('started')
+    jQuery(document).trigger 'js-warrior:start', code
+
   init_events: ->
     $panel = jQuery('.page-code-panel')
-    path = window.location.pathname
 
-    @editor = ace.edit("code-input")
-    @editor.setTheme("ace/theme/twilight")
-    @editor.setHighlightActiveLine(false)
+    if !window.btns_binded
+      window.btns_binded = true
 
-    @editor.getSession().setMode("ace/mode/javascript")
-    @editor.getSession().setTabSize(2)
-    @editor.getSession().setUseWrapMode(true)
+      $panel.find('.btns .start').on 'click', (evt)=>
+        @_run_code()
 
-    if localStorage[path]
-      @editor.getSession().setValue localStorage[path]
-    
+      $panel.find('.btns .stop').on 'click', (evt)=>
+        @stop()
+        window.game.level.end()
+        @$game.html('')
 
-    @jqconsole = jQuery('.page-log .console').jqconsole('这里是 js-warrior 的日志：', '> ')
+        @jqconsole.Reset()
 
-    $panel.find('.btns .start').on 'click', (evt)=>
-      code = @editor.getSession().getValue()
-      # 将代码存入本地存储
-      localStorage[path] = code
+        window.game_ui = new GameUi(@editor, @jqconsole)
+        window.game = new Game(level_data)
+        window.game.init()
 
-      $panel.find('.btns').addClass('started')
-      jQuery(document).trigger 'js-warrior:start', code
+        $panel.find('.btns').removeClass('started')
 
-    jQuery(document).on 'js-warrior:win', (evt)=>
-      @jqconsole.Write '你过关了！！', 'win'
+      jQuery(document).on 'js-warrior:win', (evt)=>
+        @jqconsole.Write '你过关了！！', 'win'
 
-    jQuery(document).on 'js-warrior:lose', (evt)=>
-      @jqconsole.Write '你失败了 :(', 'lose'
+      jQuery(document).on 'js-warrior:lose', (evt)=>
+        @jqconsole.Write '你失败了 :(', 'lose'
 
-    jQuery(document).on 'js-warrior:error', (evt, error)=>
-      console.log error, error.message
-      if error.constructor == WarriorNotActionError 
-        return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
-      if error.constructor == DuplicateActionsError
-        return @jqconsole.Write '勇者一回合内尝试行动了两次，执行中止', 'error'
+      jQuery(document).on 'js-warrior:error', (evt, error)=>
+        console.log error, error.message
+        if error.constructor == WarriorNotActionError 
+          return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
+        if error.constructor == DuplicateActionsError
+          return @jqconsole.Write '勇者一回合内尝试行动了两次，执行中止', 'error'
 
-      @jqconsole.Write "程序出错: #{error.message}", 'error'
+        @jqconsole.Write "程序出错: #{error.message}", 'error'
 
-    jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
-      @level = level
-      @init()
+      jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
+        @level = level
+        @init()
 
-    jQuery(document).on 'js-warrior:render-ui', (evt)=>
-      actions = @level.actions_queue
-      @ani_action_queue_length = actions.length
-      return @warrior.ani.idle() if actions.length == 0
+      jQuery(document).on 'js-warrior:render-ui', (evt)=>
+        actions = @level.actions_queue
+        @ani_action_queue_length = actions.length
+        return @warrior.ani.idle() if actions.length == 0
 
 
-      for i in [0...actions.length]
-        actions[i].next_action = actions[i + 1]
+        for i in [0...actions.length]
+          actions[i].next_action = actions[i + 1]
 
-      @do_ani_action actions[0]
+        @do_ani_action actions[0]
 
-    jQuery(document).on 'js-warrior:action-rendered', (evt)=>
-      @ani_action_queue_length--
-      if @ani_action_queue_length <= 0
-        jQuery(document).trigger 'js-warrior:render-ui-success'
+      jQuery(document).on 'js-warrior:action-rendered', (evt)=>
+        @ani_action_queue_length--
+        if @ani_action_queue_length <= 0
+          jQuery(document).trigger 'js-warrior:render-ui-success'
 
 
   do_ani_action: (action)=>
@@ -546,7 +548,7 @@ class GameUi
     @run()
 
   run: ->
-    setInterval =>
+    @runner = setInterval =>
       @now = Date.now()
       second = Math.floor(@now / 1000)
       mill_second = @now % 1000
@@ -560,6 +562,9 @@ class GameUi
 
         @render()
     , 1
+
+  stop: ->
+    clearInterval @runner
 
   render: ->
     if @frame_count % 30 == 0
