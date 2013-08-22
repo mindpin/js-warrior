@@ -139,7 +139,7 @@ class Warrior extends Character
     @in_shuriken_range(space) && @has_shuriken()
 
   listen: ->
-    @level.units().map (u)=> unit.space
+    @level.units().map (u)=> u.space
 
   distance_of: (space)->
     [@space.x - space.x, @space.y - space.y]
