@@ -6,19 +6,12 @@
   <link href="../ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <div class='page-map'>
-    <div class='page-js-warrior-game' style='display:none;'></div>
-    <div class='page-api'>
-    </div>
-  </div>
-
-  <div class='page-intro'>
-  </div>
-
-  <div class='page-control-panel'>
-  </div>
+  <!-- body.html -->
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="../js/jquery-migrate/jquery-migrate-1.2.1.js"></script>
+  <script src="../js/ace/src-min-noconflict/ace.js"></script>
+  <script src="../js/jqconsole/jqconsole.js"></script>
 
   <script type="text/javascript" src="../coffee-script.js"></script>
   <script type="text/coffeescript" src="../js/game.js.coffee"></script>
@@ -33,32 +26,12 @@
   <script type="text/coffeescript" src="../js/user_space.js.coffee"></script>
 
   <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
+  <script type="text/coffeescript" src='../ui/ui-init.js.coffee'></script>
+
   <script type="text/coffeescript">
-    level_data = [
+    window.level_data = [
       ['IDiamond','','CWarrior','','CTauren','CArcher','','IDoor']
     ]
-
-    jQuery ->
-      jQuery.ajax
-        url: 'api.html'
-        success: (res)->
-          jQuery('.page-api').html res
-
-      jQuery.ajax
-        url: 'intro.html'
-        success: (res)->
-          jQuery('.page-intro').html res
-
-      jQuery.ajax
-        url: 'control.html'
-        success: (res)->
-          jQuery('.page-control-panel').html res
-
-          window.game_ui = new GameUi()
-
-          window.game = new Game(level_data)
-          window.game.init()
-
   </script>
 </body>
 </html>

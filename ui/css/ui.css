@@ -1,11 +1,4 @@
 @charset "UTF-8";
-body {
-  background-color: #333;
-  padding: 0;
-  margin: 0;
-  font-size: 14px;
-  padding: 20px; }
-
 @keyframes creeper {
   0% {
     -webkit-transform: scale(0.9);
@@ -136,312 +129,338 @@ body {
     -ms-transform: rotate(360deg);
     -o-transform: rotate(360deg); } }
 
-.page-links {
-  position: fixed;
-  top: 20px;
-  right: 40px; }
-  .page-links a {
-    color: #FEDE66;
-    display: block;
-    margin-bottom: 5px; }
-
-.page-control-panel {
-  position: fixed;
-  bottom: 20px;
-  right: 20px; }
-  .page-control-panel textarea {
-    background-color: #222;
-    color: white;
-    border: solid 1px #666;
-    padding: 5px;
-    font-size: 14px;
-    resize: none;
-    overflow-y: scroll;
-    font-family: Consolas, "Liberation Mono", Courier, monospace; }
-  .page-control-panel .btns {
-    margin-bottom: 10px; }
-    .page-control-panel .btns a {
-      color: #ADC5EC; }
-    .page-control-panel .btns a.start {
-      color: white;
-      background-color: #5CA941;
-      width: 60px;
-      height: 32px;
-      line-height: 32px;
-      display: inline-block;
-      text-align: center;
-      border-radius: 3px;
-      text-decoration: none; }
-    .page-control-panel .btns a.pause {
-      display: none; }
-    .page-control-panel .btns.started a.start {
-      display: none; }
-  .page-control-panel .tips {
-    color: #ddd;
-    width: 500px;
-    margin-bottom: 20px; }
+body {
+  background-color: #222;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2em;
+  overflow-y: scroll; }
 
 .page-map {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
   background-color: rgba(255, 255, 255, 0.05);
-  width: 500px;
-  padding: 20px; }
-  .page-map .page-api {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    top: 400px;
-    width: 500px;
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    overflow-y: scroll; }
-    .page-map .page-api .title {
-      color: #ffffda;
-      font-weight: bold;
-      margin-bottom: 10px;
-      margin-top: 20px;
-      background-color: rgba(255, 255, 255, 0.2); }
-      .page-map .page-api .title:first-child {
-        margin-top: 0; }
-    .page-map .page-api .api {
-      margin-bottom: 10px; }
-      .page-map .page-api .api .t {
-        color: #b3ffb3;
-        margin-bottom: 5px;
-        font-weight: bold; }
-      .page-map .page-api .api .d {
-        color: #eee;
-        font-size: 12px; }
-
-.page-intro {
-  position: fixed;
-  top: 0;
-  left: 540px;
-  right: 0;
+  height: 280px;
   padding: 20px;
-  color: white; }
-  .page-intro .levels {
-    margin-top: 10px; }
-    .page-intro .levels a {
-      color: #ffffda; }
-
-.page-js-warrior-game {
-  background-color: rgba(255, 255, 255, 0.1);
-  position: relative;
-  background: url(../img/ground.png);
-  border: solid 10px #222;
-  margin-top: 30px; }
-  .page-js-warrior-game .warrior-item-counts {
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    position: absolute;
-    top: -50px;
-    left: 0; }
-    .page-js-warrior-game .warrior-item-counts .icon {
+  margin: 5px;
+  border-radius: 5px;
+  position: relative; }
+  .page-map .page-js-warrior-game {
+    background-color: rgba(255, 255, 255, 0.1);
+    position: relative;
+    background: url(../img/ground.png);
+    border: solid 10px #222;
+    margin-top: 30px; }
+    .page-map .page-js-warrior-game .warrior-item-counts {
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      position: absolute;
+      top: -50px;
+      left: 0; }
+      .page-map .page-js-warrior-game .warrior-item-counts .icon {
+        width: 60px;
+        height: 60px;
+        -webkit-transform: scale(0.5);
+        -moz-transform: scale(0.5);
+        -ms-transform: scale(0.5);
+        -o-transform: scale(0.5);
+        position: relative;
+        top: -15px;
+        left: -15px;
+        float: left; }
+      .page-map .page-js-warrior-game .warrior-item-counts .count {
+        font-size: 18px;
+        font-weight: bold;
+        font-family: Helvetica,Arial,sans-serif;
+        float: left;
+        color: white;
+        margin-left: -30px;
+        margin-right: 20px; }
+        .page-map .page-js-warrior-game .warrior-item-counts .count:before {
+          content: "×";
+          margin-right: 3px; }
+      .page-map .page-js-warrior-game .warrior-item-counts .shuriken .icon {
+        background: url(../img/item.png) no-repeat;
+        background-position: -360px 0px; }
+      .page-map .page-js-warrior-game .warrior-item-counts .key .icon {
+        background: url(../img/item.png) no-repeat;
+        background-position: -240px 0px; }
+      .page-map .page-js-warrior-game .warrior-item-counts .diamond .icon {
+        background: url(../img/item.png) no-repeat;
+        background-position: -300px 0px; }
+    .page-map .page-js-warrior-game .item {
       width: 60px;
       height: 60px;
-      -webkit-transform: scale(0.5);
-      -moz-transform: scale(0.5);
-      -ms-transform: scale(0.5);
-      -o-transform: scale(0.5);
-      position: relative;
-      top: -15px;
-      left: -15px;
-      float: left; }
-    .page-js-warrior-game .warrior-item-counts .count {
-      font-size: 18px;
-      font-weight: bold;
-      font-family: Helvetica,Arial,sans-serif;
-      float: left;
-      color: white;
-      margin-left: -30px;
-      margin-right: 20px; }
-      .page-js-warrior-game .warrior-item-counts .count:before {
-        content: "×";
-        margin-right: 3px; }
-    .page-js-warrior-game .warrior-item-counts .shuriken .icon {
       background: url(../img/item.png) no-repeat;
-      background-position: -360px 0px; }
-    .page-js-warrior-game .warrior-item-counts .key .icon {
-      background: url(../img/item.png) no-repeat;
-      background-position: -240px 0px; }
-    .page-js-warrior-game .warrior-item-counts .diamond .icon {
-      background: url(../img/item.png) no-repeat;
-      background-position: -300px 0px; }
-  .page-js-warrior-game .item {
-    width: 60px;
-    height: 60px;
-    background: url(../img/item.png) no-repeat;
-    position: absolute; }
-    .page-js-warrior-game .item .item-count {
-      position: absolute;
-      color: #ffffda;
-      right: 3px;
-      bottom: 3px;
-      font-weight: bold;
-      font-family: arial;
-      text-shadow: 0 0 1px black;
-      font-size: 16px;
-      display: none; }
-    .page-js-warrior-game .item.key .item-count, .page-js-warrior-game .item.diamond .item-count, .page-js-warrior-game .item.shuriken .item-count {
-      display: block; }
-    .page-js-warrior-game .item.lock.close {
-      background-position: 0px 0px; }
-    .page-js-warrior-game .item.lock.open {
-      background-position: -60px 0px; }
-    .page-js-warrior-game .item.door {
-      background-position: -120px 0px; }
-    .page-js-warrior-game .item.wall {
-      background-position: -180px 0px; }
-    .page-js-warrior-game .item.key {
-      background-position: -240px 0px; }
-    .page-js-warrior-game .item.diamond {
-      background-position: -300px 0px; }
-    .page-js-warrior-game .item.shuriken {
-      z-index: 4;
-      background-position: -360px 0px; }
-      .page-js-warrior-game .item.shuriken.flying {
-        animation: flying .5s infinite linear;
-        -webkit-animation: flying .5s infinite linear; }
-    .page-js-warrior-game .item.fireball {
-      z-index: 4;
-      background-position: -420px 0px;
-      animation: flying .25s infinite linear;
-      -webkit-animation: flying .25s infinite linear; }
-    .page-js-warrior-game .item.spark {
-      z-index: 4;
-      background-position: -480px 0px;
-      animation: flying .25s infinite linear;
-      -webkit-animation: flying .25s infinite linear; }
-    .page-js-warrior-game .item.arrow {
-      z-index: 4;
-      background-position: -540px 0px; }
-      .page-js-warrior-game .item.arrow.right {
-        -webkit-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -ms-transform: rotate(0deg);
-        -o-transform: rotate(0deg); }
-      .page-js-warrior-game .item.arrow.down {
-        -webkit-transform: rotate(90deg);
-        -moz-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        -o-transform: rotate(90deg); }
-      .page-js-warrior-game .item.arrow.left {
-        -webkit-transform: rotate(180deg);
-        -moz-transform: rotate(180deg);
-        -ms-transform: rotate(180deg);
-        -o-transform: rotate(180deg); }
-      .page-js-warrior-game .item.arrow.up {
-        -webkit-transform: rotate(270deg);
-        -moz-transform: rotate(270deg);
-        -ms-transform: rotate(270deg);
-        -o-transform: rotate(270deg); }
-    .page-js-warrior-game .item.picked {
-      z-index: 4;
-      animation: picked .5s linear;
-      -webkit-animation: picked .5s linear;
-      opacity: 0; }
-  .page-js-warrior-game .character {
-    width: 60px;
-    height: 60px;
-    background: url(../img/living.png) no-repeat;
-    position: absolute; }
-    .page-js-warrior-game .character.warrior {
-      z-index: 3;
-      background-position: -120px 0px; }
-      .page-js-warrior-game .character.warrior.down {
-        background-position: -180px 0px; }
-      .page-js-warrior-game .character.warrior.left {
+      position: absolute; }
+      .page-map .page-js-warrior-game .item .item-count {
+        position: absolute;
+        color: #ffffda;
+        right: 3px;
+        bottom: 3px;
+        font-weight: bold;
+        font-family: arial;
+        text-shadow: 0 0 1px black;
+        font-size: 16px;
+        display: none; }
+      .page-map .page-js-warrior-game .item.key .item-count, .page-map .page-js-warrior-game .item.diamond .item-count, .page-map .page-js-warrior-game .item.shuriken .item-count {
+        display: block; }
+      .page-map .page-js-warrior-game .item.lock.close {
         background-position: 0px 0px; }
-      .page-js-warrior-game .character.warrior.right {
-        background-position: -120px -60px; }
-      .page-js-warrior-game .character.warrior.up {
-        background-position: 0px -60px; }
-    .page-js-warrior-game .character.slime {
-      background-position: -240px 0px; }
-    .page-js-warrior-game .character.tauren {
-      background-position: -300px 0px; }
-    .page-js-warrior-game .character.creeper {
-      background-position: -480px 0px; }
-      .page-js-warrior-game .character.creeper.excited {
-        animation: creeper .125s infinite linear;
-        -webkit-animation: creeper .125s infinite linear; }
-      .page-js-warrior-game .character.creeper.explode {
-        animation: creeper_explode .6s linear;
-        -webkit-animation: creeper_explode .6s linear;
+      .page-map .page-js-warrior-game .item.lock.open {
+        background-position: -60px 0px; }
+      .page-map .page-js-warrior-game .item.door {
+        background-position: -120px 0px; }
+      .page-map .page-js-warrior-game .item.wall {
+        background-position: -180px 0px; }
+      .page-map .page-js-warrior-game .item.key {
+        background-position: -240px 0px; }
+      .page-map .page-js-warrior-game .item.diamond {
+        background-position: -300px 0px; }
+      .page-map .page-js-warrior-game .item.shuriken {
+        z-index: 4;
+        background-position: -360px 0px; }
+        .page-map .page-js-warrior-game .item.shuriken.flying {
+          animation: flying .5s infinite linear;
+          -webkit-animation: flying .5s infinite linear; }
+      .page-map .page-js-warrior-game .item.fireball {
+        z-index: 4;
+        background-position: -420px 0px;
+        animation: flying .25s infinite linear;
+        -webkit-animation: flying .25s infinite linear; }
+      .page-map .page-js-warrior-game .item.spark {
+        z-index: 4;
+        background-position: -480px 0px;
+        animation: flying .25s infinite linear;
+        -webkit-animation: flying .25s infinite linear; }
+      .page-map .page-js-warrior-game .item.arrow {
+        z-index: 4;
+        background-position: -540px 0px; }
+        .page-map .page-js-warrior-game .item.arrow.right {
+          -webkit-transform: rotate(0deg);
+          -moz-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -o-transform: rotate(0deg); }
+        .page-map .page-js-warrior-game .item.arrow.down {
+          -webkit-transform: rotate(90deg);
+          -moz-transform: rotate(90deg);
+          -ms-transform: rotate(90deg);
+          -o-transform: rotate(90deg); }
+        .page-map .page-js-warrior-game .item.arrow.left {
+          -webkit-transform: rotate(180deg);
+          -moz-transform: rotate(180deg);
+          -ms-transform: rotate(180deg);
+          -o-transform: rotate(180deg); }
+        .page-map .page-js-warrior-game .item.arrow.up {
+          -webkit-transform: rotate(270deg);
+          -moz-transform: rotate(270deg);
+          -ms-transform: rotate(270deg);
+          -o-transform: rotate(270deg); }
+      .page-map .page-js-warrior-game .item.picked {
+        z-index: 4;
+        animation: picked .5s linear;
+        -webkit-animation: picked .5s linear;
         opacity: 0; }
-    .page-js-warrior-game .character.wizard {
-      background-position: -360px 0px; }
-    .page-js-warrior-game .character.archer {
-      background-position: -420px 0px; }
-    .page-js-warrior-game .character .hp {
-      z-index: 7;
-      position: absolute;
-      font-size: 12px;
-      color: white;
-      height: 12px;
-      line-height: 12px;
+    .page-map .page-js-warrior-game .character {
       width: 60px;
-      left: 0;
-      top: -6px;
-      text-align: center;
-      font-family: arial;
-      font-weight: bold;
-      text-shadow: 0 0 2px black; }
-    .page-js-warrior-game .character .hpbar {
-      z-index: 6;
-      position: absolute;
-      height: 5px;
-      line-height: 5px;
-      width: 40px;
-      left: 10px;
-      top: -4px;
-      text-align: center;
-      font-family: arial;
-      font-weight: bold;
-      box-shadow: 0 0 2px black;
-      background: black; }
-      .page-js-warrior-game .character .hpbar .p {
-        height: 100%;
-        background: #FF3300; }
-  .page-js-warrior-game.f0 .character.warrior {
-    background-position: -180px 0px; }
-    .page-js-warrior-game.f0 .character.warrior.down {
+      height: 60px;
+      background: url(../img/living.png) no-repeat;
+      position: absolute; }
+      .page-map .page-js-warrior-game .character.warrior {
+        z-index: 3;
+        background-position: -120px 0px; }
+        .page-map .page-js-warrior-game .character.warrior.down {
+          background-position: -180px 0px; }
+        .page-map .page-js-warrior-game .character.warrior.left {
+          background-position: 0px 0px; }
+        .page-map .page-js-warrior-game .character.warrior.right {
+          background-position: -120px -60px; }
+        .page-map .page-js-warrior-game .character.warrior.up {
+          background-position: 0px -60px; }
+      .page-map .page-js-warrior-game .character.slime {
+        background-position: -240px 0px; }
+      .page-map .page-js-warrior-game .character.tauren {
+        background-position: -300px 0px; }
+      .page-map .page-js-warrior-game .character.creeper {
+        background-position: -480px 0px; }
+        .page-map .page-js-warrior-game .character.creeper.excited {
+          animation: creeper .125s infinite linear;
+          -webkit-animation: creeper .125s infinite linear; }
+        .page-map .page-js-warrior-game .character.creeper.explode {
+          animation: creeper_explode .6s linear;
+          -webkit-animation: creeper_explode .6s linear;
+          opacity: 0; }
+      .page-map .page-js-warrior-game .character.wizard {
+        background-position: -360px 0px; }
+      .page-map .page-js-warrior-game .character.archer {
+        background-position: -420px 0px; }
+      .page-map .page-js-warrior-game .character .hp {
+        z-index: 7;
+        position: absolute;
+        font-size: 12px;
+        color: white;
+        height: 12px;
+        line-height: 12px;
+        width: 60px;
+        left: 0;
+        top: -6px;
+        text-align: center;
+        font-family: arial;
+        font-weight: bold;
+        text-shadow: 0 0 2px black; }
+      .page-map .page-js-warrior-game .character .hpbar {
+        z-index: 6;
+        position: absolute;
+        height: 5px;
+        line-height: 5px;
+        width: 40px;
+        left: 10px;
+        top: -4px;
+        text-align: center;
+        font-family: arial;
+        font-weight: bold;
+        box-shadow: 0 0 2px black;
+        background: black; }
+        .page-map .page-js-warrior-game .character .hpbar .p {
+          height: 100%;
+          background: #FF3300; }
+    .page-map .page-js-warrior-game.f0 .character.warrior {
       background-position: -180px 0px; }
-    .page-js-warrior-game.f0 .character.warrior.left {
-      background-position: -60px 0px; }
-    .page-js-warrior-game.f0 .character.warrior.right {
-      background-position: -180px -60px; }
-    .page-js-warrior-game.f0 .character.warrior.up {
-      background-position: -60px -60px; }
-  .page-js-warrior-game.f0 .character.slime {
-    background-position: -240px -60px; }
-  .page-js-warrior-game.f0 .character.tauren {
-    background-position: -300px -60px; }
-  .page-js-warrior-game.f0 .character.creeper {
-    background-position: -480px -60px; }
-  .page-js-warrior-game.f0 .character.wizard {
-    background-position: -360px -60px; }
-  .page-js-warrior-game.f0 .character.archer {
-    background-position: -420px -60px; }
-  .page-js-warrior-game.f0 .character.archer {
-    background-position: -420px -60px; }
-  .page-js-warrior-game .hp-change {
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px black;
+      .page-map .page-js-warrior-game.f0 .character.warrior.down {
+        background-position: -180px 0px; }
+      .page-map .page-js-warrior-game.f0 .character.warrior.left {
+        background-position: -60px 0px; }
+      .page-map .page-js-warrior-game.f0 .character.warrior.right {
+        background-position: -180px -60px; }
+      .page-map .page-js-warrior-game.f0 .character.warrior.up {
+        background-position: -60px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.slime {
+      background-position: -240px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.tauren {
+      background-position: -300px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.creeper {
+      background-position: -480px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.wizard {
+      background-position: -360px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.archer {
+      background-position: -420px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.archer {
+      background-position: -420px -60px; }
+    .page-map .page-js-warrior-game .hp-change {
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px black;
+      position: absolute;
+      z-index: 20;
+      font-family: arial; }
+      .page-map .page-js-warrior-game .hp-change.damage {
+        color: #ff3333; }
+      .page-map .page-js-warrior-game .hp-change.heal {
+        color: #33ff33; }
+  .page-map .page-intro {
     position: absolute;
-    z-index: 20;
-    font-family: arial; }
-    .page-js-warrior-game .hp-change.damage {
-      color: #ff3333; }
-    .page-js-warrior-game .hp-change.heal {
-      color: #33ff33; }
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 400px; }
+    .page-map .page-intro .inbox {
+      background-color: rgba(255, 255, 255, 0.05);
+      margin: 5px;
+      padding: 10px; }
+    .page-map .page-intro .tips {
+      color: #ddd;
+      margin-bottom: 10px; }
+    .page-map .page-intro .levels {
+      margin-top: 10px; }
+      .page-map .page-intro .levels a {
+        color: #ffffda; }
+
+.page-control {
+  margin: 5px; }
+  .page-control .page-api {
+    background-color: rgba(255, 255, 255, 0.05);
+    width: 33.33333%;
+    float: left;
+    border-radius: 5px; }
+    .page-control .page-api .title {
+      color: #99FFFF;
+      font-weight: bold;
+      margin: 0 0 10px;
+      padding: 0 10px;
+      height: 30px;
+      line-height: 30px;
+      border-bottom: dashed 1px rgba(255, 255, 255, 0.2); }
+      .page-control .page-api .title:not(:first-child) {
+        margin-top: 20px; }
+    .page-control .page-api .api {
+      margin-bottom: 10px;
+      padding: 0 10px; }
+      .page-control .page-api .api .t {
+        color: #CCFF33;
+        margin-bottom: 5px; }
+      .page-control .page-api .api .d {
+        color: #ddd;
+        font-size: 12px; }
+  .page-control .page-log {
+    float: left;
+    color: white;
+    width: 33.3333333%; }
+    .page-control .page-log .console {
+      background-color: rgba(255, 255, 255, 0.05);
+      margin: 0 5px;
+      padding: 10px;
+      border-radius: 5px;
+      position: relative;
+      height: 500px; }
+    .page-control .page-log .console pre {
+      padding: 5px; }
+      .page-control .page-log .console pre span {
+        display: block;
+        margin-bottom: 3px; }
+        .page-control .page-log .console pre span.error, .page-control .page-log .console pre span.lose {
+          color: #ff3333; }
+        .page-control .page-log .console pre span.win {
+          color: #00e600; }
+  .page-control .page-code-panel {
+    width: 33.333333%;
+    float: left; }
+    .page-control .page-code-panel .btns {
+      margin-bottom: 5px; }
+      .page-control .page-code-panel .btns a {
+        color: #ADC5EC; }
+      .page-control .page-code-panel .btns a.start {
+        color: white;
+        background-color: #5CA941;
+        width: 80px;
+        height: 32px;
+        line-height: 32px;
+        display: inline-block;
+        text-align: center;
+        border-radius: 3px;
+        text-decoration: none; }
+        .page-control .page-code-panel .btns a.start:hover {
+          background-color: #76c15d; }
+      .page-control .page-code-panel .btns a.pause {
+        display: none; }
+      .page-control .page-code-panel .btns .running {
+        color: #ccc;
+        display: none;
+        height: 32px;
+        line-height: 32px;
+        width: 100px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 3px; }
+      .page-control .page-code-panel .btns.started a.start {
+        display: none; }
+      .page-control .page-code-panel .btns.started .running {
+        display: block; }
+    .page-control .page-code-panel #code-input.code {
+      width: 100%;
+      height: 600px;
+      font-size: 16px;
+      margin-top: 5px; }

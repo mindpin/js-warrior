@@ -23,6 +23,7 @@ class UnitAni
     @TIME = 300
 
     @$game = @game_ui.$game
+    @jqconsole = @game_ui.jqconsole
 
     @type = @character.type()
     @class_name = @character.class_name()
@@ -94,6 +95,8 @@ class UnitAni
   walk: (dir)->
     @_change_face_dir(dir)
     AniSound.walk()
+    @jqconsole.Write "#{@class_name} 向 #{dir} 走了一格"
+
     @$el
       .animate
         left: @left()
@@ -108,6 +111,8 @@ class UnitAni
     @_change_face_dir(dir)
 
     AniSound.attack()
+    @jqconsole.Write "#{@class_name} 向 #{dir} 攻击"
+
     @$el
       .css
         'z-index': 10
@@ -385,19 +390,45 @@ class GameUi
     @init_events()
 
   init_events: ->
-    jQuery('.page-control-panel .btns .start').on 'click', (evt)=>
-      code = jQuery('.page-control-panel textarea.code').val()
-      jQuery('.page-control-panel .btns').addClass('started')
+    $panel = jQuery('.page-code-panel')
+    path = window.location.pathname
+
+    @editor = ace.edit("code-input")
+    @editor.setTheme("ace/theme/twilight")
+    @editor.setHighlightActiveLine(false)
+
+    @editor.getSession().setMode("ace/mode/javascript")
+    @editor.getSession().setTabSize(2)
+    @editor.getSession().setUseWrapMode(true)
+
+    if localStorage[path]
+      @editor.getSession().setValue localStorage[path]
+    
+
+    @jqconsole = jQuery('.page-log .console').jqconsole('这里是 js-warrior 的日志：', '> ')
+
+    $panel.find('.btns .start').on 'click', (evt)=>
+      code = @editor.getSession().getValue()
+      # 将代码存入本地存储
+      localStorage[path] = code
+
+      $panel.find('.btns').addClass('started')
       jQuery(document).trigger 'js-warrior:start', code
 
     jQuery(document).on 'js-warrior:win', (evt)=>
-      alert('你过关了！！')
+      @jqconsole.Write '你过关了！！', 'win'
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
-      alert('你失败了 :(')
+      @jqconsole.Write '你失败了 :(', 'lose'
 
     jQuery(document).on 'js-warrior:error', (evt, error)=>
-      console.log error
+      console.log error, error.message
+      if error.constructor == WarriorNotActionError 
+        return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
+      if error.constructor == DuplicateActionsError
+        return @jqconsole.Write '勇者一回合内尝试行动了两次，执行中止', 'error'
+
+      @jqconsole.Write "程序出错: #{error.message}", 'error'
 
     jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
       @level = level
