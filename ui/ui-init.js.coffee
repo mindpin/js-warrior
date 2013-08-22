@@ -1,21 +1,21 @@
 jQuery ->
   jQuery.ajax
-    url: 'body.html'
+    url: "../game/body.html?#{Math.random()}"
     success: (res)->
       jQuery('body').prepend res
 
       jQuery.ajax
-        url: 'api.html'
+        url: "../game/api.html?#{Math.random()}"
         success: (res)->
           jQuery('.page-api').html res
 
       jQuery.ajax
-        url: 'intro.html'
+        url: "../game/intro.html?#{Math.random()}"
         success: (res)->
           jQuery('.page-intro').html res
 
       jQuery.ajax
-        url: "control.html?#{Math.random()}"
+        url: "../game/control.html?#{Math.random()}"
         success: (res)->
           jQuery('.page-code-panel').html res
 
@@ -29,9 +29,12 @@ jQuery ->
           @editor.getSession().setTabSize(2)
           @editor.getSession().setUseWrapMode(true)
 
-          # 读取本地保存代码
-          if localStorage[path]
-            @editor.getSession().setValue localStorage[path]
+          if jQuery('.page-init-code').length > 0
+            @editor.getSession().setValue jQuery('.page-init-code').val()
+          else
+            # 读取本地保存代码
+            if localStorage[path]
+              @editor.getSession().setValue localStorage[path]
 
           # 定期保存代码到本地存储
           setInterval =>
@@ -42,5 +45,5 @@ jQuery ->
           @jqconsole = jQuery('.page-log .console').jqconsole('这里是 js-warrior 的日志：', '> ')
 
           window.game_ui = new GameUi(@editor, @jqconsole)
-          window.game = new Game(level_data)
+          window.game = new Game(level_data, window.warrior_shuriken_count)
           window.game.init()

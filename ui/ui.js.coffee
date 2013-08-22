@@ -412,7 +412,7 @@ class GameUi
         @jqconsole.Reset()
 
         window.game_ui = new GameUi(@editor, @jqconsole)
-        window.game = new Game(level_data)
+        window.game = new Game(level_data, window.warrior_shuriken_count)
         window.game.init()
 
         $panel.find('.btns').removeClass('started')
