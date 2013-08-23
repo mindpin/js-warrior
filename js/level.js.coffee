@@ -71,7 +71,8 @@ class Level
   failed: ->
     @has_diamond_destroy() || 
     @key_not_enough() || 
-    @warrior.remove_flag
+    @warrior.remove_flag ||
+    @warrior_continuous_idle_count > 10
 
   end: ->
     jQuery(document).off 'js-warrior:pause'
@@ -94,6 +95,13 @@ class Level
 
     jQuery(document).trigger('js-warrior:init-ui', this)
 
+  _record_warrior_continuous_idle_count: ->
+    if @actions_queue.length == 1 && @actions_queue[0].type == 'idle'
+      @warrior_continuous_idle_count ||= 0
+      @warrior_continuous_idle_count += 1
+    else
+      @warrior_continuous_idle_count ||= 0
+
   _character_run: ()->
 
     @actions_queue = []
@@ -109,6 +117,7 @@ class Level
       try
         play_turn = => @game.player.play_turn(arguments...)
         @current_character.play(play_turn)
+        @_record_warrior_continuous_idle_count()
         if @actions_queue.length == 0
           throw new WarriorNotActionError('没有任何行动') 
       catch e
