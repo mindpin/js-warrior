@@ -155,11 +155,11 @@ class Space
     klass = window[class_name]
     throw "#{name} 不是有效的名字" if !klass
     if klass == Enemy
-      return @character && @character.constructor != Warrior
+      return !!@character && @character.constructor != Warrior
     if klass.type == 'item'
-      return @item && @item.constructor == klass
+      return !!@item && @item.constructor == klass
     if klass.type == 'character'
-      return @character && @character.constructor == klass
+      return !!@character && @character.constructor == klass
 
 
 
