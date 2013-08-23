@@ -119,7 +119,9 @@ class Warrior extends Character
 
   interact:(direction) ->
     @ensure_not_played =>
-      (new Interact(@, direction)).perform()
+      interact = new Interact(@, direction)
+      return @idle() if !interact.item.interactable
+      interact.perform()
 
   shuriken_area_plan: [
     [0, 1], [0, 2], [0, 3],
@@ -325,7 +327,7 @@ class Creeper extends Enemy
   per_turn_strategy: ->
     if @warrior_in_excited_area()
       return @set_excited() if !@excited
-      @explode()
+    @explode() if @excited
 
 
 jQuery.extend window,
