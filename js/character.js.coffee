@@ -89,6 +89,7 @@ class Warrior extends Character
   damage:          5
   shuriken_damage: 5
   health:          20
+  dart_range:      3
 
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
@@ -165,23 +166,7 @@ class Warrior extends Character
   dart: (direction)->
     distance = 3
     @ensure_not_played =>
-      dart = new Dart(@, direction, distance)
-      range = @space.range(dart.target_space).concat([dart.target_space])
-      blocked_space = range.filter((s)=>
-        s.dart_stop()
-      )[0]
-
-      if blocked_space #如果被阻挡
-        if blocked_space.dart_hit()   #如果被可攻击物
-          dart.target_space = blocked_space
-        if blocked_space.dart_block() #如果被阻止物阻挡
-          dart.target_space = [@space].concat(@space.range(blocked_space)).pop()
-          
-      return @idle() if dart.target_space == @space
-
-      dart
-        .set('landing_space', dart.target_space)
-        .set('shuriken', @consume(Shuriken)).perform()
+      (new Dart(@, direction, distance)).perform()
 
   has_shuriken: ->
     @count("shuriken") > 0

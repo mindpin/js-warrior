@@ -5,6 +5,7 @@ class Action extends Base
   steps: ->
 
   perform: ->
+    @set_target_space() if @set_target_space
     return @fail() if @is_fail()
     if @actor
       @actor.direction = @direction if @direction
@@ -99,10 +100,26 @@ class Dart extends Attack
     super(arguments...)
     @hp_change = -@actor.shuriken_damage
 
+  set_target_space: ->
+    range = @actor.space.range(@target_space).concat([@target_space])
+    blocked_space = range.filter((s)=> s.dart_stop())[0]
+
+    if blocked_space #如果被阻挡
+      if blocked_space.dart_hit()   #如果被可攻击物
+        @target_space = blocked_space
+      if blocked_space.dart_block() #如果被阻止物阻挡
+        @target_space = [@actor.space]
+          .concat(@actor.space.range(blocked_space))
+          .pop()
+
+    @landing_space = @target_space
+
   is_fail: ->
-    !@actor.has_shuriken()
+    !@actor.has_shuriken() ||
+    @target_space == @actor.space
 
   steps: ->
+    @shuriken = @actor.consume(Shuriken)
     @shuriken.update_link(@target_space) if !@target
     @target && !@target.space.has('wall') && @target.take_dart(@)
 
