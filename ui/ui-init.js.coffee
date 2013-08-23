@@ -45,5 +45,5 @@ jQuery ->
           @jqconsole = jQuery('.page-log .console').jqconsole('这里是 js-warrior 的日志：', '> ')
 
           window.game_ui = new GameUi(@editor, @jqconsole)
-          window.game = new Game(level_data, window.warrior_shuriken_count)
+          window.game = new Game(level_data)
           window.game.init()

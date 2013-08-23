@@ -1256,35 +1256,36 @@ Licensed under the MIT license
     };
 
     JQConsole.prototype._ScrollToEnd = function() {
+      // return false;
       var cont,
         _this = this;
       this.$console.scrollTop(this.$console[0].scrollHeight);
-      cont = function() {
-        var doc_height, line_height, optimal_pos, pos, rel_pos, screen_left, screen_top;
-        line_height = _this.$prompt_cursor.height();
-        screen_top = _this.$window.scrollTop();
-        screen_left = _this.$window.scrollLeft();
-        doc_height = document.documentElement.clientHeight;
-        pos = _this.$prompt_cursor.offset();
-        rel_pos = _this.$prompt_cursor.position();
-        _this.$input_container.css({
-          left: rel_pos.left,
-          top: rel_pos.top
-        });
-        optimal_pos = pos.top - (2 * line_height);
-        if (_this.isMobile && (typeof orientation !== "undefined" && orientation !== null)) {
-          if (screen_top < pos.top || screen_top > pos.top) {
-            return _this.$window.scrollTop(optimal_pos);
-          }
-        } else {
-          if (screen_top + doc_height < pos.top) {
-            return _this.$window.scrollTop(pos.top - doc_height + line_height);
-          } else if (screen_top > optimal_pos) {
-            return _this.$window.scrollTop(pos.top);
-          }
-        }
-      };
-      return setTimeout(cont, 0);
+      // cont = function() {
+      //   var doc_height, line_height, optimal_pos, pos, rel_pos, screen_left, screen_top;
+      //   line_height = _this.$prompt_cursor.height();
+      //   screen_top = _this.$window.scrollTop();
+      //   screen_left = _this.$window.scrollLeft();
+      //   doc_height = document.documentElement.clientHeight;
+      //   pos = _this.$prompt_cursor.offset();
+      //   rel_pos = _this.$prompt_cursor.position();
+      //   _this.$input_container.css({
+      //     left: rel_pos.left,
+      //     top: rel_pos.top
+      //   });
+      //   optimal_pos = pos.top - (2 * line_height);
+      //   if (_this.isMobile && (typeof orientation !== "undefined" && orientation !== null)) {
+      //     if (screen_top < pos.top || screen_top > pos.top) {
+      //       return _this.$window.scrollTop(optimal_pos);
+      //     }
+      //   } else {
+      //     if (screen_top + doc_height < pos.top) {
+      //       return _this.$window.scrollTop(pos.top - doc_height + line_height);
+      //     } else if (screen_top > optimal_pos) {
+      //       return _this.$window.scrollTop(pos.top);
+      //     }
+      //   }
+      // };
+      // return setTimeout(cont, 0);
     };
 
     JQConsole.prototype._SelectPromptLabel = function(continuation) {

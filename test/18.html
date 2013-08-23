@@ -10,31 +10,7 @@
 
 <textarea class='page-init-code' style='display:none;'>
 game.player.play_turn = function(warrior){
-  if(!this.round_count) this.round_count = 0
-  this.round_count += 1
-  console.log(this.round_count)
-
-  if(this.round_count == 1){
-    warrior.interact("right")
-    return
-  }
-
-  if(this.round_count == 2){
-    warrior.attack("right")
-    return
-  }
-
-  if(this.round_count == 3){
-    warrior.walk("right")
-    return
-  }
-
-  if(this.round_count == 4){
-    warrior.interact("right")
-    return
-  }
-
-  warrior.walk("right")
+  warrior.interact("right")
 }
 </textarea>
 
