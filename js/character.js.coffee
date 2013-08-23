@@ -165,7 +165,6 @@ class Warrior extends Character
   dart: (direction)->
     distance = 3
     @ensure_not_played =>
-      return @idle() if !@has_shuriken()
       dart = new Dart(@, direction, distance)
       range = @space.range(dart.target_space).concat([dart.target_space])
       blocked_space = range.filter((s)=>
