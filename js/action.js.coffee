@@ -22,10 +22,11 @@ class Action extends Base
 
   fail: ->
     @failed = true
-    @actor.idle() if @actor
+    @actor.idle(@actor, @) if @actor
       
 class Idle extends Action
-  constructor: (@actor)->
+  constructor: (@actor, @action)->
+    @direction = @action.direction if @action
     super()
 
 class Walk extends Action
@@ -52,6 +53,9 @@ class Attack extends Action
     @hp_change    = -@actor.damage
     @target_space = @actor.space.get_relative_space(@direction, distance)
   
+  is_fail: ->
+    @target_space.units().some((u)=> !u.destroyable)
+
   steps: ->
     @target.take_attack(@) if @target
 
@@ -94,6 +98,9 @@ class Dart extends Attack
   constructor: (@actor, @direction, @distance)->
     super(arguments...)
     @hp_change = -@actor.shuriken_damage
+
+  is_fail: ->
+    !@actor.has_shuriken()
 
   steps: ->
     @shuriken.update_link(@target_space) if !@target
