@@ -123,13 +123,13 @@ game.player.play_turn = function(warrior){
   <script type="text/coffeescript" src='../ui/ui-init.js.coffee'></script>
 
   <script type="text/coffeescript">
-    window.level_data = [
-      ['',        '',     '','IWall','',  '','','','',''],
-      ['CWarrior','','IWall',     '','',  '','CSlime','CSlime','','IDoor'],
-      ['',        '',     '',     '','',  '','IWall','','','']
-    ]
-
-    window.warrior_shuriken_count = 20
+    window.level_data = 
+      map: [
+        ['',        '',     '','IWall','',  '','','','',''],
+        ['CWarrior','','IWall',     '','',  '','CSlime','CSlime','','IDoor'],
+        ['',        '',     '',     '','',  '','IWall','','','']
+      ]
+      items: ['IShurikenx20']
   </script>
 </body>
 </html>
