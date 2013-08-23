@@ -318,7 +318,7 @@ class Creeper extends Enemy
   per_turn_strategy: ->
     if @warrior_in_excited_area()
       return @set_excited() if !@excited
-      @explode()
+    @explode() if @excited
 
 
 jQuery.extend window,
