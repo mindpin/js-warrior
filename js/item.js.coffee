@@ -13,13 +13,9 @@ class Item extends Unit
     @class_name() == "wall"
 
   take_attack: (atk)->
-    if @is_shuriken() && atk.shuriken
-      atk.target_space.item.count += atk.shuriken.count
-      atk.shuriken.remove()
-    else
-      @blowupable  && atk.class_name() == "explode" && @remove()
-      @destroyable && @remove()
-      atk.shuriken && atk.shuriken.update_link(atk.target_space)
+    @blowupable  && atk.class_name() == "explode" && @remove()
+    @destroyable && @remove()
+    atk.shuriken && atk.shuriken.update_link(atk.target_space)
 
   remove: ->
     super()
@@ -85,6 +81,12 @@ class Shuriken extends Pickable
   outof_inventory: (warrior)->
     warrior.item_change(@constructor, -@count)
     @picked = false
+
+  take_attack: (atk)->
+    return super(atk) if !atk.shuriken
+    atk.target_space.item.count += atk.shuriken.count
+    atk.shuriken.remove()
+
 
 jQuery.extend window,
   Item:     Item
