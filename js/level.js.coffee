@@ -72,7 +72,7 @@ class Level
     @has_diamond_destroy() || 
     @key_not_enough() || 
     @warrior.remove_flag ||
-    @warrior_continuous_idle_count > 10
+    @is_too_many_idles()
 
   end: ->
     jQuery(document).off 'js-warrior:pause'
@@ -94,6 +94,9 @@ class Level
       @_character_run()
 
     jQuery(document).trigger('js-warrior:init-ui', this)
+
+  is_too_many_idles: ->
+    @warrior_continuous_idle_count > 10
 
   _record_warrior_continuous_idle_count: ->
     if @actions_queue.length == 1 && @actions_queue[0].type == 'idle'
