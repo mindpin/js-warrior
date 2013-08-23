@@ -83,15 +83,15 @@ class Character extends Unit
     next.prev = prev
 
 class Warrior extends Character
-  items:           []
   damage:          5
   shuriken_damage: 5
   health:          20
 
   constructor: (@space, shuriken_count, key_count)->
     super(@space)
+    @items = []
     @items = @items.concat([@create_item(Shuriken, shuriken_count)]) if shuriken_count
-    @items = @items.concat([@create_item(key, shuriken_count)]) if key_count
+    @items = @items.concat([@create_item(key, key_count)]) if key_count
 
   find_item: (type)->
     @items.filter((i)=> i.constructor == type)[0]
