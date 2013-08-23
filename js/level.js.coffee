@@ -99,7 +99,8 @@ class Level
     # console.log(character)
     if @current_character.is_warrior()
       try
-        @current_character.play(@game.player.play_turn)
+        play_turn = => @game.player.play_turn(arguments...)
+        @current_character.play(play_turn)
         if @actions_queue.length == 0
           throw new WarriorNotActionError('没有任何行动') 
       catch e
