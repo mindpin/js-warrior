@@ -139,15 +139,22 @@ class Warrior extends Character
     @in_shuriken_range(space) && @has_shuriken()
 
   listen: ->
-    @level.units().map (u)=> u.space
+    @level.units().map (u)=>
+      new UserSpace(u.space)
 
-  distance_of: (space)->
+  distance_of: (user_space)->
+    space = @_get_space_by_user_space(user_space)
     [@space.x - space.x, @space.y - space.y]
       .map((i)=> Math.abs(i))
       .reduce((a, b)=> a + b)
 
-  direction_of: (space)->
+  direction_of: (user_space)->
+    space = @_get_space_by_user_space(user_space)
     @space.get_direction(space)
+
+  _get_space_by_user_space: (user_space)->
+    xy = user_space.id.split('_')
+    return @level.get_space(xy[0], xy[1])
 
   direction_of_door: ->
     @space.get_direction(@level.door.space)
