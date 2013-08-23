@@ -119,11 +119,7 @@ class Warrior extends Character
 
   interact:(direction) ->
     @ensure_not_played =>
-      interact         = new Interact(@, direction)
-      uninteractable   = !interact.item.interactable
-      no_key_to_unlock = @count("key") == 0 && interact.item.class_name() == "lock"
-      return @idle() if uninteractable || no_key_to_unlock
-      interact.perform()
+      (new Interact(@, direction)).perform()
 
   shuriken_area_plan: [
     [0, 1], [0, 2], [0, 3],
@@ -205,9 +201,7 @@ class Warrior extends Character
 
   walk: (direction)->
     @ensure_not_played =>
-      walk = new Walk(@, direction)
-      return @idle() if !walk.target_space.can_walk()
-      walk.perform()
+      (new Walk(@, direction)).perform()
 
   consume: (type)->
     @find_item(type).count -= 1

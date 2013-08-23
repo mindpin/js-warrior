@@ -25,6 +25,9 @@ class Item extends Unit
     super()
     @space && @space.item = null
     
+  can_interact: ->
+    @interactable
+
 class Pickable extends Item
   destroyable: true
   blowupable:  true
@@ -43,6 +46,7 @@ class Pickable extends Item
     @remove()
 
 class Fixed extends Item
+  interactable: false
   constructor: (@space)->
     super(@space)
 
@@ -53,12 +57,10 @@ class Door extends Fixed
   dartable:        "block"
   blowupable:      false
   walkthroughable: true
-  interactable:    false
 
 class Wall extends Fixed
   dartable:     "block"
   blowupable:   true
-  interactable: false
 
 class Lock extends Fixed
   dartable:   "block"
@@ -67,6 +69,9 @@ class Lock extends Fixed
   transit: (action)->
     action.actor.consume(Key)
     @remove()
+
+  can_interact: (actor)->
+    !!actor && actor.count("key") > 0
 
 class Diamond extends Pickable
 class Key extends Pickable

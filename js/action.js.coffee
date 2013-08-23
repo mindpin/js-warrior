@@ -5,6 +5,7 @@ class Action extends Base
   steps: ->
 
   perform: ->
+    return @fail() if @is_fail()
     if @actor
       @actor.direction = @direction if @direction
       @actor.level.add_action(@)
@@ -16,6 +17,13 @@ class Action extends Base
   is_dart: ->
     @class_name() == "dart"
     
+  is_fail: ->
+    false
+
+  fail: ->
+    @failed = true
+    @actor.idle() if @actor
+      
 class Idle extends Action
   constructor: (@actor)->
     super()
@@ -24,6 +32,9 @@ class Walk extends Action
   constructor: (@actor, @direction)->
     super()
     @target_space = @actor.space.get_relative_space(direction, 1)
+
+  is_fail: ->
+    !@target_space.can_walk()
 
   steps: ->
     @actor.update_link(@target_space)
@@ -50,6 +61,9 @@ class Interact extends Action
     @target_space = @actor.space.get_relative_space(@direction, 1)
     @item         = @target_space.item
     @lock         = @target_space.lock
+
+  is_fail: ->
+    !(@item && @item.can_interact(@actor))
 
   steps: ->
     @actor.direction = @direction
