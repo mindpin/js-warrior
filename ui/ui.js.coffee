@@ -395,62 +395,73 @@ class GameUi
     $panel.find('.btns').addClass('started')
     jQuery(document).trigger 'js-warrior:start', code
 
+  unbind_events: ->
+    $panel = jQuery('.page-code-panel')
+    $panel.find('.btns .start').off 'click'
+    $panel.find('.btns .stop').off 'click'
+
+    jQuery(document).off 'js-warrior:win'
+    jQuery(document).off 'js-warrior:lose'
+    jQuery(document).off 'js-warrior:error'
+    jQuery(document).off 'js-warrior:init-ui'
+    jQuery(document).off 'js-warrior:render-ui'
+    jQuery(document).off 'js-warrior:action-rendered'
+
   init_events: ->
+    @unbind_events()
+    
     $panel = jQuery('.page-code-panel')
 
-    if !window.btns_binded
-      window.btns_binded = true
+    $panel.find('.btns .start').on 'click', (evt)=>
+      @_run_code()
 
-      $panel.find('.btns .start').on 'click', (evt)=>
-        @_run_code()
+    $panel.find('.btns .stop').on 'click', (evt)=>
+      @stop()
+      window.game.level.end()
+      @$game.html('')
 
-      $panel.find('.btns .stop').on 'click', (evt)=>
-        @stop()
-        window.game.level.end()
-        @$game.html('')
+      @jqconsole.Reset()
 
-        @jqconsole.Reset()
+      window.game_ui = new GameUi(@editor, @jqconsole)
+      window.game = new Game(window.level_data, window.warrior_shuriken_count)
+      window.game.init()
 
-        window.game_ui = new GameUi(@editor, @jqconsole)
-        window.game = new Game(level_data, window.warrior_shuriken_count)
-        window.game.init()
+      $panel.find('.btns').removeClass('started')
 
-        $panel.find('.btns').removeClass('started')
+    jQuery(document).on 'js-warrior:win', (evt)=>
+      @jqconsole.Write '你过关了！！', 'win'
 
-      jQuery(document).on 'js-warrior:win', (evt)=>
-        @jqconsole.Write '你过关了！！', 'win'
+    jQuery(document).on 'js-warrior:lose', (evt)=>
+      @jqconsole.Write '你失败了 :(', 'lose'
 
-      jQuery(document).on 'js-warrior:lose', (evt)=>
-        @jqconsole.Write '你失败了 :(', 'lose'
+    jQuery(document).on 'js-warrior:error', (evt, error)=>
+      console.log error, error.message
+      if error.constructor == WarriorNotActionError 
+        return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
+      if error.constructor == DuplicateActionsError
+        return @jqconsole.Write '勇者一回合内尝试行动了两次，执行中止', 'error'
 
-      jQuery(document).on 'js-warrior:error', (evt, error)=>
-        console.log error, error.message
-        if error.constructor == WarriorNotActionError 
-          return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
-        if error.constructor == DuplicateActionsError
-          return @jqconsole.Write '勇者一回合内尝试行动了两次，执行中止', 'error'
+      @jqconsole.Write "程序出错: #{error.message}", 'error'
 
-        @jqconsole.Write "程序出错: #{error.message}", 'error'
+    jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
+      @level = level
+      @init()
 
-      jQuery(document).on 'js-warrior:init-ui', (evt, level)=>
-        @level = level
-        @init()
-
-      jQuery(document).on 'js-warrior:render-ui', (evt)=>
-        actions = @level.actions_queue
-        @ani_action_queue_length = actions.length
-        return @warrior.ani.idle() if actions.length == 0
+    jQuery(document).on 'js-warrior:render-ui', (evt)=>
+      actions = @level.actions_queue
+      @ani_action_queue_length = actions.length
+      return @warrior.ani.idle() if actions.length == 0
 
 
-        for i in [0...actions.length]
-          actions[i].next_action = actions[i + 1]
+      for i in [0...actions.length]
+        actions[i].next_action = actions[i + 1]
 
-        @do_ani_action actions[0]
+      @do_ani_action actions[0]
 
-      jQuery(document).on 'js-warrior:action-rendered', (evt)=>
-        @ani_action_queue_length--
-        if @ani_action_queue_length <= 0
-          jQuery(document).trigger 'js-warrior:render-ui-success'
+    jQuery(document).on 'js-warrior:action-rendered', (evt)=>
+      @ani_action_queue_length--
+      if @ani_action_queue_length <= 0
+        jQuery(document).trigger 'js-warrior:render-ui-success'
 
 
   do_ani_action: (action)=>
@@ -527,7 +538,6 @@ class GameUi
       height: css_height
 
   _draw_units: (space)->
-    
     for unit in space.units()
       class_name = unit.class_name()
       type = unit.type()
