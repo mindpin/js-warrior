@@ -121,7 +121,7 @@ class Dart extends Attack
   steps: ->
     @shuriken = @actor.consume(Shuriken)
     @shuriken.update_link(@target_space) if !@target
-    @target && !@target.space.has('wall') && @target.take_dart(@)
+    @target.take_dart(@) if @target
 
 
 jQuery.extend window,
