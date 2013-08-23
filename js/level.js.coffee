@@ -1,9 +1,9 @@
 class Level
-  constructor: (game, level_data, warrior_shuriken_count, warrior_key_count) ->
-    @warrior_init_shuriken_count = warrior_shuriken_count || 0
-    @warrior_init_key_count = warrior_key_count || 0
+  constructor: (game, level_data) ->
+    @warrior_init_shuriken_count = @_get_init_warrior_item_count(level_data, 'IShuriken')
+    @warrior_init_key_count = @_get_init_warrior_item_count(level_data, 'IKey')
     @game = game
-    @space_profile = @_build_profile(level_data)
+    @space_profile = @_build_profile(level_data.map)
     @_build_warrior()
     @_build_door()
     @_build_character_chain()
@@ -12,6 +12,14 @@ class Level
     @height = @space_profile.length
     @width = @space_profile[0].length
     @actions_queue = []
+
+  _get_init_warrior_item_count: (level_data, name)->
+    return 0 if !level_data.items
+    count = 0
+    level_data.items.filter((item)=>
+      item.split(/x|X/)[0] == name).forEach (item)=>
+        count += item.split(/x|X/)[1] || 1
+    return count
 
   add_action: (action)->
     @actions_queue.push(action)
@@ -127,10 +135,10 @@ class Level
     s = new Space(this, '', x, y, true) if !s
     return s
     
-  _build_profile: (level_data) ->
+  _build_profile: (level_map_data) ->
     result = []
 
-    for floor,y in level_data
+    for floor,y in level_map_data
       arr = []
       for space_data,x in floor
         space = new Space(this, space_data, x, y)
