@@ -119,8 +119,10 @@ class Warrior extends Character
 
   interact:(direction) ->
     @ensure_not_played =>
-      interact = new Interact(@, direction)
-      return @idle() if !interact.item.interactable
+      interact         = new Interact(@, direction)
+      uninteractable   = !interact.item.interactable
+      no_key_to_unlock = @count("key") == 0 && interact.item.class_name() == "lock"
+      return @idle() if uninteractable || no_key_to_unlock
       interact.perform()
 
   shuriken_area_plan: [
