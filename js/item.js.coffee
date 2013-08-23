@@ -1,4 +1,6 @@
 class Item extends Unit
+  interactable: true
+
   @type = 'item'
   constructor: (@space, @count)->
     @count ||= 1
@@ -49,10 +51,12 @@ class Door extends Fixed
   dartable:        "block"
   blowupable:      false
   walkthroughable: true
+  interactable:    false
 
 class Wall extends Fixed
-  dartable:    "block"
-  destroyable: true
+  dartable:     "block"
+  blowupable:   true
+  interactable: false
 
 class Lock extends Fixed
   dartable:   "block"

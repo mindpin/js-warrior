@@ -119,7 +119,9 @@ class Warrior extends Character
 
   interact:(direction) ->
     @ensure_not_played =>
-      (new Interact(@, direction)).perform()
+      interact = new Interact(@, direction)
+      return @idle() if !interact.item.interactable
+      interact.perform()
 
   shuriken_area_plan: [
     [0, 1], [0, 2], [0, 3],
