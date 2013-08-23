@@ -1,10 +1,9 @@
 class Space
-  constructor: (level, space_data, x, y, is_border) ->
+  constructor: (level, space_data, x, y) ->
     @level = level
     @x = x
     @y = y
     @_build(space_data)
-    @is_border = true if is_border
 
   _build: (space_data) ->
     @character   = null
@@ -142,13 +141,13 @@ class Space
     @units().some((u)=> u.dartable == "hit")
 
   dart_block: ->
-    @units().some((u)=> u.dartable == "block") || @is_border
+    @units().some((u)=> u.dartable == "block")
 
   can_walk: ->
-    !@is_border && !@units().some((u)=> !u.walkthroughable)
+    !@units().some((u)=> !u.walkthroughable)
   # API
   is_empty: ->
-    !@is_border && @character == null && @item == null
+    @character == null && @item == null
     
   has: (name) ->
     class_name = name[0].toUpperCase() + name[1..-1]
@@ -162,5 +161,21 @@ class Space
       return !!@character && @character.constructor == klass
 
 
+class BorderSpace extends Space
+  constructor: (level, x, y) ->
+    @level = level
+    @x = x
+    @y = y
+    @_build('')
+
+  dart_block: ->
+    true
+
+  can_walk: ->
+    false
+
+  is_empty: ->
+    false
 
 window.Space = Space
+window.BorderSpace = BorderSpace

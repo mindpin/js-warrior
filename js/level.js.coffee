@@ -132,7 +132,7 @@ class Level
     try
       s = @space_profile[y][x]
     catch error
-    s = new Space(this, '', x, y, true) if !s
+    s = new BorderSpace(this, x, y) if !s
     return s
     
   _build_profile: (level_map_data) ->
