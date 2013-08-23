@@ -86,7 +86,7 @@ class Explode extends Action
       .reduce((a, b)=> a.concat b)
 
   steps: ->
-    @targets.forEach (u)=> u.take_attack(@)
+    @targets.forEach (u)=> u.take_explode(@)
 
 class Shot extends Attack
 class Magic extends Attack
@@ -97,7 +97,7 @@ class Dart extends Attack
 
   steps: ->
     @shuriken.update_link(@target_space) if !@target
-    @target && !@target.space.has('wall') && @target.take_attack(@)
+    @target && !@target.space.has('wall') && @target.take_dart(@)
 
 
 jQuery.extend window,

@@ -13,9 +13,14 @@ class Item extends Unit
     @class_name() == "wall"
 
   take_attack: (atk)->
-    @blowupable  && atk.class_name() == "explode" && @remove()
     @destroyable && @remove()
-    atk.shuriken && atk.shuriken.update_link(atk.target_space)
+
+  take_explode: (atk)->
+    @take_attack(atk)
+
+  take_dart: (atk)->
+    @destroyable && @remove()
+    atk.shuriken.update_link(atk.target_space)
 
   remove: ->
     super()
@@ -82,8 +87,7 @@ class Shuriken extends Pickable
     warrior.item_change(@constructor, -@count)
     @picked = false
 
-  take_attack: (atk)->
-    return super(atk) if !atk.shuriken
+  take_dart: (atk)->
     atk.target_space.item.count += atk.shuriken.count
     atk.shuriken.remove()
 

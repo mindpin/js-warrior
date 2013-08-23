@@ -35,14 +35,17 @@ class Character extends Unit
     hp      = @health + delta
     @health = if @is_hp_exceeded(hp) then @max_health else hp
 
+  take_explode: (atk)->
+    @take_attack(atk)
+  
+  take_dart: (atk)->
+    item = atk.target_space.item
+    if item then item.take_dart(atk) else atk.shuriken.update_link(atk.target_space)
+    @take_attack(atk)
+
   take_attack: (atk)->
     @health_delta(atk.hp_change)
     @remove() if @health <= 0
-    if @space.has('shuriken') && atk.shuriken
-      atk.target_space.item.count += atk.shuriken.count
-      atk.shuriken.remove()
-    else
-      atk.shuriken && atk.shuriken.update_link(atk.target_space)
 
   ensure_not_played: (action)->
     throw new DuplicateActionsError("一回合不能行动两次") if @played
