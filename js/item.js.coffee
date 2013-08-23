@@ -17,6 +17,7 @@ class Item extends Unit
       atk.target_space.item.count += atk.shuriken.count
       atk.shuriken.remove()
     else
+      @blowupable  && atk.class_name() == "explode" && @remove()
       @destroyable && @remove()
       atk.shuriken && atk.shuriken.update_link(atk.target_space)
 
@@ -26,6 +27,7 @@ class Item extends Unit
     
 class Pickable extends Item
   destroyable: true
+  blowupable:  true
   picked:      true
 
   constructor: (@space, @count)->

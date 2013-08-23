@@ -130,7 +130,7 @@ class Space
     return null
 
   has_blowupable: ->
-    @units().filter((u)=> u.blowupable)
+    @units().some((u)=> u.blowupable)
 
   dart_stop: ->
     @dart_hit() || @dart_block()
