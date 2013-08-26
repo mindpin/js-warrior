@@ -45,5 +45,8 @@ jQuery ->
           @jqconsole = jQuery('.page-log .console').jqconsole('这里是 js-warrior 的日志：', '> ')
 
           window.game_ui = new GameUi(@editor, @jqconsole)
-          window.game = new Game(level_data)
+          window.game = new Game(level_data, {
+            'eachline': window.eachline_run
+          })
+
           window.game.init()

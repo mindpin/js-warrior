@@ -1,10 +1,15 @@
 class Game
-  constructor: (level_data) ->
+  constructor: (level_data, options) ->
     @level = new Level(this, level_data)
     @player  = new Player()
 
+    @eachline_mode = options['eachline']
+
   init: ->
-    @level.init()
+    if @eachline_mode
+      @level.init_eachline()
+    else
+      @level.init()
 
 class DuplicateActionsError extends Error
   constructor: ->
