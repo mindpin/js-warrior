@@ -139,7 +139,7 @@ body {
 
 .page-map {
   background-color: rgba(255, 255, 255, 0.05);
-  height: 280px;
+  min-height: 280px;
   padding: 20px;
   margin: 5px;
   border-radius: 5px;

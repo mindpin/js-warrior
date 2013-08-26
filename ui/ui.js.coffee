@@ -363,7 +363,7 @@ class UnitAni
               $fireball.delay(300).hide 1, => $fireball.remove()
 
   excited: ->
-    @jqconsole.Write "#{@get_name()}进入了激活状态！"
+    @jqconsole.Write "#{@get_name()}进入了激活状态，快躲开！"
     @$el.addClass('excited')
     setTimeout =>
       @_rendered()
