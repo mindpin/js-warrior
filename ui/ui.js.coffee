@@ -32,6 +32,20 @@ class UnitAni
     @$el = @_build_el()
     @_refresh_hp_dom()
 
+  get_name: ->
+    {
+      'warrior': '勇者'
+      'slime': '史莱姆'
+    }[@class_name]
+
+  get_dir_str: (dir)->
+    {
+      'up': '上'
+      'down': '下'
+      'left': '左'
+      'right': '右'
+    }[dir]
+
   destroy: ->
     @$el.remove()
 
@@ -95,7 +109,7 @@ class UnitAni
   walk: (dir)->
     @_change_face_dir(dir)
     AniSound.walk()
-    @jqconsole.Write "#{@class_name} 向 #{dir} 走了一格"
+    @jqconsole.Write "#{@get_name()} 向 #{@get_dir_str(dir)} 走了一格"
 
     @$el
       .animate
@@ -111,7 +125,7 @@ class UnitAni
     @_change_face_dir(dir)
 
     AniSound.attack()
-    @jqconsole.Write "#{@class_name} 向 #{dir} 攻击"
+    @jqconsole.Write "#{@get_name()} 向 #{@get_dir_str(dir)} 攻击"
 
     @$el
       .css
@@ -371,7 +385,10 @@ class UnitAni
       @$el.remove()
       func() if func
 
-  idle: ->
+  idle: (action)->
+    if @class_name == 'warrior'
+      console.log action
+      @jqconsole.Write "#{@get_name()} 闲置了"
     @_rendered()
 
   _rendered: ->
@@ -409,7 +426,7 @@ class GameUi
 
   init_events: ->
     @unbind_events()
-    
+
     $panel = jQuery('.page-code-panel')
 
     $panel.find('.btns .start').on 'click', (evt)=>
@@ -432,7 +449,12 @@ class GameUi
       @jqconsole.Write '你过关了！！', 'win'
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
-      @jqconsole.Write '你失败了 :(', 'lose'
+      if @level.is_too_many_idles()
+        msg = "闲置回合数过多"
+      if @warrior.remove_flag 
+        msg = '勇者被打败了'
+
+      @jqconsole.Write "你失败了 :(，#{msg}", 'lose'
 
     jQuery(document).on 'js-warrior:error', (evt, error)=>
       console.log error, error.message
@@ -500,7 +522,7 @@ class GameUi
       ani.interact(action.direction, action.item)
 
     if 'idle' == type
-      ani._rendered()
+      ani.idle(action)
 
     if action.next_action
       setTimeout =>
