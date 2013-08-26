@@ -443,7 +443,6 @@ class GameUi
     $panel.find('.btns').addClass('started')
 
     if window.eachline_run
-      console.log 111
       return jQuery(document).trigger 'js-warrior-eachline:start', code
 
     jQuery(document).trigger 'js-warrior:start', code
@@ -478,7 +477,9 @@ class GameUi
       @jqconsole.Reset()
 
       window.game_ui = new GameUi(@editor, @jqconsole)
-      window.game = new Game(window.level_data, window.warrior_shuriken_count)
+      window.game = new Game(window.level_data, {
+        'eachline': window.eachline_run
+      })
       window.game.init()
 
       $panel.find('.btns').removeClass('started')
@@ -504,6 +505,8 @@ class GameUi
         return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
       if error.constructor == DuplicateActionsError
         return @jqconsole.Write '勇者一回合内尝试行动了两次，执行中止', 'error'
+      if error.constructor == EachlineWarriorNotActionError
+        return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
 
       @jqconsole.Write "程序出错: #{error.message}", 'error'
 

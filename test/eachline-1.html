@@ -11,10 +11,11 @@
 <textarea class='page-init-code' style='display:none;'>
 game.player.run = function(warrior){
   warrior.walk('right')
-  warrior.walk('right')  
-  warrior.walk('right')
-  warrior.walk('right')
-  warrior.walk('right')
+  warrior.walk('down')  
+  warrior.walk('down')
+  warrior.walk('down')
+  warrior.walk('down')
+  warrior.attack('down')
 }
 </textarea>
 
@@ -43,8 +44,14 @@ game.player.run = function(warrior){
 
     window.level_data = 
       map: [
-        ['CWarrior','','','','','','','IDoor']
+        ['','','','','CSlime','','',''],
+        ['CWarrior','','','','','','','IDoor'],
+        ['','','','','','','','CSlime'],
+        ['','','','','','','',''],
+        ['','','','CSlime','','','','CSlime'],
+        ['','CSlime','','','','','',''],
       ]
+      items: ['IShurikenx20']
   </script>
 </body>
 </html>

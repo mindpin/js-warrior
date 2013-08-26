@@ -3,6 +3,7 @@ class Game
     @level = new Level(this, level_data)
     @player  = new Player()
 
+    options = options || {}
     @eachline_mode = options['eachline']
 
   init: ->
