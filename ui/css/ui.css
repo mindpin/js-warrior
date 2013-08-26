@@ -436,6 +436,8 @@ body {
           color: #ff5c33; }
         .page-control .page-log .console pre span.heal {
           color: #1aff1a; }
+        .page-control .page-log .console pre span.remove {
+          color: #999; }
   .page-control .page-code-panel {
     width: 33.333333%;
     float: left; }

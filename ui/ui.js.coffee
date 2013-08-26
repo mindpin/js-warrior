@@ -39,6 +39,10 @@ class UnitAni
       'tauren': '牛头人'
       'archer': '弓箭手'
       'wizard': '魔法师'
+      'creeper': '苦力怕'
+      'shuriken': '手里剑'
+      'key': '钥匙'
+      'diamond': '宝石'
     }[@class_name]
 
   get_dir_str: (dir)->
@@ -210,11 +214,12 @@ class UnitAni
     target = action.target
     hp_change = action.hp_change
 
+    AniSound.shot()
+    @jqconsole.Write "#{@get_name()}向#{@get_dir_str(dir)}投掷手里剑"
+    @_change_face_dir(dir)
+
     if target
       target.ani.be_attack(hp_change)
-
-    AniSound.shot()
-    @_change_face_dir(dir)
 
     $shuriken = jQuery('<div></div>')
       .addClass('item').addClass('shuriken').addClass('flying').addClass(dir)
@@ -291,6 +296,10 @@ class UnitAni
 
 
     if @character.remove_flag
+      if @type == 'item'
+        @jqconsole.Write "#{@get_name()}被摧毁了", 'remove'
+      if @type == 'character'
+        @jqconsole.Write "#{@get_name()}消失了", 'remove'
       @$el.fadeOut => @$el.remove()
 
   fireball: (dir, target, hp_change)->
@@ -353,12 +362,14 @@ class UnitAni
               $fireball.delay(300).hide 1, => $fireball.remove()
 
   excited: ->
+    @jqconsole.Write "#{@get_name()}进入了激活状态！"
     @$el.addClass('excited')
     setTimeout =>
       @_rendered()
     , @TIME * 2
 
   explode: ->
+    @jqconsole.Write "#{@get_name()}爆炸了！"
     AniSound.explode()
     @$el
       .removeClass('excited')
@@ -378,9 +389,10 @@ class UnitAni
       if item.class_name() == 'lock'
         AniSound.open_lock()
         item.ani.fade => @_rendered()
-              
+        @jqconsole.Write "#{@get_name()}打开了锁，消耗一把钥匙"
       else
         AniSound.pick()
+        @jqconsole.Write "#{@get_name()}捡起了#{item.ani.get_name()}"
         item.ani.$el
           .addClass('picked')
           .animate
@@ -402,6 +414,11 @@ class UnitAni
     if @class_name == 'warrior'
       if action.action.constructor == Walk
         @jqconsole.Write "#{@get_name()}想要向#{@get_dir_str(action.direction)}走，但是被挡住了"
+      if action.action.constructor == Interact
+        @jqconsole.Write "#{@get_name()}想要捡起#{@get_dir_str(action.direction)}边的物品，但是被挡住了"
+      if action.action.constructor == Attack
+        @jqconsole.Write "#{@get_name()}想要攻击#{@get_dir_str(action.direction)}边，但是被挡住了"
+
     @_rendered()
 
   _rendered: ->
@@ -463,11 +480,15 @@ class GameUi
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
       if @level.is_too_many_idles()
-        msg = "闲置回合数过多"
+        msg = "闲置回合数过多，"
       if @warrior.remove_flag 
-        msg = '勇者被打败了'
+        msg = '勇者被打败了，'
+      if @level.has_diamond_destroy()
+        msg = '宝石被摧毁了，'
+      if @level.key_not_enough()
+        msg = '钥匙不足以打开全部的锁'
 
-      @jqconsole.Write "你失败了 :(，#{msg}", 'lose'
+      @jqconsole.Write "#{msg}你失败了 :(", 'lose'
 
     jQuery(document).on 'js-warrior:error', (evt, error)=>
       console.log error, error.message
@@ -485,7 +506,7 @@ class GameUi
     jQuery(document).on 'js-warrior:render-ui', (evt)=>
       actions = @level.actions_queue
       @ani_action_queue_length = actions.length
-      return @warrior.ani.idle() if actions.length == 0
+      return @warrior.ani._rendered() if actions.length == 0
 
 
       for i in [0...actions.length]

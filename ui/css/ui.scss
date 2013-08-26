@@ -371,6 +371,9 @@ body {
         &.heal {
           color:lighten(#00E600, 10%);
         }
+        &.remove {
+          color:#999;
+        }
       }
     }
   }
