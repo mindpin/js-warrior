@@ -43,6 +43,7 @@ class UnitAni
       'shuriken': '手里剑'
       'key': '钥匙'
       'diamond': '宝石'
+      'wall': '墙'
     }[@class_name]
 
   get_dir_str: (dir)->
@@ -479,14 +480,14 @@ class GameUi
       @jqconsole.Write '你过关了！！', 'win'
 
     jQuery(document).on 'js-warrior:lose', (evt)=>
-      if @level.is_too_many_idles()
-        msg = "闲置回合数过多，"
-      if @warrior.remove_flag 
-        msg = '勇者被打败了，'
-      if @level.has_diamond_destroy()
-        msg = '宝石被摧毁了，'
       if @level.key_not_enough()
         msg = '钥匙不足以打开全部的锁'
+      if @level.has_diamond_destroy()
+        msg = '宝石被摧毁了，'
+      if @warrior.remove_flag 
+        msg = '勇者被干掉了，'
+      if @level.is_too_many_idles()
+        msg = "闲置回合数过多，"
 
       @jqconsole.Write "#{msg}你失败了 :(", 'lose'
 
