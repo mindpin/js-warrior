@@ -79,6 +79,44 @@ class Level
     jQuery(document).off 'js-warrior:resume'
     jQuery(document).off 'js-warrior:start'
     jQuery(document).off 'js-warrior:render-ui-success'
+    jQuery(document).off 'js-warrior-eachline:start'
+
+  init_eachline: ->
+    @eachline_user_warrior = new EachlineUserWarrior()
+    jQuery(document).on 'js-warrior-eachline:start', (event, user_input)=>
+      @current_round = 0
+      eval(user_input)
+      @current_character = @warrior
+      @_eachline_run()
+
+    jQuery(document).trigger('js-warrior:init-ui', this)
+
+  _eachline_run: ()->
+    @actions_queue = []
+    if !@current_character || @current_character.is_warrior() || @warrior.remove_flag
+      @current_round += 1
+      return jQuery(document).trigger('js-warrior:win') if @passed()
+      return jQuery(document).trigger('js-warrior:lose') if @failed()
+
+    if @current_character.is_warrior()
+      try
+        play_turn = => 
+          directive = @eachline_user_warrior.get_directive_by_round(@current_round)
+          directive.run(arguments[0])
+        @current_character.play(play_turn)
+        @_record_warrior_continuous_idle_count()
+        if @actions_queue.length == 0
+          throw new WarriorNotActionError('没有任何行动') 
+      catch e
+        return jQuery(document).trigger('js-warrior:error',e)
+    else
+      @current_character.play()
+
+    jQuery(document).one 'js-warrior:render-ui-success', ()=>
+      @current_character = @current_character.next
+      return if @pausing
+      @_eachline_run()
+    jQuery(document).trigger('js-warrior:render-ui')
 
   init: ->
     jQuery(document).on 'js-warrior:pause', =>

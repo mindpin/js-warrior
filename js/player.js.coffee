@@ -3,4 +3,6 @@ class Player
 
   play_turn: (warrior) ->
 
+  run: (warrior) ->
+
 window.Player = Player
