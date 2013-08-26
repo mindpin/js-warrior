@@ -36,6 +36,9 @@ class UnitAni
     {
       'warrior': '勇者'
       'slime': '史莱姆'
+      'tauren': '牛头人'
+      'archer': '弓箭手'
+      'wizard': '魔法师'
     }[@class_name]
 
   get_dir_str: (dir)->
@@ -44,6 +47,10 @@ class UnitAni
       'down': '下'
       'left': '左'
       'right': '右'
+      'left-up': '左上'
+      'left-down': '左下'
+      'right-up': '右上'
+      'right-down': '右下'
     }[dir]
 
   destroy: ->
@@ -109,7 +116,7 @@ class UnitAni
   walk: (dir)->
     @_change_face_dir(dir)
     AniSound.walk()
-    @jqconsole.Write "#{@get_name()} 向 #{@get_dir_str(dir)} 走了一格"
+    @jqconsole.Write "#{@get_name()}向#{@get_dir_str(dir)}走了一格"
 
     @$el
       .animate
@@ -125,7 +132,7 @@ class UnitAni
     @_change_face_dir(dir)
 
     AniSound.attack()
-    @jqconsole.Write "#{@get_name()} 向 #{@get_dir_str(dir)} 攻击"
+    @jqconsole.Write "#{@get_name()}向#{@get_dir_str(dir)}攻击"
 
     @$el
       .css
@@ -175,6 +182,7 @@ class UnitAni
       target.ani.be_attack(hp_change)
 
     AniSound.shot()
+    @jqconsole.Write "#{@get_name()}向#{@get_dir_str(dir)}射箭"
     @_change_face_dir(dir)
 
     $arrow = jQuery('<div></div>')
@@ -236,9 +244,11 @@ class UnitAni
     return if @character.type() == 'item'
 
     if change >= 0
+      @jqconsole.Write "#{@get_name()}回复#{change}点生命值", 'heal'
       klass = 'heal'
       html = "+#{change}"
     else
+      @jqconsole.Write "#{@get_name()}受到#{-change}点伤害", 'damage'
       klass = 'damage'
       html = change
 
@@ -262,6 +272,7 @@ class UnitAni
 
   rest: (hp_change)->
     AniSound.rest()
+    @jqconsole.Write "#{@get_name()}原地休息"
 
     @hp_change hp_change, =>
       @_rendered()
@@ -285,6 +296,8 @@ class UnitAni
   fireball: (dir, target, hp_change)->
     if target
       target.ani.be_attack(hp_change)
+
+    @jqconsole.Write "#{@get_name()}向#{@get_dir_str(dir)}发射火球术"
 
     # 蓄力动画
     $spark1 = jQuery('<div></div>')
@@ -387,8 +400,8 @@ class UnitAni
 
   idle: (action)->
     if @class_name == 'warrior'
-      console.log action
-      @jqconsole.Write "#{@get_name()} 闲置了"
+      if action.action.constructor == Walk
+        @jqconsole.Write "#{@get_name()}想要向#{@get_dir_str(action.direction)}走，但是被挡住了"
     @_rendered()
 
   _rendered: ->
@@ -490,6 +503,10 @@ class GameUi
 
     type = action.type
     ani  = action.actor.ani
+
+    if @current_round != @level.current_round
+      @current_round = @level.current_round
+      @jqconsole.Write "-----第#{@current_round}回合-----", 'round'
 
     if 'walk' == type
       ani.walk(action.direction)

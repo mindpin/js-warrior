@@ -348,14 +348,28 @@ body {
 
     .console pre{
       padding:5px;
+      font-size:12px;
       span {
         display:block;
         margin-bottom:3px;
         &.error, &.lose{
           color:lighten(red, 10%);
+          font-weight:bold;
+          font-size:16px;
         }
         &.win {
           color:lighten(green, 20%);
+          font-weight:bold;
+          font-size:16px;
+        }
+        &.round {
+          color:#99FFFF;
+        }
+        &.damage {
+          color:lighten(#FF3300, 10%);
+        }
+        &.heal {
+          color:lighten(#00E600, 10%);
         }
       }
     }

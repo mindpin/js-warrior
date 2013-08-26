@@ -417,14 +417,25 @@ body {
       position: relative;
       height: 500px; }
     .page-control .page-log .console pre {
-      padding: 5px; }
+      padding: 5px;
+      font-size: 12px; }
       .page-control .page-log .console pre span {
         display: block;
         margin-bottom: 3px; }
         .page-control .page-log .console pre span.error, .page-control .page-log .console pre span.lose {
-          color: #ff3333; }
+          color: #ff3333;
+          font-weight: bold;
+          font-size: 16px; }
         .page-control .page-log .console pre span.win {
-          color: #00e600; }
+          color: #00e600;
+          font-weight: bold;
+          font-size: 16px; }
+        .page-control .page-log .console pre span.round {
+          color: #99FFFF; }
+        .page-control .page-log .console pre span.damage {
+          color: #ff5c33; }
+        .page-control .page-log .console pre span.heal {
+          color: #1aff1a; }
   .page-control .page-code-panel {
     width: 33.333333%;
     float: left; }
