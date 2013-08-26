@@ -19,6 +19,10 @@ class WarriorNotActionError extends Error
   constructor: ->
     super(arguments...)
 
+class EachlineWarriorNotActionError extends Error
+  constructor: ->
+    super(arguments...)
+    
 class EachlineUserWarrior
 
   constructor: ()->
@@ -71,5 +75,6 @@ jQuery.extend window,
   Game:                  Game
   DuplicateActionsError: DuplicateActionsError
   WarriorNotActionError: WarriorNotActionError
+  EachlineWarriorNotActionError: EachlineWarriorNotActionError
   EachlineUserWarrior:   EachlineUserWarrior
   Directive:             Directive
