@@ -6,17 +6,11 @@ class Item extends Unit
     @count ||= 1
     super(@space)
 
-  is_shuriken: ->
-    @class_name() == "shuriken"
-
-  is_wall: ->
-    @class_name() == "wall"
-
   take_attack: (atk)->
     @destroyable && @remove()
 
   take_explode: (atk)->
-    @take_attack(atk)
+    @blowupable && @remove()
 
   take_dart: (atk)->
     @destroyable && @remove()
