@@ -5,7 +5,7 @@ class Action extends Base
   steps: ->
 
   perform: ->
-    @set_target_space() if @set_target_space
+    @set_target_space()
     return @fail() if @is_fail()
     if @actor
       @actor.direction = @direction if @direction
@@ -18,12 +18,14 @@ class Action extends Base
   is_dart: ->
     @class_name() == "dart"
     
+  set_target_space: ->
+
   is_fail: ->
     false
 
   fail: ->
     @failed = true
-    @actor.idle(@actor, @) if @actor
+    @actor.idle(@) if @actor
       
 class Idle extends Action
   constructor: (@actor, @action)->
@@ -44,6 +46,9 @@ class Walk extends Action
 class Rest extends Action
   constructor: (@actor, @hp_change)->
     super()
+
+  is_fail: ->
+    @actor.health >= @actor.max_health
 
   steps: ->
     @actor.health_delta(@hp_change)

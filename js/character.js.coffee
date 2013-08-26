@@ -25,8 +25,8 @@ class Character extends Unit
       !distance && distance = 1
       (new @attack_action(@, direction, distance)).perform()
 
-  idle: ->
-    @level.add_action(new Idle(@))
+  idle: (action)->
+    @level.add_action(new Idle(@, action))
 
   is_hp_exceeded: (hp)->
     hp > @max_health
@@ -173,7 +173,6 @@ class Warrior extends Character
 
   rest: ->
     @ensure_not_played =>
-      return @idle() if @health == @max_health
       (new Rest(@, 2)).perform()
 
   look: (direction)->
