@@ -7,18 +7,25 @@ class Action extends Base
   perform: ->
     @set_target_space()
     return @fail() if @is_fail()
-    if @actor
-      @actor.direction = @direction if @direction
-      @actor.level.add_action(@)
-    if @target_space
-      @target = @target_space.character
-      !@target && @target = @target_space.item
+    @actor_ops().set_target()
     @steps()
 
   is_dart: ->
     @class_name() == "dart"
     
   set_target_space: ->
+
+  set_target: ->
+    if @target_space
+      @target = @target_space.character
+      !@target && @target = @target_space.item
+    @
+
+  actor_ops: ->
+    if @actor
+      @actor.direction = @direction if @direction
+      @actor.level.add_action(@)
+    @
 
   is_fail: ->
     false
