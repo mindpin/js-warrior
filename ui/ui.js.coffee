@@ -441,6 +441,11 @@ class GameUi
     $panel = jQuery('.page-code-panel')
     code = @editor.getSession().getValue()
     $panel.find('.btns').addClass('started')
+
+    if window.eachline_run
+      console.log 111
+      return jQuery(document).trigger 'js-warrior-eachline:start', code
+
     jQuery(document).trigger 'js-warrior:start', code
 
   unbind_events: ->
@@ -454,6 +459,8 @@ class GameUi
     jQuery(document).off 'js-warrior:init-ui'
     jQuery(document).off 'js-warrior:render-ui'
     jQuery(document).off 'js-warrior:action-rendered'
+
+    jQuery(document).off 'js-warrior-eachline:init-ui'
 
   init_events: ->
     @unbind_events()
