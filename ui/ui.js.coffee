@@ -44,6 +44,7 @@ class UnitAni
       'key': '钥匙'
       'diamond': '宝石'
       'wall': '墙'
+      'cat': '猫'
     }[@class_name]
 
   get_dir_str: (dir)->
@@ -422,6 +423,10 @@ class UnitAni
       if action.action.constructor == Attack
         @jqconsole.Write "#{@get_name()}想要攻击#{@get_dir_str(action.direction)}边，但是被挡住了"
 
+    if @class_name == 'cat'
+      if action.action.constructor == Walk
+        @jqconsole.Write "#{@get_name()}想要向#{@get_dir_str(action.direction)}走，但是被挡住了"
+
     @_rendered()
 
   _rendered: ->
@@ -580,7 +585,7 @@ class GameUi
         @do_ani_action action.next_action
       , 150
 
-    @warrior.ani.refresh_warrior_items()
+    @warrior.ani.refresh_warrior_items() if @warrior
 
   init: ->
     @init_map()
