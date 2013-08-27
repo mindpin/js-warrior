@@ -150,7 +150,7 @@ class Level
 
   _build_cat: ->
     for unit in @units()
-      if unit.is_cat()
+      if unit.class_name() == 'cat'
         @cat = unit
         return
 
