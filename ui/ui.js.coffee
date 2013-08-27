@@ -101,6 +101,8 @@ class UnitAni
     return $ui_el
 
   _refresh_hp_dom: ->
+    return if @class_name == 'cat'
+
     if @character.type() == 'character'
       if !@$hp
         @$hp = jQuery("<div class='hp'></div>")

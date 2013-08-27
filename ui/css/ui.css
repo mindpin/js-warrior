@@ -294,6 +294,8 @@ body {
         background-position: -360px 0px; }
       .page-map .page-js-warrior-game .character.archer {
         background-position: -420px 0px; }
+      .page-map .page-js-warrior-game .character.cat {
+        background: url(../img/living-cat.png) no-repeat; }
       .page-map .page-js-warrior-game .character .hp {
         z-index: 7;
         position: absolute;
@@ -346,6 +348,8 @@ body {
       background-position: -420px -60px; }
     .page-map .page-js-warrior-game.f0 .character.archer {
       background-position: -420px -60px; }
+    .page-map .page-js-warrior-game.f0 .character.cat {
+      background-position: -60px -0px; }
     .page-map .page-js-warrior-game .hp-change {
       width: 60px;
       height: 60px;

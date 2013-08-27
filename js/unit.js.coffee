@@ -42,7 +42,7 @@ class Unit extends Base
     target && target.link(@)
 
   is_enemy: ->
-    @is_character && @class_name() != 'warrior'
+    @is_character && @class_name() != 'warrior' && @class_name() != 'cat'
 
 
 jQuery.extend window,
