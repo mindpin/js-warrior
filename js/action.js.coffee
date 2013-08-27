@@ -125,6 +125,37 @@ class Dart extends Attack
     @shuriken.update_link(@target_space) if !@target
     @target.take_dart(@) if @target
 
+class Push extends Action
+  target_dest_space: ->
+    @target_space.get_relative_space(@direction, @distance)
+
+  steps: ->
+    @target.take_push(@)
+
+  is_fail: ->
+    !@target_space.item || !@item_dest_space().can_walk()
+
+class Slap extends Action
+  target_dest_space: ->
+    @target_space.get_padding_space(@direction)
+
+  steps: ->
+    @target.take_slap(@)
+
+  is_fail: ->
+    !@target_space.item || @item_dest_space() == @target_space
+
+class Toss extends Action
+  target_dest_space: ->
+    spaces = @actor.level.empty_spaces
+    spaces[Math.floor(Math.random() * spaces.length)]
+
+  is_fail: ->
+    !@target_dest_space()
+
+  steps: ->
+    @target.take_toss(@)
+
 jQuery.extend window,
   Rest:       Rest
   Walk:       Walk
@@ -136,3 +167,6 @@ jQuery.extend window,
   Explode:    Explode
   Dart:       Dart
   Idle:       Idle
+  Push:       Push
+  Slap:       Slap
+  Toss:       Toss

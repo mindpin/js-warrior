@@ -311,6 +311,9 @@ class Creeper extends Enemy
       return @set_excited() if !@excited
     @explode() if @excited
 
+class Cat extends Character
+  push: (direction)->
+    (new Push(@, direction)).perform()
 
 jQuery.extend window,
   Character: Character
@@ -321,3 +324,4 @@ jQuery.extend window,
   Wizard:    Wizard
   Archer:    Archer
   Warrior:   Warrior
+  Cat:       Cat

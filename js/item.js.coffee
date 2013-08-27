@@ -85,6 +85,19 @@ class Shuriken extends Pickable
     atk.target_space.item.count += atk.shuriken.count
     atk.shuriken.remove()
 
+class Klubok extends Item
+  pushable: true
+  tossable: true
+  slapable: true
+
+  take_push: (push)->
+    push.target.update_link(push.target_dest_space())
+    
+  take_toss: (toss)->
+    toss.target.update_link(toss.target_dest_space())
+
+  take_slap: (slap)->
+    slap.target.update_link(slap.target_dest_space())
 
 jQuery.extend window,
   Item:     Item
