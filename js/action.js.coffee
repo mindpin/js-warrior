@@ -133,7 +133,7 @@ class Push extends Action
     @target.take_push(@)
 
   is_fail: ->
-    !@target_space.item || !@item_dest_space().can_walk()
+    !@target_space.item || !@target_dest_space().can_walk()
 
 class Slap extends Action
   target_dest_space: ->
@@ -143,7 +143,7 @@ class Slap extends Action
     @target.take_slap(@)
 
   is_fail: ->
-    !@target_space.item || @item_dest_space() == @target_space
+    !@target_space.item || @target_dest_space() == @target_space
 
 class Toss extends Action
   target_dest_space: ->
