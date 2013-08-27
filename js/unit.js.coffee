@@ -33,9 +33,6 @@ class Unit extends Base
   remove: ->
     @remove_flag = true
 
-  is_cat: ->
-    @class_name() == "cat"
-
   type: ->
     return "item" if @ instanceof Item
     "character" if @ instanceof Character
