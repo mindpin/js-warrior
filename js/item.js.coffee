@@ -85,7 +85,7 @@ class Shuriken extends Pickable
     atk.target_space.item.count += atk.shuriken.count
     atk.shuriken.remove()
 
-class Klubok extends Item
+class Ball extends Item
   pushable: true
   tossable: true
   slapable: true
