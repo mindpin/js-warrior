@@ -19,6 +19,22 @@ class Character extends Unit
     @get_attack_area().some (s)=>
       space == s
 
+  walk: (direction)->
+    @ensure_not_played =>
+      (new Walk(@, direction)).perform()
+
+  left: ->
+    @walk("left")
+
+  right: ->
+    @walk("right")
+
+  up: ->
+    @walk("up")
+
+  down: ->
+    @walk("down")
+
   blocked: (space)->
     @space.range(space).some (s)=>
       !s.is_empty()
@@ -188,25 +204,9 @@ class Warrior extends Character
     shuriken.outof_inventory(@)
     shuriken
 
-  walk: (direction)->
-    @ensure_not_played =>
-      (new Walk(@, direction)).perform()
-
   consume: (type)->
     @find_item(type).count -= 1
     @create_item(type, 1)
-
-  left: ->
-    @walk("left")
-
-  right: ->
-    @walk("right")
-
-  up: ->
-    @walk("up")
-
-  down: ->
-    @walk("down")
 
   feel: (direction)->
     new UserSpace(@space.get_relative_space(direction, 1))
