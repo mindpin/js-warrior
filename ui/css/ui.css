@@ -147,7 +147,7 @@ body {
   .page-map .page-js-warrior-game {
     background-color: rgba(255, 255, 255, 0.1);
     position: relative;
-    background: url(../img/ground.png);
+    background: url(../img/ground-cat.png);
     border: solid 10px #222;
     margin-top: 30px; }
     .page-map .page-js-warrior-game .warrior-item-counts {
@@ -269,6 +269,12 @@ body {
         height: 30px;
         margin-top: 12px;
         margin-left: 12px; }
+        .page-map .page-js-warrior-game .item.ball:before {
+          content: "球";
+          font-weight: bold;
+          position: relative;
+          line-height: 30px;
+          margin-left: 7px; }
     .page-map .page-js-warrior-game .character {
       width: 60px;
       height: 60px;

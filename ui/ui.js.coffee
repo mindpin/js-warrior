@@ -438,6 +438,39 @@ class UnitAni
     @$item_counts.find('.key .count').html @character.count('key')
     @$item_counts.find('.diamond .count').html @character.count('diamond')
 
+  slap: (action)->
+    console.log action
+    target = action.target
+    dir = action.direction
+
+    if target.class_name() == 'ball'
+      ani = target.ani
+      ani.$el
+        .animate
+          left: ani.left()
+          top: ani.top()
+
+
+    delta = @_xydelta(dir)
+    @_change_face_dir(dir)
+
+    @jqconsole.Write "#{@get_name()}向#{@get_dir_str(dir)} #{action.type}"
+
+    @$el
+      .css
+        'z-index': 10
+      .animate
+        left: @left() + delta.dx * @CONST_W
+        top:  @top() + delta.dy * @CONST_W
+        , @TIME / 2
+      .animate
+        left: @left()
+        top:  @top()
+        , @TIME / 2, => 
+          @$el.css
+            'z-index': ''
+          @_rendered()
+
 class GameUi
   constructor: (@editor, @jqconsole)->
     @CONST_W = 60
@@ -579,6 +612,15 @@ class GameUi
 
     if 'idle' == type
       ani.idle(action)
+
+    if 'slap' == type
+      ani.slap(action)
+
+    if 'push' == type
+      ani.slap(action)
+
+    if 'toss' == type
+      ani.slap(action)
 
     if action.next_action
       setTimeout =>

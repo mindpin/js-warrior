@@ -13,7 +13,11 @@ game.player.run = function(cat){
   cat.walk('right')
   cat.walk('right')
   cat.walk('right')
+  cat.push('up')
+  cat.walk('up')
   cat.slap('up')
+  cat.walk('up')
+  cat.toss('up')
 }
 </textarea>
 
@@ -42,11 +46,12 @@ game.player.run = function(cat){
 
     window.level_data =
       map: [
-        ['', '', '', '', ''],
-        ['', '', '', 'IBall', ''],
-        ['CCat', '', '', '', ''],
-        ['', '', '', '', ''],
-        ['', '', '', '', ''],
+        ['', '', '', '', '', ''],
+        ['', '', '', '', '', ''],
+        ['', '', '', 'IBall', '', ''],
+        ['CCat', '', '', '', '', ''],
+        ['', '', '', '', '', ''],
+        ['', '', '', '', '', ''],
       ]
   </script>
 </body>
