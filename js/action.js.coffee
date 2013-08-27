@@ -147,7 +147,7 @@ class Slap extends Action
 
 class Toss extends Action
   target_dest_space: ->
-    spaces = @actor.level.empty_spaces
+    spaces = @actor.level.empty_spaces()
     spaces[Math.floor(Math.random() * spaces.length)]
 
   is_fail: ->
