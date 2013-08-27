@@ -94,29 +94,21 @@ class Level
 
   _eachline_run: ()->
     @actions_queue = []
-    if !@current_character || @current_character.is_warrior() || @warrior.remove_flag
-      @current_round += 1
-      return jQuery(document).trigger('js-warrior:win') if @passed()
-      return jQuery(document).trigger('js-warrior:lose') if @failed()
+    @current_round += 1
 
-    if @current_character.is_warrior()
-      try
-        directive = @eachline_user_cat.get_directive_by_round(@current_round)
-        throw new EachlineWarriorNotActionError('勇士没有行动') if !directive
-        play_turn = => 
-          directive.run(arguments[0])
-        @current_character.play(play_turn)
-        @_record_warrior_continuous_idle_count()
-        if @actions_queue.length == 0
-          throw new WarriorNotActionError('没有任何行动') 
-      catch e
-        return jQuery(document).trigger('js-warrior:error',e)
-    else
-      @current_character.play()
+    try
+      directive = @eachline_user_cat.get_directive_by_round(@current_round)
+      throw new EachlineWarriorNotActionError('勇士没有行动') if !directive
+      play_turn = => 
+        directive.run(arguments[0])
+      @current_character.play(play_turn)
+      @_record_warrior_continuous_idle_count()
+      if @actions_queue.length == 0
+        throw new WarriorNotActionError('没有任何行动') 
+    catch e
+      return jQuery(document).trigger('js-warrior:error',e)
 
     jQuery(document).one 'js-warrior:render-ui-success', ()=>
-      @current_character = @current_character.next
-      return if @pausing
       @_eachline_run()
     jQuery(document).trigger('js-warrior:render-ui')
 
