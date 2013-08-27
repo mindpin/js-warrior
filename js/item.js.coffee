@@ -109,3 +109,4 @@ jQuery.extend window,
   Key:      Key
   Diamond:  Diamond
   Shuriken: Shuriken
+  Klobuk:   Klobuk
