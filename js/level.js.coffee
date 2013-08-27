@@ -1,10 +1,8 @@
 class Level
   constructor: (game, level_data) ->
-    @warrior_init_shuriken_count = @_get_init_warrior_item_count(level_data, 'IShuriken')
-    @warrior_init_key_count = @_get_init_warrior_item_count(level_data, 'IKey')
     @game = game
     @space_profile = @_build_profile(level_data.map)
-    @_build_warrior()
+    @_build_cat()
     @_build_door()
     @_build_character_chain()
 
@@ -13,66 +11,12 @@ class Level
     @width = @space_profile[0].length
     @actions_queue = []
 
-  _get_init_warrior_item_count: (level_data, name)->
-    return 0 if !level_data.items
-    count = 0
-    level_data.items.filter((item)=>
-      item.split(/x|X/)[0] == name).forEach (item)=>
-        count += item.split(/x|X/)[1] || 1
-    return count
-
   add_action: (action)->
     @actions_queue.push(action)
 
   enemies: ->
     return @units().filter (unit)=>
       unit.is_enemy()
-
-  diamond_count_in_floor: ->
-    count = 0
-    @units().forEach (unit)=>
-      if unit.class_name() == 'diamond' && !unit.picked
-        count += unit.count
-    return count
-
-  key_count_in_floor: ->
-    count = 0
-    @units().forEach (unit)=>
-      if unit.class_name() == 'key' && !unit.picked
-        count += unit.count
-    return count
-
-  closed_lock_count: ->
-    count = 0
-    @units().forEach (unit)=>
-      if unit.class_name() == 'lock'
-        count += unit.count
-    return count
-
-  has_diamond_destroy: ->
-    count = @warrior.count('diamond') + @diamond_count_in_floor()
-    return @max_diamond_count > count
-
-  key_not_enough: ->
-    count = @warrior.count('key') + @key_count_in_floor()
-    return @closed_lock_count() > count
-  
-  all_lock_opened: ->
-    return @closed_lock_count() == 0
-
-  all_diamond_is_picked: ->
-    return @max_diamond_count == @warrior.count('diamond')
-
-  passed: ->
-    @warrior.space == @door.space && 
-    @all_diamond_is_picked() && 
-    @all_lock_opened()
-
-  failed: ->
-    @has_diamond_destroy() || 
-    @key_not_enough() || 
-    @warrior.remove_flag ||
-    @is_too_many_idles()
 
   end: ->
     jQuery(document).off 'js-warrior:pause'
@@ -87,7 +31,7 @@ class Level
       @current_round = 0
       eval(user_input)
       game.player.run(@eachline_user_cat)
-      @current_character = @warrior
+      @current_character = @cat
       @_eachline_run()
 
     jQuery(document).trigger('js-warrior:init-ui', this)
@@ -122,7 +66,7 @@ class Level
       @current_round = 0
       @pausing = false
       eval(user_input)
-      @current_character = @warrior
+      @current_character = @cat
       @_character_run()
 
     jQuery(document).trigger('js-warrior:init-ui', this)
@@ -168,7 +112,7 @@ class Level
 
   characters: ->
     result = []
-    result.push(@warrior)
+    result.push(@cat)
     result = result.concat(@enemies())
     return result
 
@@ -205,10 +149,10 @@ class Level
         result = result.concat(space.units())
     return result
 
-  _build_warrior: ->
+  _build_cat: ->
     for unit in @units()
-      if unit.constructor == Warrior
-        @warrior = unit
+      if unit.is_cat()
+        @cat = unit
         return
 
   _build_door: ->
