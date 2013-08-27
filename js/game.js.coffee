@@ -23,59 +23,52 @@ class WarriorNotActionError extends Error
 class EachlineWarriorNotActionError extends Error
   constructor: ->
     super(arguments...)
-    
-class EachlineUserWarrior
 
+class EachlineUserCat
   constructor: ()->
-    @eachline_warrior_actions = []
+    @eachline_actions = []
 
   walk: (direction)->
     directive = new Directive('walk', [direction])
-    @eachline_warrior_actions.push(directive)
+    @eachline_actions.push(directive)
 
-  attack: (direction)->
-    directive = new Directive('attack', [direction])
-    @eachline_warrior_actions.push(directive)
+  push: (direction)->
+    directive = new Directive('push', [direction])
+    @eachline_actions.push(directive)
 
-  rest: ()->
-    directive = new Directive('rest', [])
-    @eachline_warrior_actions.push(directive)
+  toss: (direction)->
+    directive = new Directive('toss', [direction])
+    @eachline_actions.push(directive)
 
-  dart: (direction)->
-    directive = new Directive('dart', [direction])
-    @eachline_warrior_actions.push(directive)
-
-  interact: (direction)->
-    directive = new Directive('interact', [direction])
-    @eachline_warrior_actions.push(directive)
+  slap: (direction)->
+    directive = new Directive('slap', [direction])
+    @eachline_actions.push(directive)
 
   get_directive_by_round: (round)->
-    @eachline_warrior_actions[round-1]
-
+    @eachline_actions[round-1]
+    
 class Directive
   constructor: (name, args)->
     @name = name
     @args = args
 
-  run: (warrior)->
+  run: (cat)->
     fun = switch @name
       when 'walk'
-        (w)=> w.walk(@args...)
-      when 'attack'
-        (w)=> w.attack(@args...)
-      when 'rest'
-        (w)=> w.rest()
-      when 'dart'
-        (w)=> w.dart(@args...)
-      when 'interact'
-        (w)=> w.interact(@args...)
+        (c)=> c.walk(@args...)
+      when 'push'
+        (c)=> c.push(@args...)
+      when 'toss'
+        (c)=> c.toss(@args...)
+      when 'slap'
+        (c)=> c.slap(@args...)
 
-    fun(warrior)
+    fun(cat)
 
 jQuery.extend window,
   Game:                  Game
   DuplicateActionsError: DuplicateActionsError
   WarriorNotActionError: WarriorNotActionError
   EachlineWarriorNotActionError: EachlineWarriorNotActionError
-  EachlineUserWarrior:   EachlineUserWarrior
+  EachlineUserCat:       EachlineUserCat
   Directive:             Directive

@@ -82,11 +82,11 @@ class Level
     jQuery(document).off 'js-warrior-eachline:start'
 
   init_eachline: ->
-    @eachline_user_warrior = new EachlineUserWarrior()
+    @eachline_user_cat = new EachlineUserCat()
     jQuery(document).on 'js-warrior-eachline:start', (event, user_input)=>
       @current_round = 0
       eval(user_input)
-      game.player.run(@eachline_user_warrior)
+      game.player.run(@eachline_user_cat)
       @current_character = @warrior
       @_eachline_run()
 
@@ -101,7 +101,7 @@ class Level
 
     if @current_character.is_warrior()
       try
-        directive = @eachline_user_warrior.get_directive_by_round(@current_round)
+        directive = @eachline_user_cat.get_directive_by_round(@current_round)
         throw new EachlineWarriorNotActionError('勇士没有行动') if !directive
         play_turn = => 
           directive.run(arguments[0])
