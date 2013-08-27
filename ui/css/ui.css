@@ -261,6 +261,14 @@ body {
         animation: picked .5s linear;
         -webkit-animation: picked .5s linear;
         opacity: 0; }
+      .page-map .page-js-warrior-game .item.ball {
+        background: white;
+        border: solid 3px black;
+        border-radius: 40px;
+        width: 30px;
+        height: 30px;
+        margin-top: 12px;
+        margin-left: 12px; }
     .page-map .page-js-warrior-game .character {
       width: 60px;
       height: 60px;

@@ -169,6 +169,16 @@ body {
         -webkit-animation: picked .5s linear;
         opacity:0;
       }
+
+      &.ball {
+        background:white;
+        border:solid 3px black;
+        border-radius:40px;
+        width:30px;
+        height:30px;
+        margin-top:12px;
+        margin-left:12px;
+      }
     }
 
     .character {
