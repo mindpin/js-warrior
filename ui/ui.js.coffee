@@ -500,7 +500,7 @@ class GameUi
       @jqconsole.Write "#{msg}你失败了 :(", 'lose'
 
     jQuery(document).on 'js-warrior:error', (evt, error)=>
-      console.log error, error.message
+      console.log error, error.message, error.stack
       if error.constructor == WarriorNotActionError 
         return @jqconsole.Write '勇者没有进行任何行动，执行中止', 'error'
       if error.constructor == DuplicateActionsError

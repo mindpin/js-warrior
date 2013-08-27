@@ -1,6 +1,7 @@
 class Action extends Base
-  constructor: ->
-    @type = @class_name()
+  constructor: (@actor, @direction)->
+    @type     = @class_name()
+    @distance = 1 if !@distance
 
   steps: ->
 
@@ -14,6 +15,8 @@ class Action extends Base
     @class_name() == "dart"
     
   set_target_space: ->
+    if @actor && @direction
+      @target_space = @actor.space.get_relative_space(@direction, @distance)
 
   set_target: ->
     if @target_space
@@ -36,14 +39,10 @@ class Action extends Base
       
 class Idle extends Action
   constructor: (@actor, @action)->
+    super(@actor)
     @direction = @action.direction if @action
-    super()
 
 class Walk extends Action
-  constructor: (@actor, @direction)->
-    super()
-    @target_space = @actor.space.get_relative_space(direction, 1)
-
   is_fail: ->
     !@target_space.can_walk()
 
@@ -52,7 +51,7 @@ class Walk extends Action
 
 class Rest extends Action
   constructor: (@actor, @hp_change)->
-    super()
+    super(@actor)
 
   is_fail: ->
     @actor.health >= @actor.max_health
@@ -62,9 +61,8 @@ class Rest extends Action
 
 class Attack extends Action
   constructor: (@actor, @direction, @distance)->
-    super()
-    @hp_change    = -@actor.damage
-    @target_space = @actor.space.get_relative_space(@direction, distance)
+    super(arguments...)
+    @hp_change = -@actor.damage
   
   is_fail: ->
     @target_space.units().some((u)=> !u.destroyable)
@@ -73,29 +71,20 @@ class Attack extends Action
     @target.take_attack(@) if @target
 
 class Interact extends Action
-  constructor: (@actor, @direction)->
-    super()
-    @target_space = @actor.space.get_relative_space(@direction, 1)
-    @item         = @target_space.item
-    @lock         = @target_space.lock
-
   is_fail: ->
+    @item = @target_space.item
     !(@item && @item.can_interact(@actor))
 
   steps: ->
-    @actor.direction = @direction
     @item.take_interact(@) if @item
 
 class Excited extends Action
-  constructor: (@actor)->
-    super()
-
   steps: ->
     @actor.excited = true
 
 class Explode extends Action
   constructor: (@actor)->
-    super()
+    super(@actor)
     @hp_change = -10000
     @targets = @actor.get_attack_area()
       .filter((s)=> s.has_blowupable())
@@ -113,6 +102,7 @@ class Dart extends Attack
     @hp_change = -@actor.shuriken_damage
 
   set_target_space: ->
+    super()
     range = @actor.space.range(@target_space).concat([@target_space])
     blocked_space = range.filter((s)=> s.dart_stop())[0]
 
@@ -134,7 +124,6 @@ class Dart extends Attack
     @shuriken = @actor.consume(Shuriken)
     @shuriken.update_link(@target_space) if !@target
     @target.take_dart(@) if @target
-
 
 jQuery.extend window,
   Rest:       Rest
