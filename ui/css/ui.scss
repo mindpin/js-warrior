@@ -210,6 +210,10 @@ body {
         // }
       }
 
+      &.cat {
+        background:url(../img/living-cat.png) no-repeat;
+      }
+
       .hp {
         z-index:7;
         position:absolute;
@@ -257,6 +261,10 @@ body {
       &.wizard { background-position:-360px -60px; }
       &.archer { background-position:-420px -60px; }
       &.archer { background-position:-420px -60px; }
+
+      &.cat {
+        background-position:-60px -0px;
+      }
     }
 
     .hp-change {
