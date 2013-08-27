@@ -110,9 +110,20 @@ class Space
       when "right" then @level.get_space(@level.width-1, @y)
       when "up"    then @level.get_space(@x, 0)
       when "down"  then @level.get_space(@x, @level.height-1)
-    return target_space if target_space.is_empty()
-    target_space.range(this).forEach (space)=>
-      return space if space.is_empty()
+    @get_end_space_with(target_space)
+
+  get_end_space_with: (another_space)->
+    return another_space if another_space == this
+    spaces = another_space.range(this)
+    spaces.unshift(another_space)
+    block_space = null
+    spaces.forEach (space)=>
+      block_space = space if !space.is_empty()
+    return another_space if !block_space
+
+    index = spaces.indexOf(block_space)
+    return this if index == spaces.length-1
+    return spaces[index+1]
 
   get_relative_space: (dir, distance) ->
     switch dir
