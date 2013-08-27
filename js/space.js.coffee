@@ -104,6 +104,16 @@ class Space
       return 'right-down'
     return null
 
+  get_padding_space: (dir) ->
+    target_space = switch dir
+      when "left"  then @level.get_space(0, @y)
+      when "right" then @level.get_space(@level.width-1, @y)
+      when "up"    then @level.get_space(@x, 0)
+      when "down"  then @level.get_space(@x, @level.height-1)
+    return target_space if target_space.is_empty()
+    target_space.range(this).forEach (space)=>
+      return space if space.is_empty()
+
   get_relative_space: (dir, distance) ->
     switch dir
       when "left-up"    then @relative(-distance, -distance)
