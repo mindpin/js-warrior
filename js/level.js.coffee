@@ -199,6 +199,13 @@ class Level
 
     return result
 
+  empty_spaces: ->
+    result = []
+    for floor in @space_profile
+      for space in floor
+        result.push(space) if space.is_empty()
+    return result
+
   units: () ->
     result = []
     for floor in @space_profile
