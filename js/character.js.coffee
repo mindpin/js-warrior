@@ -315,6 +315,12 @@ class Cat extends Character
   push: (direction)->
     (new Push(@, direction)).perform()
 
+  toss: (direction)->
+    (new Toss(@, direction)).perform()
+
+  slap: (direction)->
+    (new Slap(@, direction)).perform()
+
 jQuery.extend window,
   Character: Character
   Enemy:     Enemy
