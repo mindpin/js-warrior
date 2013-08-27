@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>js-warrior ui page</title>
+  <link href="../ui/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <!-- body.html -->
+
+<textarea class='page-init-code' style='display:none;'>
+game.player.run = function(cat){
+  cat.walk('right')
+  cat.walk('down')  
+  cat.walk('down')
+  cat.walk('down')
+  cat.walk('down')
+}
+</textarea>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="../js/jquery-migrate/jquery-migrate-1.2.1.js"></script>
+  <script src="../js/ace/src-min-noconflict/ace.js"></script>
+  <script src="../js/jqconsole/jqconsole.js"></script>
+
+  <script type="text/javascript" src="../coffee-script.js"></script>
+  <script type="text/coffeescript" src="../js/game.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/level.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/unit.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/action.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/space.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/player.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/character.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/item.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/user_warrior.js.coffee"></script>
+  <script type="text/coffeescript" src="../js/user_space.js.coffee"></script>
+
+  <script type="text/coffeescript" src='../ui/ui.js.coffee'></script>
+  <script type="text/coffeescript" src='../ui/ui-init.js.coffee'></script>
+
+  <script type="text/coffeescript">
+    window.level_data =
+      map: [
+        ['', '', '', '', ''],
+        ['', '', '', '', ''],
+        ['CCat', '', '', '', ''],
+        ['', '', '', '', ''],
+        ['', '', '', '', ''],
+      ]
+  </script>
+</body>
+</html>
