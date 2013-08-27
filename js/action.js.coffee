@@ -147,11 +147,17 @@ class Slap extends Action
 
 class Toss extends Action
   target_dest_space: ->
-    spaces = @actor.level.empty_spaces()
-    spaces[Math.floor(Math.random() * spaces.length)]
+    @actor.space.get_relative_space(@reverse_direction(), 1)
+
+  reverse_direction: ->
+    switch @direction
+      when "left"  then "right"
+      when "right" then "left"
+      when "up"    then "down"
+      when "down"  then "up"
 
   is_fail: ->
-    !@target_dest_space()
+    @target_dest_space().item
 
   steps: ->
     @target.take_toss(@)
