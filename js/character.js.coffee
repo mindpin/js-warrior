@@ -13,7 +13,7 @@ class Character extends Unit
     @max_health = @health
 
   is_cat: ->
-    @class_name == "cat"
+    @class_name() == "cat"
 
   in_range: (space)->
     @get_attack_area().some (s)=>

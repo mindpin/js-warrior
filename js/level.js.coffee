@@ -6,7 +6,6 @@ class Level
     @_build_door()
     @_build_character_chain()
 
-    @max_diamond_count = @diamond_count_in_floor()
     @height = @space_profile.length
     @width = @space_profile[0].length
     @actions_queue = []
